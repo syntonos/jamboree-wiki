@@ -1,7 +1,9 @@
 # Jamboree
 An open access engineering club wiki, built from Markdown with no package dependencies.
 
-Run `npm run dev` and open port 4173 locally. Run `npm run build` after editing notes. Deploy the directory to any static host; navigation uses hash routes.
+Use Node.js 20 or later. No package installation is required. Run `npm run dev` to build the Markdown notes and start the local preview on port 4173. Run `npm run build` after editing notes; `npm start` serves an existing build. Set `PORT` or `HOST` to change the preview listener. Both the build step and preview server use only built-in Node modules. Run `npm test` for the build and server checks.
+
+Deploy the directory to any static host; navigation uses hash routes. The published site needs no running Node server.
 
 ## Content
 All notes live in `content/`. Project frontmatter supports `status: current`, `past`, or `future`; `featured: true`; `order`; `discipline`; and `image: /assets/uploads/photo.jpg`. Add photos to `assets/uploads/`. Featured current projects appear automatically on the homepage, ordered by `order`. Project and guide hubs are assembled from the note paths. The past and future sections begin empty until projects are assigned those statuses.

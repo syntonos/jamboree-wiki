@@ -134,9 +134,9 @@
   },
   {
     "title": "The workshop is open.",
-    "description": "A shared fieldbook for people who make things. Explore our projects, browse the guides, and see what\u2019s on the workbench.",
+    "description": "A shared fieldbook for people who make things. Explore our projects, browse the guides, and see what’s on the workbench.",
     "slug": "index",
-    "body": "## Start here\nA shared fieldbook for people who make things. Explore our projects, browse the guides, and see what\u2019s on the workbench.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nA shared fieldbook for people who make things. Explore our projects, browse the guides, and see what’s on the workbench.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
   },
   {
     "title": "Future projects",
@@ -156,7 +156,7 @@
     "image": "",
     "discipline": "Mechanical + controls",
     "slug": "projects/go-cart-pair",
-    "body": "## The idea\nTwo carts. One shared challenge: get from sketch to first drive. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note\u2019s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nTwo carts. One shared challenge: get from sketch to first drive. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Projects",
@@ -176,7 +176,7 @@
     "image": "",
     "discipline": "Electrical + firmware",
     "slug": "projects/laser-tag",
-    "body": "## The idea\nLight, logic, and a little friendly competition. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note\u2019s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nLight, logic, and a little friendly competition. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Past projects",
@@ -196,7 +196,7 @@
     "image": "",
     "discipline": "Mechanical + design",
     "slug": "projects/pillow-trebuchet",
-    "body": "## The idea\nAn exercise in soft projectiles and serious mechanical advantage. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note\u2019s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nAn exercise in soft projectiles and serious mechanical advantage. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Synthesizer night",
@@ -209,6 +209,6 @@
     "image": "",
     "discipline": "Electronics + sound",
     "slug": "projects/synthesizer-night",
-    "body": "## The idea\nAn evening of oscillators, unusual sounds, and homemade instruments. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note\u2019s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nAn evening of oscillators, unusual sounds, and homemade instruments. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   }
 ]

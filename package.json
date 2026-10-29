@@ -2,8 +2,12 @@
   "name": "jamboree-wiki",
   "private": true,
   "scripts": {
-    "build": "python3 scripts/build.py",
-    "dev": "python3 scripts/build.py && python3 -m http.server 4173 --bind 0.0.0.0",
-    "start": "python3 -m http.server 4173 --bind 0.0.0.0"
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
