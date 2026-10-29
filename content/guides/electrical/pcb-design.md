@@ -1,0 +1,10 @@
+---
+title: PCB design
+description: A shared notebook for pcb design. A place for tested examples and the reasoning behind them.
+---
+
+## Start here
+A shared notebook for pcb design. A place for tested examples and the reasoning behind them.
+
+## Working notes
+Practical examples, references, and lessons from projects will live here.

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jamboree — Open engineering fieldbook</title>
+  <link rel="preload" href="assets/fonts/Orbitron-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/full-graph.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-heading">
+      <a class="brand" href="#/" aria-label="Jamboree home"><svg class="club-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>jamboree<span class="brand-dot">.</span></span></a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-open-icon" d="M4 6h16M4 12h16M4 18h16"/><path class="menu-close-icon" d="m6 6 12 12M6 18 18 6"/></svg></button>
+    </div>
+    <div class="sidebar-menu" id="sidebar-menu">
+      <div class="edition">OPEN ENGINEERING CLUB<br>FIELD NOTES / VOL. 001</div>
+      <button class="search-trigger" type="button">⌕ <span>Find a note</span><kbd>/</kbd></button>
+      <div class="nav-label">THE FIELDBOOK</div>
+      <nav aria-label="Fieldbook">
+        <a href="#/" data-nav="index">⌂ <span>Overview</span></a>
+        <a href="#/projects/index" data-nav="projects">▧ <span>Projects</span><small>04</small></a>
+        <a href="#/guides/index" data-nav="guides">⊞ <span>Guides</span></a>
+        <a href="#/graph" data-nav="graph" class="graph-tab-link"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 3-5 8-5-11m5 11L3 11"/><circle cx="5" cy="5" r="2"/><circle cx="15" cy="8" r="2"/><circle cx="10" cy="16" r="2"/><circle cx="3" cy="11" r="1"/></svg><span>Complete graph</span></a>
+      </nav>
+      <div class="nav-label">BY DISCIPLINE</div>
+      <nav class="disciplines" aria-label="Disciplines">
+        <a href="#/guides/design-practices">› Design practices</a>
+        <a href="#/guides/mechanical">› Mechanical</a>
+        <a href="#/guides/electrical">› Electrical</a>
+        <a href="#/guides/cs">› Computer science</a>
+      </nav>
+      <div class="social-links mobile-socials" role="group" aria-label="Club social links"><button class="icon-button" type="button" data-social="youtube" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></button><button class="icon-button" type="button" data-social="instagram" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></button><a class="icon-button" data-social="github" href="https://github.com/syntonos/jamboree-wiki" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20c-4.5 1.5-4.5-2-6-2.5M15 22v-4a3.5 3.5 0 0 0-1-2.8c3.3-.4 6.7-1.6 6.7-7.3A5.7 5.7 0 0 0 19.2 4a5.3 5.3 0 0 0-.1-3s-1.2-.4-4.1 1.5a14 14 0 0 0-7 0C5.1.6 3.9 1 3.9 1a5.3 5.3 0 0 0-.1 3A5.7 5.7 0 0 0 2.3 8c0 5.7 3.4 6.9 6.7 7.3A3.5 3.5 0 0 0 8 18v4" transform="translate(1 1) scale(.92)"/></svg></a></div>
+      <div class="sidebar-bottom">
+        <div class="open-badge"><i></i> Open to everyone</div>
+        <a href="#/about">About the club →</a>
+      </div>
+    </div>
+  </aside>
+  <div class="shell">
+    <header>
+      <div class="breadcrumb">Fieldbook <span>/</span> <strong id="crumb">Overview</strong></div>
+      <div class="top-actions">
+        <span class="public">◉ PUBLIC WIKI</span>
+        <div class="social-links desktop-socials" role="group" aria-label="Club social links"><button class="icon-button" type="button" data-social="youtube" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></button><button class="icon-button" type="button" data-social="instagram" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></button><a class="icon-button" data-social="github" href="https://github.com/syntonos/jamboree-wiki" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20c-4.5 1.5-4.5-2-6-2.5M15 22v-4a3.5 3.5 0 0 0-1-2.8c3.3-.4 6.7-1.6 6.7-7.3A5.7 5.7 0 0 0 19.2 4a5.3 5.3 0 0 0-.1-3s-1.2-.4-4.1 1.5a14 14 0 0 0-7 0C5.1.6 3.9 1 3.9 1a5.3 5.3 0 0 0-.1 3A5.7 5.7 0 0 0 2.3 8c0 5.7 3.4 6.9 6.7 7.3A3.5 3.5 0 0 0 8 18v4" transform="translate(1 1) scale(.92)"/></svg></a></div>
+        <button class="icon-button" id="theme" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false"><svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
+      </div>
+    </header>
+    <div class="search-area"><input id="search" placeholder="Search the fieldbook…" aria-label="Search notes"><div id="search-results"></div></div>
+    <div class="page-layout">
+      <main id="main"></main>
+      <aside class="rightbar">
+        <div class="rail-title">ON THIS PAGE</div><div id="toc"></div>
+        <div class="graph-head">CONNECTED NOTES <a href="#/graph" aria-label="Open complete graph" title="Open complete graph">→</a></div>
+        <svg id="graph" viewBox="0 0 230 200" aria-label="Connected notes graph"></svg>
+        <div class="graph-caption">Every idea connects to another.</div>
+      </aside>
+    </div>
+    <footer><span>JAMBOREE / SHARED KNOWLEDGE, OPEN BY DESIGN</span><span>Made for curious people. →</span></footer>
+  </div>
+  <dialog id="social-dialog" aria-labelledby="social-dialog-title" aria-describedby="social-dialog-description">
+    <div class="dialog-heading"><h2 id="social-dialog-title"></h2><button class="icon-button" id="close-social-dialog" type="button" aria-label="Close dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+    <p id="social-dialog-description"></p>
+  </dialog>
+  <script src="assets/full-graph.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
