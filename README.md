@@ -22,3 +22,6 @@ The Projects hub and Complete graph share status, discipline, and tag filters th
 Each note shows incoming links under Linked from. Write Markdown links or `[[wiki-links]]` to connect notes; the builder generates backlinks and graph edges from the same resolved links. Heading anchors and relative note paths work in both the renderer and validator.
 
 Markdown pipe tables render BOMs and other tabular data. Place CAD, STEP/STL, KiCad, PDF, CSV, SVG, or other files in `assets/resources/<project>/` and link to them from the note. Local file links become downloads. Starter CSVs, concept diagrams, and editable briefs are included for all four current projects; they are planning materials rather than completed engineering designs. Leads and contacts start unassigned. Dates reflect the documentation update, not physical build progress.
+
+## Navigation and search
+The Complete graph link is in the top header. Find a note is an editable search field in the sidebar; on mobile it is inside the hamburger menu. Press `/` to focus search (and open the mobile menu when necessary); Escape clears it.

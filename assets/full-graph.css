@@ -22,7 +22,7 @@
 .graph-node .node-hit, #graph .node-hit { fill: transparent; stroke: none; }
 .graph-node .node-dot, #graph .node-dot { fill: var(--panel); stroke: var(--blue); stroke-width: 2; }
 .graph-node.is-hub .node-dot, #graph .is-hub .node-dot { fill: var(--blue); }
-.graph-node text, #graph .graph-node text { fill: var(--ink); font: 18px var(--font-body); }
+.graph-node text, #graph .graph-node text { fill: var(--ink); font: 20px var(--font-body); }
 .graph-node:hover .node-dot, .graph-node:focus .node-dot { stroke-width: 5; }
 .graph-node:hover text, .graph-node:focus text { fill: var(--blue); }
 .has-highlight .graph-node:not(.is-neighbor) { opacity: .28; }
@@ -59,7 +59,7 @@
 .graph-node text { paint-order: stroke fill; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
 .graph-node.label-collides text { visibility: hidden; }
 .graph-node.label-collides:hover text, .graph-node.label-collides:focus text { visibility: visible; }
-#graph .graph-node text { font-size: 30px; }
+#graph .graph-node text { font-size: 34px; }
 
 .graph-project-filters { margin-bottom: 12px; }
 .graph-filter-summary { margin: 0 0 18px; color: var(--muted); font-size: 11px; }

@@ -147,17 +147,13 @@ $('#sidebar-menu').addEventListener('click', event => {
   if (event.target.closest('a')) setMenu(false);
 });
 $('.brand').addEventListener('click', () => setMenu(false));
-$('.search-trigger').addEventListener('click', () => {
-  setMenu(false);
-  $('#search').focus();
-});
 document.addEventListener('click', event => {
   if (mobileLayout.matches && !event.target.closest('.sidebar, dialog')) setMenu(false);
 });
 document.addEventListener('keydown', event => {
   if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && !$('#social-dialog').open) {
     event.preventDefault();
-    setMenu(false);
+    setMenu(mobileLayout.matches);
     $('#search').focus();
   }
   if (event.key === 'Escape') {

@@ -115,7 +115,7 @@
       const right = Math.cos(node.angle || 0) >= 0, x = right ? 21 : -21;
       const title = node.slug === 'index' ? 'Jamboree' : node.title;
       const hub = node.children.length > 0;
-      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''}" data-slug="${escape(node.slug)}" aria-label="Open ${escape(title)}"><title>${escape(title)}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${hub ? (local ? 17 : 13) : (local ? 12 : 9)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title, local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 32 : 21) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
+      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''}" data-slug="${escape(node.slug)}" aria-label="Open ${escape(title)}"><title>${escape(title)}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${hub ? (local ? 17 : 13) : (local ? 12 : 9)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title, local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
     }).join('')}</g>`;
     const world = svg.querySelector('.graph-world');
     const anchors = [...svg.querySelectorAll('.graph-node')];
@@ -126,9 +126,9 @@
     function measureLabels() {
       for (const label of labels) {
         const box = label.text.getBBox();
-        const fontSize = local ? 30 : 18;
+        const fontSize = local ? 34 : 20;
         label.width = box.width || Math.max(...[...label.text.querySelectorAll('tspan')].map(line => line.textContent.length)) * fontSize * .6;
-        label.height = box.height || label.text.querySelectorAll('tspan').length * (local ? 32 : 21);
+        label.height = box.height || label.text.querySelectorAll('tspan').length * (local ? 36 : 24);
         label.fontSize = fontSize;
       }
     }

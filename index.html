@@ -18,13 +18,12 @@
     </div>
     <div class="sidebar-menu" id="sidebar-menu">
       <div class="edition">OPEN ENGINEERING CLUB</div>
-      <button class="search-trigger" type="button">⌕ <span>Find a note</span><kbd>/</kbd></button>
+      <div class="sidebar-search"><span class="search-icon" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Find a note" aria-label="Search notes" autocomplete="off"><kbd aria-hidden="true">/</kbd><div id="search-results" aria-live="polite"></div></div>
       <div class="nav-label">WIKI</div>
       <nav aria-label="Fieldbook">
         <a href="#/" data-nav="index">⌂ <span>Overview</span></a>
         <a href="#/projects/index" data-nav="projects">▧ <span>Projects</span><small>04</small></a>
         <a href="#/guides/index" data-nav="guides">⊞ <span>Guides</span></a>
-        <a href="#/graph" data-nav="graph" class="graph-tab-link"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 3-5 8-5-11m5 11L3 11"/><circle cx="5" cy="5" r="2"/><circle cx="15" cy="8" r="2"/><circle cx="10" cy="16" r="2"/><circle cx="3" cy="11" r="1"/></svg><span>Complete graph</span></a>
       </nav>
       <div class="nav-label">BY DISCIPLINE</div>
       <nav class="disciplines" aria-label="Disciplines">
@@ -44,12 +43,12 @@
     <header>
       <div class="breadcrumb">Wiki <span>/</span> <strong id="crumb">Overview</strong></div>
       <div class="top-actions">
+        <a href="#/graph" aria-label="Complete graph" data-nav="graph" class="graph-tab-link header-graph-link"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 3-5 8-5-11m5 11L3 11"/><circle cx="5" cy="5" r="2"/><circle cx="15" cy="8" r="2"/><circle cx="10" cy="16" r="2"/><circle cx="3" cy="11" r="1"/></svg><span class="graph-link-full">Complete graph</span><span class="graph-link-short">Graph</span></a>
         <a class="main-site-link" href="#/main-site" data-main-site>Meet the team <span aria-hidden="true">↗</span></a>
         <div class="social-links desktop-socials" role="group" aria-label="Club social links"><button class="icon-button" type="button" data-social="youtube" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></button><button class="icon-button" type="button" data-social="instagram" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></button><a class="icon-button" data-social="github" href="https://github.com/syntonos/jamboree-wiki" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20c-4.5 1.5-4.5-2-6-2.5M15 22v-4a3.5 3.5 0 0 0-1-2.8c3.3-.4 6.7-1.6 6.7-7.3A5.7 5.7 0 0 0 19.2 4a5.3 5.3 0 0 0-.1-3s-1.2-.4-4.1 1.5a14 14 0 0 0-7 0C5.1.6 3.9 1 3.9 1a5.3 5.3 0 0 0-.1 3A5.7 5.7 0 0 0 2.3 8c0 5.7 3.4 6.9 6.7 7.3A3.5 3.5 0 0 0 8 18v4" transform="translate(1 1) scale(.92)"/></svg></a></div>
         <button class="icon-button" id="theme" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false"><svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
       </div>
     </header>
-    <div class="search-area"><input id="search" placeholder="Search notes…" aria-label="Search notes"><div id="search-results"></div></div>
     <div class="page-layout">
       <main id="main"></main>
       <aside class="rightbar">
