@@ -43,6 +43,7 @@ function mountProjectHub() {
     const count = notes.filter(note => projects.matches(note,filters)).length;
     hub.querySelector('.project-results-summary').textContent = count + ' of ' + total + ' projects';
     hub.querySelector('.project-groups').innerHTML = projectGroups(filters);
+    projects.enhanceControls(hub);
     updateToc('projects/index');
   }
   hub.addEventListener('change', event => {
@@ -101,6 +102,7 @@ function render() {
   window.JamboreeGraph.destroy();
   $('.shell').classList.toggle('graph-view',isGraph);
   $('.shell').classList.toggle('main-site-view',isMainSite);
+  syncSidebars();
   $('#main').innerHTML = isMainSite ? '<article class="article main-site-placeholder"><h1>Jamboree</h1><p>Main site link coming soon.</p><a href="#/">Open wiki →</a></article>' : isGraph ? window.JamboreeGraph.markup(notes) : note ? slug === 'index' ? home() : article(note) : '<h1>Note not found</h1><p><a href="#/">Return to the wiki →</a></p>';
   const title = slug === 'index' ? 'Overview' : isMainSite ? 'Main site' : isGraph ? 'Complete graph' : note?.title || 'Not found';
   document.title = title + ' — Jamboree';
@@ -132,6 +134,72 @@ $('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().t
 });
 const mobileLayout = window.matchMedia('(max-width: 760px)');
 const menuToggle = $('#menu-toggle');
+const compactNotes = window.matchMedia('(max-width: 1250px)');
+let navigationClosed = localStorage.getItem('jamboree-navigation-closed') === 'true';
+let notesClosed = localStorage.getItem('jamboree-notes-closed') === 'true';
+let notesDrawerOpen = false;
+function syncSidebars() {
+  const leftHidden = !mobileLayout.matches && navigationClosed;
+  document.body.classList.toggle('left-sidebar-collapsed', leftHidden);
+  $('#left-sidebar-toggle').setAttribute('aria-expanded', String(!leftHidden));
+  const hasNotes = !$('.shell').matches('.graph-view, .main-site-view');
+  const notesVisible = hasNotes && (compactNotes.matches ? notesDrawerOpen : !notesClosed);
+  document.body.classList.toggle('right-sidebar-collapsed', !compactNotes.matches && notesClosed);
+  document.body.classList.toggle('right-sidebar-open', compactNotes.matches && notesVisible);
+  $('#notes-sidebar').inert = !notesVisible;
+  const modalNotes = compactNotes.matches && notesVisible;
+  $('#wiki-sidebar').inert = leftHidden || modalNotes;
+  $('header').inert = modalNotes;
+  $('#main').inert = modalNotes;
+  $('footer').inert = modalNotes;
+  if (modalNotes) {
+    $('#notes-sidebar').setAttribute('role', 'dialog');
+    $('#notes-sidebar').setAttribute('aria-modal', 'true');
+  } else {
+    $('#notes-sidebar').removeAttribute('role');
+    $('#notes-sidebar').removeAttribute('aria-modal');
+  }
+  const toggle = $('#right-sidebar-toggle');
+  toggle.hidden = !hasNotes;
+  toggle.setAttribute('aria-expanded', String(notesVisible));
+  const label = (notesVisible ? 'Close' : 'Open') + ' notes sidebar';
+  toggle.setAttribute('aria-label', label);
+  toggle.title = label;
+  $('#sidebar-backdrop').hidden = !compactNotes.matches || !notesVisible;
+}
+function setNavigationClosed(closed, focus = false) {
+  navigationClosed = closed;
+  localStorage.setItem('jamboree-navigation-closed', String(closed));
+  syncSidebars();
+  if (focus) $(closed ? '#left-sidebar-toggle' : '#close-left-sidebar').focus();
+}
+function setNotesOpen(open, focus = false) {
+  if (compactNotes.matches) notesDrawerOpen = open;
+  else {
+    notesClosed = !open;
+    localStorage.setItem('jamboree-notes-closed', String(!open));
+  }
+  syncSidebars();
+  if (focus) $(open && compactNotes.matches ? '#close-right-sidebar' : '#right-sidebar-toggle').focus();
+}
+$('#close-left-sidebar').addEventListener('click', () => setNavigationClosed(true, true));
+$('#left-sidebar-toggle').addEventListener('click', () => setNavigationClosed(false, true));
+$('#right-sidebar-toggle').addEventListener('click', () => setNotesOpen($('#right-sidebar-toggle').getAttribute('aria-expanded') !== 'true', true));
+$('#close-right-sidebar').addEventListener('click', () => setNotesOpen(false, true));
+$('#sidebar-backdrop').addEventListener('click', () => setNotesOpen(false, true));
+$('#notes-sidebar').addEventListener('click', event => {
+  const anchor = event.target.closest('a');
+  if (!compactNotes.matches || !anchor) return;
+  setNotesOpen(false);
+  const target = anchor.dataset.section ? anchorTarget(anchor.dataset.section) : null;
+  if (target) {
+    const previousTabindex = target.getAttribute('tabindex');
+    target.setAttribute('tabindex', '-1');
+    target.focus({preventScroll:true});
+    target.addEventListener('blur', () => previousTabindex === null ? target.removeAttribute('tabindex') : target.setAttribute('tabindex', previousTabindex), {once:true});
+  }
+});
+compactNotes.addEventListener('change', () => { notesDrawerOpen = false; syncSidebars(); });
 function setMenu(open, returnFocus = false) {
   const expanded = mobileLayout.matches && open;
   $('.sidebar').classList.toggle('menu-is-open', expanded);
@@ -142,7 +210,7 @@ function setMenu(open, returnFocus = false) {
 menuToggle.addEventListener('click', () => {
   setMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
 });
-mobileLayout.addEventListener('change', () => setMenu(false));
+mobileLayout.addEventListener('change', () => { setMenu(false); syncSidebars(); });
 $('#sidebar-menu').addEventListener('click', event => {
   if (event.target.closest('a')) setMenu(false);
 });
@@ -151,18 +219,28 @@ document.addEventListener('click', event => {
   if (mobileLayout.matches && !event.target.closest('.sidebar, dialog')) setMenu(false);
 });
 document.addEventListener('keydown', event => {
+  if (event.key === 'Tab' && notesDrawerOpen && compactNotes.matches) {
+    const items = [...$('#notes-sidebar').querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(item => item.getClientRects().length);
+    const first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !$('#notes-sidebar').contains(document.activeElement))) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && (document.activeElement === last || !$('#notes-sidebar').contains(document.activeElement))) { event.preventDefault(); first?.focus(); }
+  }
   if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && !$('#social-dialog').open) {
     event.preventDefault();
+    if (notesDrawerOpen) setNotesOpen(false);
+    if (!mobileLayout.matches && navigationClosed) setNavigationClosed(false);
     setMenu(mobileLayout.matches);
     $('#search').focus();
   }
   if (event.key === 'Escape') {
+    if (notesDrawerOpen) { setNotesOpen(false, true); return; }
     $('#search').value = '';
     $('#search-results').innerHTML = '';
     $('#search').blur();
     if (menuToggle.getAttribute('aria-expanded') === 'true' && !$('#social-dialog').open) setMenu(false, true);
   }
 });
+syncSidebars();
 function setTheme(dark) {
   document.body.classList.toggle('dark', dark);
   const label = dark ? 'Switch to light mode' : 'Switch to dark mode';

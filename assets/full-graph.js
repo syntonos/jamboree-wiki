@@ -73,7 +73,7 @@
   }
 
   function controls(local = false) {
-    return `<div class="full-graph-controls" role="group" aria-label="${local ? 'Connected notes' : 'Complete graph'} controls"><button type="button" data-graph-zoom="out" aria-label="Zoom out">−</button><span ${local ? '' : 'id="full-graph-zoom-level"'} data-graph-level aria-live="polite">100%</span><button type="button" data-graph-zoom="in" aria-label="Zoom in">+</button><button type="button" data-graph-fit ${local ? '' : 'id="full-graph-reset"'} aria-label="Fit graph to view">Fit</button>${local ? '' : '<button type="button" data-graph-motion aria-pressed="false">Pause motion</button><button type="button" data-graph-fullscreen>Fullscreen</button>'}</div>`;
+    return `<div class="full-graph-controls" role="group" aria-label="${local ? 'Connected notes' : 'Complete graph'} controls"><button type="button" data-graph-zoom="out" aria-label="Zoom out">−</button><span ${local ? '' : 'id="full-graph-zoom-level"'} data-graph-level aria-live="polite">100%</span><button type="button" data-graph-zoom="in" aria-label="Zoom in">+</button><button type="button" data-graph-fit ${local ? '' : 'id="full-graph-reset"'} aria-label="Fit graph to view">Fit</button><button type="button" data-graph-motion aria-pressed="false">Pause motion</button>${local ? '' : '<button type="button" data-graph-fullscreen>Fullscreen</button>'}</div>`;
   }
 
   function projectCount(notes, filters) {
@@ -104,10 +104,15 @@
     const on = (target, type, handler, options = {}) => target?.addEventListener(type, handler, {...options, signal: listeners.signal});
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let paused = frame.dataset.motionPaused === undefined ? reducedMotion.matches : frame.dataset.motionPaused === 'true', alpha = .85, animation = 0, alive = true, interacted = false;
+    let motionTime = 0, previousFrame = 0, lastPaint = 0, layoutFitted = false;
     let camera = {scale: 1, tx: 0, ty: 0}, fittedScale = 1;
     let drag = null, pinch = null, handledPointer = 0;
     const pointers = new Map();
-    for (const node of nodes) { node.initialX = node.x; node.initialY = node.y; node.degree = 0; }
+    for (const node of nodes) {
+      node.initialX = node.renderX = node.x; node.initialY = node.renderY = node.y; node.degree = 0;
+      node.driftPhase = [...node.slug].reduce((sum, letter) => sum * 31 + letter.charCodeAt(0) >>> 0, 7) / 0xffffffff * Math.PI * 2;
+      node.driftStart = 0;
+    }
     for (const edge of edges) { edge.source.degree++; edge.target.degree++; }
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.classList.add('interactive-graph-svg');
@@ -149,11 +154,11 @@
         if (label.position) candidates.unshift(label.position);
         let best;
         for (const position of candidates) {
-          const left = node.x + position.x - (position.anchor === 'end' ? label.width : position.anchor === 'middle' ? label.width / 2 : 0);
-          const top = node.y + position.y - label.fontSize;
+          const left = node.renderX + position.x - (position.anchor === 'end' ? label.width : position.anchor === 'middle' ? label.width / 2 : 0);
+          const top = node.renderY + position.y - label.fontSize;
           const rect = {left: left - 4, right: left + label.width + 4, top: top - 3, bottom: top + label.height + 3};
           let score = occupied.reduce((total, other) => total + overlap(rect, other), 0);
-          for (const other of nodes) if (other !== node) score += overlap(rect, {left: other.x - 17, right: other.x + 17, top: other.y - 17, bottom: other.y + 17}) * 3;
+          for (const other of nodes) if (other !== node) score += overlap(rect, {left: other.renderX - 17, right: other.renderX + 17, top: other.renderY - 17, bottom: other.renderY + 17}) * 3;
           if (!best || score < best.score) best = {position, rect, score};
           if (!score) break;
         }
@@ -173,12 +178,20 @@
     const full = frame.querySelector('[data-graph-fullscreen]');
 
     function paint() {
-      nodes.forEach((node, i) => anchors[i].querySelector('g').setAttribute('transform', `translate(${node.x} ${node.y})`));
+      // Keep the solved layout stable; the ambient movement is a small visual offset.
+      // It uses an animation clock so pausing or hiding the tab freezes every node.
+      nodes.forEach((node, i) => {
+        const time = motionTime - node.driftStart, phase = node.driftPhase;
+        const amplitude = local ? 8 : 9;
+        node.renderX = node.x + (node.fx != null ? 0 : amplitude * (Math.sin(time * .48 + phase) - Math.sin(phase)));
+        node.renderY = node.y + (node.fy != null ? 0 : amplitude * (Math.sin(time * .39 + phase * 1.7) - Math.sin(phase * 1.7)));
+        anchors[i].querySelector('g').setAttribute('transform', `translate(${node.renderX} ${node.renderY})`);
+      });
       placeLabels();
       edges.forEach((edge, i) => {
         const line = lineElements[i];
-        line.setAttribute('x1', edge.source.x); line.setAttribute('y1', edge.source.y);
-        line.setAttribute('x2', edge.target.x); line.setAttribute('y2', edge.target.y);
+        line.setAttribute('x1', edge.source.renderX); line.setAttribute('y1', edge.source.renderY);
+        line.setAttribute('x2', edge.target.renderX); line.setAttribute('y2', edge.target.renderY);
       });
     }
     function updateCamera() {
@@ -206,48 +219,53 @@
       interacted = true;
       updateCamera();
     }
-    function simulate() {
+    function simulate(timestamp) {
       animation = 0;
-      if (!alive || paused || document.hidden || !svg.getBoundingClientRect().width) return;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dx = b.x - a.x || .1, dy = b.y - a.y || .1;
-          const distance = Math.max(8, Math.hypot(dx, dy));
-          const repulsion = (local ? 2400 : 7000) * alpha / (distance * distance);
-          const collision = Math.max(0, (local ? 105 : 115) - distance) * .04 * alpha;
-          const force = repulsion + collision;
-          a.vx -= dx / distance * force; a.vy -= dy / distance * force;
-          b.vx += dx / distance * force; b.vy += dy / distance * force;
+      if (!alive || paused || document.hidden || !svg.getBoundingClientRect().width) { previousFrame = 0; return; }
+      motionTime += previousFrame ? Math.min((timestamp - previousFrame) / 1000, .05) : 0;
+      previousFrame = timestamp;
+      if (alpha > .008) {
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i], b = nodes[j];
+            const dx = b.x - a.x || .1, dy = b.y - a.y || .1;
+            const distance = Math.max(8, Math.hypot(dx, dy));
+            const repulsion = (local ? 2400 : 7000) * alpha / (distance * distance);
+            const collision = Math.max(0, (local ? 105 : 115) - distance) * .04 * alpha;
+            const force = repulsion + collision;
+            a.vx -= dx / distance * force; a.vy -= dy / distance * force;
+            b.vx += dx / distance * force; b.vy += dy / distance * force;
+          }
         }
+        for (const {source, target} of edges) {
+          const dx = target.x - source.x, dy = target.y - source.y;
+          const distance = Math.max(1, Math.hypot(dx, dy));
+          const force = (distance - (local ? 155 : 180)) * .022 * alpha;
+          source.vx += dx / distance * force / Math.sqrt(source.degree || 1);
+          source.vy += dy / distance * force / Math.sqrt(source.degree || 1);
+          target.vx -= dx / distance * force / Math.sqrt(target.degree || 1);
+          target.vy -= dy / distance * force / Math.sqrt(target.degree || 1);
+        }
+        for (const node of nodes) {
+          node.vx = (node.vx + (node.initialX - node.x) * .001 * alpha) * .8;
+          node.vy = (node.vy + (node.initialY - node.y) * .001 * alpha) * .8;
+          node.x = node.fx ?? Math.max(60, Math.min(width - 60, node.x + Math.max(-12, Math.min(12, node.vx))));
+          node.y = node.fy ?? Math.max(60, Math.min(height - 60, node.y + Math.max(-12, Math.min(12, node.vy))));
+        }
+        alpha *= .975;
+        if (drag?.node) alpha = Math.max(alpha, .25);
       }
-      for (const {source, target} of edges) {
-        const dx = target.x - source.x, dy = target.y - source.y;
-        const distance = Math.max(1, Math.hypot(dx, dy));
-        const force = (distance - (local ? 155 : 180)) * .022 * alpha;
-        source.vx += dx / distance * force / Math.sqrt(source.degree || 1);
-        source.vy += dy / distance * force / Math.sqrt(source.degree || 1);
-        target.vx -= dx / distance * force / Math.sqrt(target.degree || 1);
-        target.vy -= dy / distance * force / Math.sqrt(target.degree || 1);
-      }
-      for (const node of nodes) {
-        node.vx = (node.vx + (node.initialX - node.x) * .001 * alpha) * .8;
-        node.vy = (node.vy + (node.initialY - node.y) * .001 * alpha) * .8;
-        node.x = node.fx ?? Math.max(60, Math.min(width - 60, node.x + Math.max(-12, Math.min(12, node.vx))));
-        node.y = node.fy ?? Math.max(60, Math.min(height - 60, node.y + Math.max(-12, Math.min(12, node.vy))));
-      }
-      paint();
-      alpha *= .975;
-      if (drag?.node) alpha = Math.max(alpha, .25);
-      if (alpha > .008) animation = requestAnimationFrame(simulate);
-      else if (!interacted) fit();
+      // Once settled, 30 frames per second is enough for the gentle drift.
+      if (alpha > .008 || timestamp - lastPaint >= 1000 / 30) { paint(); lastPaint = timestamp; }
+      if (alpha <= .008 && !interacted && !layoutFitted) { fit(); layoutFitted = true; }
+      animation = requestAnimationFrame(simulate);
     }
-    function reheat() { alpha = Math.max(alpha, .6); if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate); }
+    function reheat() { alpha = Math.max(alpha, .6); layoutFitted = false; if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate); }
     function updateMotion() {
       frame.dataset.motionPaused = String(paused);
       if (motion) { motion.textContent = paused ? 'Resume motion' : 'Pause motion'; motion.setAttribute('aria-pressed', String(paused)); }
-      if (paused) { cancelAnimationFrame(animation); animation = 0; }
-      else reheat();
+      if (paused) { cancelAnimationFrame(animation); animation = 0; previousFrame = 0; }
+      else if (!animation && !document.hidden) animation = requestAnimationFrame(simulate);
     }
     function highlight(slug) {
       const connected = new Set([slug]);
@@ -261,7 +279,10 @@
     on(frame.querySelector('[data-graph-fit]'), 'click', () => { interacted = true; fit(); });
     on(motion, 'click', () => { paused = !paused; updateMotion(); });
     on(reducedMotion, 'change', event => { paused = event.matches; updateMotion(); });
-    on(document, 'visibilitychange', () => { if (!document.hidden) reheat(); });
+    on(document, 'visibilitychange', () => {
+      cancelAnimationFrame(animation); animation = 0; previousFrame = 0;
+      if (!document.hidden && !paused) animation = requestAnimationFrame(simulate);
+    });
     on(svg, 'wheel', event => {
       event.preventDefault();
       const pixels = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? svg.clientHeight : 1);
@@ -272,7 +293,9 @@
     on(svg, 'focusin', event => highlight(event.target.closest('.graph-node')?.dataset.slug));
     on(svg, 'focusout', () => highlight(null));
 
-    function releaseNode() { if (drag?.node) { drag.node.fx = null; drag.node.fy = null; } }
+    function releaseNode() {
+      if (drag?.node) { drag.node.fx = null; drag.node.fy = null; drag.node.driftStart = motionTime; }
+    }
     on(svg, 'pointerdown', event => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
@@ -287,6 +310,7 @@
       }
       const anchor = event.target.closest('.graph-node');
       const node = anchor ? bySlug.get(anchor.dataset.slug) : null;
+      if (node) { node.x = node.renderX; node.y = node.renderY; node.driftStart = motionTime; }
       const grab = worldPoint(point);
       drag = {id: event.pointerId, node, anchor, offsetX: node ? node.x - grab.x : 0, offsetY: node ? node.y - grab.y : 0, x: point.x, y: point.y, clientX: event.clientX, clientY: event.clientY, tx: camera.tx, ty: camera.ty, moved: false};
       if (node) { node.fx = node.x; node.fy = node.y; anchor.focus({preventScroll: true}); }
@@ -369,8 +393,10 @@
     const filterContainer = article.querySelector('.graph-project-filters');
     const frame = article.querySelector('.full-graph-panel');
     const listeners = new AbortController();
+    projects.enhanceControls?.(filterContainer);
 
     function renderFilteredGraph(filters) {
+      projects.enhanceControls?.(filterContainer);
       const visible = projects.graphNotes(notes, filters);
       const data = model(visible);
       const count = projectCount(notes, filters);

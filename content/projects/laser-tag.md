@@ -8,7 +8,7 @@ order: 01
 art: laser
 image:
 discipline: Electrical, Computer science
-tags: infrared, firmware, pcb
+tags: Firmware programming, PCB design, Infrared communication, Circuit debugging
 lead:
 contact:
 updated: 2026-10-29

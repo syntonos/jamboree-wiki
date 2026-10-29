@@ -1,0 +1,61 @@
+/* Slim, theme-aware scrollbars for the page, rails, and menus. */
+:root { --scroll-thumb: #9bb2c6; color-scheme: light; }
+:root:has(body.dark) { --scroll-thumb: #46627c; color-scheme: dark; }
+body.dark { --scroll-thumb: #46627c; color-scheme: dark; }
+* { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border: 1px solid transparent; border-radius: 4px; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--blue); }
+
+.guide-card { align-items: center; grid-template-columns: 36px minmax(0, 1fr) 12px; }
+.guide-icon { display: flex; align-items: center; justify-content: center; width: 36px; min-height: 36px; line-height: 1; text-align: center; }
+
+/* Each rail can close independently. The header always offers a way back. */
+.header-start { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.header-start .breadcrumb { margin-right: 0; }
+.sidebar-toggle[hidden], .sidebar-backdrop[hidden] { display: none; }
+#left-sidebar-toggle { display: none; }
+.sidebar-close { position: absolute; top: 5px; right: 5px; width: 28px; height: 28px; padding: 5px; }
+.rail-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.rail-heading .rail-title { margin: 0; }
+.rail-heading .icon-button { width: 30px; height: 30px; padding: 6px; }
+.sidebar { overflow-y: auto; }
+.sidebar-search #search-results { width: 100%; }
+.sidebar-backdrop { position: fixed; inset: 0; border: 0; padding: 0; background: #10283c40; z-index: 24; cursor: default; }
+body.left-sidebar-collapsed .sidebar { display: none; }
+body.left-sidebar-collapsed .shell { margin-left: 0; }
+body.left-sidebar-collapsed #left-sidebar-toggle { display: inline-flex; }
+body.right-sidebar-collapsed .rightbar { display: none; }
+body.right-sidebar-collapsed .page-layout { grid-template-columns: minmax(0, 1fr); }
+body.left-sidebar-collapsed.right-sidebar-collapsed .page-layout { max-width: 1200px; }
+.graph-view #right-sidebar-toggle, .main-site-view #right-sidebar-toggle { display: none; }
+
+@media (max-width: 1250px) {
+  body.right-sidebar-open .rightbar {
+    display: block;
+    position: fixed;
+    z-index: 25;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(350px, calc(100vw - 28px));
+    padding: 22px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg);
+    border-left: 1px solid var(--line);
+    box-shadow: -12px 0 40px #10283c18;
+  }
+  body.right-sidebar-open { overflow: hidden; }
+  .rail-heading .icon-button { width: 40px; height: 40px; }
+}
+@media (max-width: 760px) {
+  .sidebar-close, body.left-sidebar-collapsed #left-sidebar-toggle { display: none; }
+  .sidebar { overflow: visible; }
+  .top-actions { gap: 4px; }
+  .breadcrumb { display: none; }
+  .header-start { display: none; }
+  header { justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
+  .top-actions { width: 100%; justify-content: space-between; }
+}

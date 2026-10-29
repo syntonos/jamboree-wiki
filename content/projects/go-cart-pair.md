@@ -8,7 +8,7 @@ order: 03
 art: cart
 image:
 discipline: Mechanical, Design
-tags: cad, vehicles, mechanisms
+tags: CAD modeling, Mechanism design, Requirements definition, Prototype testing
 lead:
 contact:
 updated: 2026-10-29

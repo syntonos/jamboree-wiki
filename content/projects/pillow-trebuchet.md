@@ -8,7 +8,7 @@ order: 04
 art: trebuchet
 image:
 discipline: Mechanical, Design
-tags: cad, mechanisms, testing
+tags: CAD modeling, Mechanism design, Prototype testing, Test documentation
 lead:
 contact:
 updated: 2026-10-29

@@ -8,7 +8,7 @@ order: 02
 art: synth
 image:
 discipline: Electrical, Design
-tags: audio, analog, workshop
+tags: Analog circuit design, Audio synthesis, Circuit prototyping, Circuit debugging
 lead:
 contact:
 updated: 2026-10-29

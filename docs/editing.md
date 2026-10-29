@@ -15,7 +15,7 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `featured` | `true` shows a current project on the homepage; `false` hides it there. |
 | `order` | Numeric display order for featured projects. |
 | `discipline` | Comma-separated disciplines, such as `Mechanical, Electrical, Computer science, Design`. |
-| `tags` | Comma-separated tags, such as `cad, firmware, testing`. Reuse existing spellings. |
+| `tags` | Comma-separated skills people can learn through the project, such as `CAD modeling, Firmware programming, Prototype testing`. Reuse existing spellings. |
 | `lead` | Project lead or team name. Leave blank until assigned. |
 | `contact` | Public contact email or HTTPS URL. Leave blank if unavailable. |
 | `updated` | Date of the last meaningful note update, in `YYYY-MM-DD` form. |
@@ -26,6 +26,8 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `hub` | Existing hub page kind, `projects` or `guides`; omit on ordinary notes. |
 
 Copy `docs/project-template.md` into a new file under `content/projects/`, then replace its title, description, metadata, and starter sections. `updated` is a documentation date, not a claim that the project itself has finished a milestone.
+
+Choose a few concrete skill tags that fit the planned work, and replace the template's examples. These tags appear on project cards and notes and can filter both Projects and Complete graph. They describe learning opportunities, not prerequisites or completed milestones.
 
 ## Links and backlinks
 

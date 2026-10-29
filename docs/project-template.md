@@ -8,7 +8,7 @@ order: 99
 art:
 image:
 discipline: Mechanical
-tags:
+tags: CAD modeling, Prototype testing
 lead:
 contact:
 updated:
