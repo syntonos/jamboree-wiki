@@ -1,6 +1,6 @@
 ---
 title: Go-cart pair
-description: Two carts. One shared challenge: get from sketch to first drive.
+description: Design and build two go-carts.
 type: project
 status: current
 featured: true
@@ -11,7 +11,7 @@ discipline: Mechanical + controls
 ---
 
 ## The idea
-Two carts. One shared challenge: get from sketch to first drive. This is a starter project note; scope and build details are still to be agreed.
+Design and build two go-carts. This is a starter project note; scope and build details are still to be agreed.
 
 ## On the workbench
 - Define the first useful prototype.

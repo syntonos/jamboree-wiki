@@ -1,6 +1,6 @@
 ---
 title: Laser tag
-description: Light, logic, and a little friendly competition.
+description: Infrared tag system with hit detection and scoring.
 type: project
 status: current
 featured: true
@@ -11,7 +11,7 @@ discipline: Electrical + firmware
 ---
 
 ## The idea
-Light, logic, and a little friendly competition. This is a starter project note; scope and build details are still to be agreed.
+Infrared tag system with hit detection and scoring. This is a starter project note; scope and build details are still to be agreed.
 
 ## On the workbench
 - Define the first useful prototype.

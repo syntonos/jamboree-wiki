@@ -114,3 +114,28 @@ h2 { font-size: 18px; letter-spacing: -.5px; }
   .hero h1, .hero p { max-width: 100%; }
   .hero { min-height: 300px; }
 }
+
+/* Content and navigation use direct labels; the drawings remain as visual context. */
+.main-site-link { color: var(--blue); white-space: nowrap; font-size: 11px; padding: 8px 0; }
+.main-site-link:hover { text-decoration: underline; }
+.hero { min-height: 225px; display: flex; flex-direction: column; justify-content: center; padding: 16px 0 30px; }
+.hero h1 { margin-bottom: 12px; }
+.hero .intro-links { margin-top: 16px; }
+.hero-art { height: 200px; top: 0; }
+.main-site-view .page-layout { grid-template-columns: minmax(0, 1fr); }
+.main-site-view .rightbar { display: none; }
+.main-site-placeholder p { color: var(--muted); }
+.main-site-placeholder > a { color: var(--blue); display: inline-block; margin-top: 18px; }
+@media (min-width: 1251px) {
+  .page-layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; }
+  .rightbar { padding-left: 20px; }
+}
+@media (max-width: 1250px) { .rightbar { display: none; } .page-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) {
+  .hero { min-height: 200px; }
+  .hero h1 { font-size: 30px; }
+  header { gap: 10px; }
+  .main-site-link { font-size: 10px; }
+  .top-actions { gap: 10px; }
+  .breadcrumb { margin-right: 0; }
+}

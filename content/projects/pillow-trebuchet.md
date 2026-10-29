@@ -1,6 +1,6 @@
 ---
 title: Pillow trebuchet
-description: An exercise in soft projectiles and serious mechanical advantage.
+description: Trebuchet design and soft-projectile testing.
 type: project
 status: current
 featured: false
@@ -11,7 +11,7 @@ discipline: Mechanical + design
 ---
 
 ## The idea
-An exercise in soft projectiles and serious mechanical advantage. This is a starter project note; scope and build details are still to be agreed.
+Trebuchet design and soft-projectile testing. This is a starter project note; scope and build details are still to be agreed.
 
 ## On the workbench
 - Define the first useful prototype.

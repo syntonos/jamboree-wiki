@@ -1,10 +1,10 @@
 ---
 title: Requirements and constraints
-description: A shared notebook for requirements and constraints. A place for tested examples and the reasoning behind them.
+description: Resources for requirements and constraints.
 ---
 
 ## Start here
-A shared notebook for requirements and constraints. A place for tested examples and the reasoning behind them.
+Resources for requirements and constraints.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

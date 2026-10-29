@@ -1,10 +1,10 @@
 ---
 title: Design reviews
-description: A shared notebook for design reviews. A place for tested examples and the reasoning behind them.
+description: Resources for design reviews.
 ---
 
 ## Start here
-A shared notebook for design reviews. A place for tested examples and the reasoning behind them.
+Resources for design reviews.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

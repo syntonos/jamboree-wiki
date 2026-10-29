@@ -1,11 +1,11 @@
 ---
 title: Future projects
-description: A place to collect ideas before a team starts building.
+description: Planned projects.
 status: future
 ---
 
 ## Start here
-A place to collect ideas before a team starts building.
+Planned projects.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

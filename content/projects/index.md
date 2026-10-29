@@ -1,11 +1,11 @@
 ---
 title: Projects
-description: From first sketch to the things we actually built. Every experiment belongs here.
+description: Current, past, and planned projects.
 hub: projects
 ---
 
 ## Start here
-From first sketch to the things we actually built. Every experiment belongs here.
+Current, past, and planned projects.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

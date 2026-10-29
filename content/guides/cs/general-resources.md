@@ -1,10 +1,10 @@
 ---
 title: General resources
-description: A shared notebook for general resources. A place for tested examples and the reasoning behind them.
+description: Resources for general resources.
 ---
 
 ## Start here
-A shared notebook for general resources. A place for tested examples and the reasoning behind them.
+Resources for general resources.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

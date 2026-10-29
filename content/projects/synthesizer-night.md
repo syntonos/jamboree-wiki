@@ -1,6 +1,6 @@
 ---
 title: Synthesizer night
-description: An evening of oscillators, unusual sounds, and homemade instruments.
+description: DIY synthesizers, oscillators, and audio circuits.
 type: project
 status: current
 featured: true
@@ -11,7 +11,7 @@ discipline: Electronics + sound
 ---
 
 ## The idea
-An evening of oscillators, unusual sounds, and homemade instruments. This is a starter project note; scope and build details are still to be agreed.
+DIY synthesizers, oscillators, and audio circuits. This is a starter project note; scope and build details are still to be agreed.
 
 ## On the workbench
 - Define the first useful prototype.

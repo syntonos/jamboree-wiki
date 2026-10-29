@@ -1,10 +1,10 @@
 ---
 title: Electrical
-description: Build circuits you can understand, test, and repair.
+description: PCB design, chips, firmware, and resources.
 ---
 
 ## Start here
-Build circuits you can understand, test, and repair.
+PCB design, chips, firmware, and resources.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

@@ -1,10 +1,10 @@
 ---
 title: Specific chips
-description: A shared notebook for specific chips. A place for tested examples and the reasoning behind them.
+description: Resources for specific chips.
 ---
 
 ## Start here
-A shared notebook for specific chips. A place for tested examples and the reasoning behind them.
+Resources for specific chips.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

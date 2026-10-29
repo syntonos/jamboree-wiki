@@ -1,10 +1,10 @@
 ---
 title: Mechanical
-description: From a dimensioned sketch to a working assembly.
+description: CAD, FEA, tools, and resources.
 ---
 
 ## Start here
-From a dimensioned sketch to a working assembly.
+CAD, FEA, tools, and resources.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

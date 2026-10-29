@@ -1,10 +1,10 @@
 ---
 title: Tools
-description: A shared notebook for tools. A place for tested examples and the reasoning behind them.
+description: Resources for tools.
 ---
 
 ## Start here
-A shared notebook for tools. A place for tested examples and the reasoning behind them.
+Resources for tools.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

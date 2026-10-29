@@ -1,153 +1,153 @@
 [
   {
-    "title": "An open workshop",
-    "description": "Jamboree is an open access engineering club. You do not need experience, expensive tools, or a finished idea to take part.",
+    "title": "About Jamboree",
+    "description": "Jamboree is an open access engineering club.",
     "slug": "about",
-    "body": "## Come as you are\nBring a question, explore an idea, or join a build. This wiki is readable without an account.\n\n## Learn together\nWe share working notes, experiments, and mistakes so everyone has a place to start."
+    "body": "## Access\nThe wiki is public and readable without an account."
   },
   {
     "title": "General resources",
-    "description": "A shared notebook for general resources. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for general resources.",
     "slug": "guides/cs/general-resources",
-    "body": "## Start here\nA shared notebook for general resources. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Programming",
-    "description": "A shared notebook for programming. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for programming.",
     "slug": "guides/cs/programming",
-    "body": "## Start here\nA shared notebook for programming. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for programming.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Software testing",
-    "description": "A shared notebook for software testing. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for software testing.",
     "slug": "guides/cs/software-testing",
-    "body": "## Start here\nA shared notebook for software testing. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for software testing.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Version control",
-    "description": "A shared notebook for version control. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for version control.",
     "slug": "guides/cs/version-control",
-    "body": "## Start here\nA shared notebook for version control. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for version control.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Computer science",
-    "description": "Software that connects the idea to the hardware.",
+    "description": "Programming, version control, testing, and resources.",
     "slug": "guides/cs",
-    "body": "## Start here\nSoftware that connects the idea to the hardware.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nProgramming, version control, testing, and resources.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Design reviews",
-    "description": "A shared notebook for design reviews. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for design reviews.",
     "slug": "guides/design-practices/design-reviews",
-    "body": "## Start here\nA shared notebook for design reviews. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for design reviews.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Requirements and constraints",
-    "description": "A shared notebook for requirements and constraints. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for requirements and constraints.",
     "slug": "guides/design-practices/requirements-and-constraints",
-    "body": "## Start here\nA shared notebook for requirements and constraints. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for requirements and constraints.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Testing and documentation",
-    "description": "A shared notebook for testing and documentation. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for testing and documentation.",
     "slug": "guides/design-practices/testing-and-documentation",
-    "body": "## Start here\nA shared notebook for testing and documentation. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for testing and documentation.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Design practices",
-    "description": "Make the reasoning as useful as the result.",
+    "description": "Requirements, design reviews, testing, and documentation.",
     "slug": "guides/design-practices",
-    "body": "## Start here\nMake the reasoning as useful as the result.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nRequirements, design reviews, testing, and documentation.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Firmware",
-    "description": "A shared notebook for firmware. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for firmware.",
     "slug": "guides/electrical/firmware",
-    "body": "## Start here\nA shared notebook for firmware. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for firmware.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "General resources",
-    "description": "A shared notebook for general resources. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for general resources.",
     "slug": "guides/electrical/general-resources",
-    "body": "## Start here\nA shared notebook for general resources. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Good practices",
-    "description": "A shared notebook for good practices. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for good practices.",
     "slug": "guides/electrical/good-practices",
-    "body": "## Start here\nA shared notebook for good practices. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for good practices.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "PCB design",
-    "description": "A shared notebook for pcb design. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for pcb design.",
     "slug": "guides/electrical/pcb-design",
-    "body": "## Start here\nA shared notebook for pcb design. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for pcb design.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Specific chips",
-    "description": "A shared notebook for specific chips. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for specific chips.",
     "slug": "guides/electrical/specific-chips",
-    "body": "## Start here\nA shared notebook for specific chips. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for specific chips.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Electrical",
-    "description": "Build circuits you can understand, test, and repair.",
+    "description": "PCB design, chips, firmware, and resources.",
     "slug": "guides/electrical",
-    "body": "## Start here\nBuild circuits you can understand, test, and repair.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nPCB design, chips, firmware, and resources.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Guides",
-    "description": "Practical knowledge, collected at the workbench. Start with a discipline or follow your curiosity.",
+    "description": "Design, mechanical, electrical, and computer science guides.",
     "hub": "guides",
     "slug": "guides/index",
-    "body": "## Start here\nPractical knowledge, collected at the workbench. Start with a discipline or follow your curiosity.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nDesign, mechanical, electrical, and computer science guides.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "ANSYS",
-    "description": "A shared notebook for ansys. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for ansys.",
     "slug": "guides/mechanical/ansys",
-    "body": "## Start here\nA shared notebook for ansys. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for ansys.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "CAD",
-    "description": "A shared notebook for cad. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for cad.",
     "slug": "guides/mechanical/cad",
-    "body": "## Start here\nA shared notebook for cad. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for cad.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "General resources",
-    "description": "A shared notebook for general resources. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for general resources.",
     "slug": "guides/mechanical/general-resources",
-    "body": "## Start here\nA shared notebook for general resources. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Tools",
-    "description": "A shared notebook for tools. A place for tested examples and the reasoning behind them.",
+    "description": "Resources for tools.",
     "slug": "guides/mechanical/tools",
-    "body": "## Start here\nA shared notebook for tools. A place for tested examples and the reasoning behind them.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nResources for tools.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Mechanical",
-    "description": "From a dimensioned sketch to a working assembly.",
+    "description": "CAD, FEA, tools, and resources.",
     "slug": "guides/mechanical",
-    "body": "## Start here\nFrom a dimensioned sketch to a working assembly.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nCAD, FEA, tools, and resources.\n\n## Working notes\nDocumentation pending."
   },
   {
-    "title": "The workshop is open.",
-    "description": "A shared fieldbook for people who make things. Explore our projects, browse the guides, and see what’s on the workbench.",
+    "title": "Jamboree wiki",
+    "description": "Projects, guides, and engineering notes.",
     "slug": "index",
-    "body": "## Start here\nA shared fieldbook for people who make things. Explore our projects, browse the guides, and see what’s on the workbench.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nProjects, guides, and engineering notes.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Future projects",
-    "description": "A place to collect ideas before a team starts building.",
+    "description": "Planned projects.",
     "status": "future",
     "slug": "projects/future",
-    "body": "## Start here\nA place to collect ideas before a team starts building.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nPlanned projects.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Go-cart pair",
-    "description": "Two carts. One shared challenge: get from sketch to first drive.",
+    "description": "Design and build two go-carts.",
     "type": "project",
     "status": "current",
     "featured": "true",
@@ -156,18 +156,18 @@
     "image": "",
     "discipline": "Mechanical + controls",
     "slug": "projects/go-cart-pair",
-    "body": "## The idea\nTwo carts. One shared challenge: get from sketch to first drive. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nDesign and build two go-carts. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Projects",
-    "description": "From first sketch to the things we actually built. Every experiment belongs here.",
+    "description": "Current, past, and planned projects.",
     "hub": "projects",
     "slug": "projects/index",
-    "body": "## Start here\nFrom first sketch to the things we actually built. Every experiment belongs here.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nCurrent, past, and planned projects.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Laser tag",
-    "description": "Light, logic, and a little friendly competition.",
+    "description": "Infrared tag system with hit detection and scoring.",
     "type": "project",
     "status": "current",
     "featured": "true",
@@ -176,18 +176,18 @@
     "image": "",
     "discipline": "Electrical + firmware",
     "slug": "projects/laser-tag",
-    "body": "## The idea\nLight, logic, and a little friendly competition. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nInfrared tag system with hit detection and scoring. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Past projects",
-    "description": "A home for completed builds and their lessons.",
+    "description": "Completed projects.",
     "status": "past",
     "slug": "projects/past",
-    "body": "## Start here\nA home for completed builds and their lessons.\n\n## Working notes\nPractical examples, references, and lessons from projects will live here."
+    "body": "## Start here\nCompleted projects.\n\n## Working notes\nDocumentation pending."
   },
   {
     "title": "Pillow trebuchet",
-    "description": "An exercise in soft projectiles and serious mechanical advantage.",
+    "description": "Trebuchet design and soft-projectile testing.",
     "type": "project",
     "status": "current",
     "featured": "false",
@@ -196,11 +196,11 @@
     "image": "",
     "discipline": "Mechanical + design",
     "slug": "projects/pillow-trebuchet",
-    "body": "## The idea\nAn exercise in soft projectiles and serious mechanical advantage. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nTrebuchet design and soft-projectile testing. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   },
   {
     "title": "Synthesizer night",
-    "description": "An evening of oscillators, unusual sounds, and homemade instruments.",
+    "description": "DIY synthesizers, oscillators, and audio circuits.",
     "type": "project",
     "status": "current",
     "featured": "true",
@@ -209,6 +209,6 @@
     "image": "",
     "discipline": "Electronics + sound",
     "slug": "projects/synthesizer-night",
-    "body": "## The idea\nAn evening of oscillators, unusual sounds, and homemade instruments. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## The idea\nDIY synthesizers, oscillators, and audio circuits. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
   }
 ]

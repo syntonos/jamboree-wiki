@@ -1,10 +1,10 @@
 ---
 title: Computer science
-description: Software that connects the idea to the hardware.
+description: Programming, version control, testing, and resources.
 ---
 
 ## Start here
-Software that connects the idea to the hardware.
+Programming, version control, testing, and resources.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

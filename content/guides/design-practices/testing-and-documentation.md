@@ -1,10 +1,10 @@
 ---
 title: Testing and documentation
-description: A shared notebook for testing and documentation. A place for tested examples and the reasoning behind them.
+description: Resources for testing and documentation.
 ---
 
 ## Start here
-A shared notebook for testing and documentation. A place for tested examples and the reasoning behind them.
+Resources for testing and documentation.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

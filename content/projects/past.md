@@ -1,11 +1,11 @@
 ---
 title: Past projects
-description: A home for completed builds and their lessons.
+description: Completed projects.
 status: past
 ---
 
 ## Start here
-A home for completed builds and their lessons.
+Completed projects.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

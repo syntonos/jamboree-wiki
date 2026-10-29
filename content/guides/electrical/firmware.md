@@ -1,10 +1,10 @@
 ---
 title: Firmware
-description: A shared notebook for firmware. A place for tested examples and the reasoning behind them.
+description: Resources for firmware.
 ---
 
 ## Start here
-A shared notebook for firmware. A place for tested examples and the reasoning behind them.
+Resources for firmware.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

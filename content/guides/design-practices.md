@@ -1,10 +1,10 @@
 ---
 title: Design practices
-description: Make the reasoning as useful as the result.
+description: Requirements, design reviews, testing, and documentation.
 ---
 
 ## Start here
-Make the reasoning as useful as the result.
+Requirements, design reviews, testing, and documentation.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

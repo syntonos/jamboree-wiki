@@ -1,10 +1,10 @@
 ---
 title: Good practices
-description: A shared notebook for good practices. A place for tested examples and the reasoning behind them.
+description: Resources for good practices.
 ---
 
 ## Start here
-A shared notebook for good practices. A place for tested examples and the reasoning behind them.
+Resources for good practices.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

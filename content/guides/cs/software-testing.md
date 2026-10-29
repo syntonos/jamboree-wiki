@@ -1,10 +1,10 @@
 ---
 title: Software testing
-description: A shared notebook for software testing. A place for tested examples and the reasoning behind them.
+description: Resources for software testing.
 ---
 
 ## Start here
-A shared notebook for software testing. A place for tested examples and the reasoning behind them.
+Resources for software testing.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.

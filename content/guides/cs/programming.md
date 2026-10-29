@@ -1,10 +1,10 @@
 ---
 title: Programming
-description: A shared notebook for programming. A place for tested examples and the reasoning behind them.
+description: Resources for programming.
 ---
 
 ## Start here
-A shared notebook for programming. A place for tested examples and the reasoning behind them.
+Resources for programming.
 
 ## Working notes
-Practical examples, references, and lessons from projects will live here.
+Documentation pending.
