@@ -5,7 +5,8 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "check:links": "node scripts/build.mjs --check"
   },
   "engines": {
     "node": ">=20"

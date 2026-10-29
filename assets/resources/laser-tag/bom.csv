@@ -1,0 +1,6 @@
+"Item","Quantity","Specification","Part number","Supplier URL","Status"
+"Controller board","TBD","I/O and timing requirements TBD","","","Not selected"
+"IR emitter and driver","TBD","Wavelength, drive current, and duty cycle TBD","","","Not selected"
+"IR receiver","TBD","Protocol and ambient-light performance TBD","","","Not selected"
+"Feedback device","TBD","Indicator, buzzer, or display TBD","","","Not selected"
+"Power source and enclosure","TBD","Voltage, capacity, and mounting TBD","","","Not selected"

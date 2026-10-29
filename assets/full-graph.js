@@ -1,7 +1,8 @@
 (() => {
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const href = note => '#/' + (note.slug === 'index' ? '' : note.slug);
-  let cleanup = () => {};
+  let engineCleanup = () => {};
+  let viewCleanup = () => {};
 
   function model(notes) {
     const nodes = notes.map(note => ({...note, children: [], vx: 0, vy: 0}));
@@ -19,6 +20,10 @@
       addEdge(parent, note.slug);
     }
     for (const note of nodes) {
+      if (Array.isArray(note.links)) {
+        for (const target of note.links) addEdge(note.slug, target);
+        continue;
+      }
       const references = [...(note.body || '').matchAll(/\[[^\]]+\]\(([^)]+)\)/g)].map(match => match[1]);
       references.push(...[...(note.body || '').matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map(match => match[1]));
       for (let reference of references) {
@@ -71,20 +76,34 @@
     return `<div class="full-graph-controls" role="group" aria-label="${local ? 'Connected notes' : 'Complete graph'} controls"><button type="button" data-graph-zoom="out" aria-label="Zoom out">−</button><span ${local ? '' : 'id="full-graph-zoom-level"'} data-graph-level aria-live="polite">100%</span><button type="button" data-graph-zoom="in" aria-label="Zoom in">+</button><button type="button" data-graph-fit ${local ? '' : 'id="full-graph-reset"'} aria-label="Fit graph to view">Fit</button>${local ? '' : '<button type="button" data-graph-motion aria-pressed="false">Pause motion</button><button type="button" data-graph-fullscreen>Fullscreen</button>'}</div>`;
   }
 
+  function projectCount(notes, filters) {
+    return notes.filter(note => note.type === 'project' && window.JamboreeProjects.matches(note, filters)).length;
+  }
+
+  function directory(notes) {
+    return notes.map(note => `<a href="${href(note)}"><span>${escape(note.title)}</span><small>${escape(note.slug)}</small></a>`).join('');
+  }
+
   function markup(notes) {
-    const {nodes, edges} = model(notes);
-    return `<article class="complete-graph"><h1>Complete graph</h1><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="full-graph-canvas" tabindex="0" aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="All ${nodes.length} notes"></svg></div><div class="full-graph-caption"><span><i class="graph-key-hub"></i> Hub <i class="graph-key-note"></i> Note</span><span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory"><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${nodes.map(note => `<a href="${href(note)}"><span>${escape(note.title)}</span><small>${escape(note.slug)}</small></a>`).join('')}</div></details></article>`;
+    const projects = window.JamboreeProjects;
+    const filters = projects.getFilters();
+    const visible = projects.graphNotes(notes, filters);
+    const {nodes, edges} = model(visible);
+    const count = projectCount(notes, filters);
+    const empty = !nodes.length;
+    return `<article class="complete-graph"><h1>Complete graph</h1><div class="graph-project-filters">${projects.controls(notes, filters)}</div><p class="graph-filter-summary" aria-live="polite">${count} ${projects.isActive(filters) ? 'matching ' : ''}project${count === 1 ? '' : 's'}${projects.isActive(filters) && count ? ' · connected notes included' : ''}</p><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="graph-filter-empty" role="status" ${empty ? '' : 'hidden'}><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div><div class="full-graph-canvas" tabindex="0" ${empty ? 'hidden' : ''} aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="${nodes.length} notes in the graph"></svg></div><div class="full-graph-caption" ${empty ? 'hidden' : ''}><span><i class="graph-key-hub"></i> Hub <i class="graph-key-note"></i> Note</span><span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory" ${empty ? 'hidden' : ''}><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${directory(nodes)}</div></details></article>`;
   }
 
   function mountGraph(svg, frame, data, local = false) {
-    cleanup();
+    engineCleanup();
+    engineCleanup = () => {};
     if (!data.nodes.length) { svg.innerHTML = ''; return; }
     const width = local ? 700 : 1400, height = local ? 700 : 1100;
     const {nodes, edges} = data;
     const listeners = new AbortController();
     const on = (target, type, handler, options = {}) => target?.addEventListener(type, handler, {...options, signal: listeners.signal});
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let paused = reducedMotion.matches, alpha = .85, animation = 0, alive = true, interacted = false;
+    let paused = frame.dataset.motionPaused === undefined ? reducedMotion.matches : frame.dataset.motionPaused === 'true', alpha = .85, animation = 0, alive = true, interacted = false;
     let camera = {scale: 1, tx: 0, ty: 0}, fittedScale = 1;
     let drag = null, pinch = null, handledPointer = 0;
     const pointers = new Map();
@@ -225,6 +244,7 @@
     }
     function reheat() { alpha = Math.max(alpha, .6); if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate); }
     function updateMotion() {
+      frame.dataset.motionPaused = String(paused);
       if (motion) { motion.textContent = paused ? 'Resume motion' : 'Pause motion'; motion.setAttribute('aria-pressed', String(paused)); }
       if (paused) { cancelAnimationFrame(animation); animation = 0; }
       else reheat();
@@ -334,17 +354,72 @@
     sizeObserver.observe(svg);
     paint(); fit(); updateMotion();
     document.fonts?.ready.then(() => { if (alive) { measureLabels(); paint(); if (!interacted) fit(); } });
-    cleanup = () => {
+    engineCleanup = () => {
       alive = false; listeners.abort(); sizeObserver.disconnect(); cancelAnimationFrame(animation); releaseNode();
       if (document.fullscreenElement === frame) document.exitFullscreen().catch(() => {});
     };
   }
 
   function mount(notes) {
-    const svg = document.querySelector('#full-graph-svg');
-    if (svg) mountGraph(svg, document.querySelector('.full-graph-panel'), model(notes));
+    viewCleanup();
+    const article = document.querySelector('.complete-graph');
+    const svg = article?.querySelector('#full-graph-svg');
+    if (!svg) return;
+    const projects = window.JamboreeProjects;
+    const filterContainer = article.querySelector('.graph-project-filters');
+    const frame = article.querySelector('.full-graph-panel');
+    const listeners = new AbortController();
+
+    function renderFilteredGraph(filters) {
+      const visible = projects.graphNotes(notes, filters);
+      const data = model(visible);
+      const count = projectCount(notes, filters);
+      const empty = !data.nodes.length;
+      // Stop the old layout before hiding or replacing its nodes.
+      engineCleanup();
+      engineCleanup = () => {};
+      svg.innerHTML = '';
+      article.querySelector('.graph-filter-summary').textContent = count + (projects.isActive(filters) ? ' matching ' : ' ') + 'project' + (count === 1 ? '' : 's') + (projects.isActive(filters) && count ? ' · connected notes included' : '');
+      article.querySelector('.full-graph-stats').innerHTML = data.nodes.length + ' NOTES <span>/</span> ' + data.edges.length + ' CONNECTIONS';
+      article.querySelector('.graph-filter-empty').hidden = !empty;
+      article.querySelector('.full-graph-canvas').hidden = empty;
+      article.querySelector('.full-graph-caption').hidden = empty;
+      const directoryElement = article.querySelector('.full-graph-directory');
+      directoryElement.hidden = empty;
+      directoryElement.querySelector('summary').textContent = 'All ' + data.nodes.length + ' notes';
+      directoryElement.querySelector('.graph-note-directory').innerHTML = directory(data.nodes);
+      svg.setAttribute('aria-label', data.nodes.length + ' notes in the graph');
+      frame.querySelectorAll('.full-graph-controls button').forEach(button => { button.disabled = empty; });
+      frame.querySelector('[data-graph-level]').textContent = empty ? '—' : '100%';
+      if (!empty) mountGraph(svg, frame, data);
+    }
+
+    function applyFilters(filters) {
+      projects.writeFilters(filters);
+      renderFilteredGraph(filters);
+    }
+    filterContainer.addEventListener('change', event => {
+      if (event.target.matches('select[data-filter]')) applyFilters(projects.readFilters(filterContainer));
+    }, {signal: listeners.signal});
+    article.addEventListener('click', event => {
+      const reset = event.target.closest('[data-filter-reset]');
+      if (!reset) return;
+      event.preventDefault();
+      filterContainer.querySelectorAll('select[data-filter]').forEach(select => { select.value = ''; });
+      applyFilters({status: '', discipline: '', tag: ''});
+    }, {signal: listeners.signal});
+    window.addEventListener('popstate', () => {
+      const filters = projects.getFilters();
+      filterContainer.querySelectorAll('select[data-filter]').forEach(select => { select.value = filters[select.dataset.filter] || ''; });
+      renderFilteredGraph(filters);
+    }, {signal: listeners.signal});
+    viewCleanup = () => listeners.abort();
+    renderFilteredGraph(projects.getFilters());
   }
+
   function mountLocal(notes, slug) {
+    viewCleanup();
+    viewCleanup = () => {};
     const complete = model(notes), bySlug = new Map(complete.nodes.map(node => [node.slug, node]));
     const center = bySlug.get(slug) || bySlug.get('index');
     if (!center) return;
@@ -366,5 +441,8 @@
     frame.querySelector('.local-graph-controls').innerHTML = controls(true);
     mountGraph(document.querySelector('#graph'), frame, {nodes, edges: complete.edges.filter(edge => included.has(edge.source.slug) && included.has(edge.target.slug))}, true);
   }
-  window.JamboreeGraph = {markup, mount, mountLocal, destroy: () => cleanup()};
+  window.JamboreeGraph = {markup, mount, mountLocal, destroy: () => {
+    engineCleanup(); viewCleanup();
+    engineCleanup = () => {}; viewCleanup = () => {};
+  }};
 })();

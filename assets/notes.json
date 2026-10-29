@@ -3,147 +3,221 @@
     "title": "About Jamboree",
     "description": "Jamboree is an open access engineering club.",
     "slug": "about",
-    "body": "## Access\nThe wiki is public and readable without an account."
+    "body": "## Access\nThe wiki is public and readable without an account.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "General resources",
     "description": "Resources for general resources.",
     "slug": "guides/cs/general-resources",
-    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Programming",
     "description": "Resources for programming.",
     "slug": "guides/cs/programming",
-    "body": "## Start here\nResources for programming.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for programming.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Software testing",
     "description": "Resources for software testing.",
     "slug": "guides/cs/software-testing",
-    "body": "## Start here\nResources for software testing.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for software testing.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/laser-tag"
+    ]
   },
   {
     "title": "Version control",
     "description": "Resources for version control.",
     "slug": "guides/cs/version-control",
-    "body": "## Start here\nResources for version control.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for version control.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Computer science",
     "description": "Programming, version control, testing, and resources.",
     "slug": "guides/cs",
-    "body": "## Start here\nProgramming, version control, testing, and resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nProgramming, version control, testing, and resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Design reviews",
     "description": "Resources for design reviews.",
     "slug": "guides/design-practices/design-reviews",
-    "body": "## Start here\nResources for design reviews.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for design reviews.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/go-cart-pair",
+      "projects/pillow-trebuchet"
+    ]
   },
   {
     "title": "Requirements and constraints",
     "description": "Resources for requirements and constraints.",
     "slug": "guides/design-practices/requirements-and-constraints",
-    "body": "## Start here\nResources for requirements and constraints.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for requirements and constraints.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/laser-tag",
+      "projects/pillow-trebuchet"
+    ]
   },
   {
     "title": "Testing and documentation",
     "description": "Resources for testing and documentation.",
     "slug": "guides/design-practices/testing-and-documentation",
-    "body": "## Start here\nResources for testing and documentation.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for testing and documentation.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/pillow-trebuchet",
+      "projects/synthesizer-night"
+    ]
   },
   {
     "title": "Design practices",
     "description": "Requirements, design reviews, testing, and documentation.",
     "slug": "guides/design-practices",
-    "body": "## Start here\nRequirements, design reviews, testing, and documentation.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nRequirements, design reviews, testing, and documentation.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Firmware",
     "description": "Resources for firmware.",
     "slug": "guides/electrical/firmware",
-    "body": "## Start here\nResources for firmware.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for firmware.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/laser-tag"
+    ]
   },
   {
     "title": "General resources",
     "description": "Resources for general resources.",
     "slug": "guides/electrical/general-resources",
-    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Good practices",
     "description": "Resources for good practices.",
     "slug": "guides/electrical/good-practices",
-    "body": "## Start here\nResources for good practices.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for good practices.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/synthesizer-night"
+    ]
   },
   {
     "title": "PCB design",
     "description": "Resources for pcb design.",
     "slug": "guides/electrical/pcb-design",
-    "body": "## Start here\nResources for pcb design.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for pcb design.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/laser-tag",
+      "projects/synthesizer-night"
+    ]
   },
   {
     "title": "Specific chips",
     "description": "Resources for specific chips.",
     "slug": "guides/electrical/specific-chips",
-    "body": "## Start here\nResources for specific chips.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for specific chips.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Electrical",
     "description": "PCB design, chips, firmware, and resources.",
     "slug": "guides/electrical",
-    "body": "## Start here\nPCB design, chips, firmware, and resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nPCB design, chips, firmware, and resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Guides",
     "description": "Design, mechanical, electrical, and computer science guides.",
     "hub": "guides",
     "slug": "guides/index",
-    "body": "## Start here\nDesign, mechanical, electrical, and computer science guides.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nDesign, mechanical, electrical, and computer science guides.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "ANSYS",
     "description": "Resources for ansys.",
     "slug": "guides/mechanical/ansys",
-    "body": "## Start here\nResources for ansys.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for ansys.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/go-cart-pair"
+    ]
   },
   {
     "title": "CAD",
     "description": "Resources for cad.",
     "slug": "guides/mechanical/cad",
-    "body": "## Start here\nResources for cad.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for cad.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/go-cart-pair",
+      "projects/pillow-trebuchet"
+    ]
   },
   {
     "title": "General resources",
     "description": "Resources for general resources.",
     "slug": "guides/mechanical/general-resources",
-    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for general resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Tools",
     "description": "Resources for tools.",
     "slug": "guides/mechanical/tools",
-    "body": "## Start here\nResources for tools.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nResources for tools.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": [
+      "projects/go-cart-pair",
+      "projects/synthesizer-night"
+    ]
   },
   {
     "title": "Mechanical",
     "description": "CAD, FEA, tools, and resources.",
     "slug": "guides/mechanical",
-    "body": "## Start here\nCAD, FEA, tools, and resources.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nCAD, FEA, tools, and resources.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Jamboree wiki",
     "description": "Projects, guides, and engineering notes.",
     "slug": "index",
-    "body": "## Start here\nProjects, guides, and engineering notes.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nProjects, guides, and engineering notes.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Future projects",
     "description": "Planned projects.",
     "status": "future",
     "slug": "projects/future",
-    "body": "## Start here\nPlanned projects.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nPlanned projects.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Go-cart pair",
@@ -154,16 +228,31 @@
     "order": "03",
     "art": "cart",
     "image": "",
-    "discipline": "Mechanical + controls",
+    "discipline": "Mechanical, Design",
+    "tags": "cad, vehicles, mechanisms",
+    "lead": "",
+    "contact": "",
+    "updated": "2026-10-29",
+    "next_milestone": "Set the shared requirements and sketch the two cart layouts.",
+    "help_needed": "Chassis layout, steering, brakes, and CAD.",
     "slug": "projects/go-cart-pair",
-    "body": "## The idea\nDesign and build two go-carts. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## Scope\nDesign and build two go-carts. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Define rider fit, intended surface, and prototype constraints.\n- Compare steering and braking layouts before selecting parts.\n- Model packaging and inspect component clearances.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Chassis material | TBD | Geometry and material selection TBD | Not selected |\n| Wheels and hubs | TBD | Diameter, load rating, and mounting TBD | Not selected |\n| Steering components | TBD | Geometry and linkage details TBD | Not selected |\n| Braking components | TBD | Architecture and test criteria TBD | Not selected |\n| Seat and restraints | TBD | Fit and mounting requirements TBD | Not selected |\n| Drive components | TBD | Propulsion choice and layout TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/go-cart-pair/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/go-cart-pair/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/go-cart-pair/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Related guides\n- [CAD](#/guides/mechanical/cad)\n- [ANSYS](#/guides/mechanical/ansys)\n- [Tools](#/guides/mechanical/tools)\n- [Design reviews](#/guides/design-practices/design-reviews)\n\n## Build log\nNo build updates recorded yet.",
+    "links": [
+      "guides/design-practices/design-reviews",
+      "guides/mechanical/ansys",
+      "guides/mechanical/cad",
+      "guides/mechanical/tools"
+    ],
+    "backlinks": []
   },
   {
     "title": "Projects",
     "description": "Current, past, and planned projects.",
     "hub": "projects",
     "slug": "projects/index",
-    "body": "## Start here\nCurrent, past, and planned projects.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nCurrent, past, and planned projects.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Laser tag",
@@ -174,16 +263,31 @@
     "order": "01",
     "art": "laser",
     "image": "",
-    "discipline": "Electrical + firmware",
+    "discipline": "Electrical, Computer science",
+    "tags": "infrared, firmware, pcb",
+    "lead": "",
+    "contact": "",
+    "updated": "2026-10-29",
+    "next_milestone": "Define the tag protocol and test one transmitter/receiver pair.",
+    "help_needed": "IR sensing, firmware, and enclosure design.",
     "slug": "projects/laser-tag",
-    "body": "## The idea\nInfrared tag system with hit detection and scoring. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## Scope\nInfrared tag system with hit detection and scoring. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Agree on range, scoring rules, and the first prototype test.\n- Select a controller and compare candidate IR receivers.\n- Log received signals before adding game logic.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Controller board | TBD | I/O and timing requirements TBD | Not selected |\n| IR emitter and driver | TBD | Wavelength, drive current, and duty cycle TBD | Not selected |\n| IR receiver | TBD | Protocol and ambient-light performance TBD | Not selected |\n| Feedback device | TBD | Indicator, buzzer, or display TBD | Not selected |\n| Power source and enclosure | TBD | Voltage, capacity, and mounting TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/laser-tag/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/laser-tag/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/laser-tag/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Related guides\n- [PCB design](#/guides/electrical/pcb-design)\n- [Firmware](#/guides/electrical/firmware)\n- [Software testing](#/guides/cs/software-testing)\n- [Requirements and constraints](#/guides/design-practices/requirements-and-constraints)\n\n## Build log\nNo build updates recorded yet.",
+    "links": [
+      "guides/cs/software-testing",
+      "guides/design-practices/requirements-and-constraints",
+      "guides/electrical/firmware",
+      "guides/electrical/pcb-design"
+    ],
+    "backlinks": []
   },
   {
     "title": "Past projects",
     "description": "Completed projects.",
     "status": "past",
     "slug": "projects/past",
-    "body": "## Start here\nCompleted projects.\n\n## Working notes\nDocumentation pending."
+    "body": "## Start here\nCompleted projects.\n\n## Working notes\nDocumentation pending.",
+    "links": [],
+    "backlinks": []
   },
   {
     "title": "Pillow trebuchet",
@@ -194,9 +298,22 @@
     "order": "04",
     "art": "trebuchet",
     "image": "",
-    "discipline": "Mechanical + design",
+    "discipline": "Mechanical, Design",
+    "tags": "cad, mechanisms, testing",
+    "lead": "",
+    "contact": "",
+    "updated": "2026-10-29",
+    "next_milestone": "Sketch the arm, pivot, and release geometry for a small prototype.",
+    "help_needed": "Mechanism layout, release design, and test documentation.",
     "slug": "projects/pillow-trebuchet",
-    "body": "## The idea\nTrebuchet design and soft-projectile testing. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## Scope\nTrebuchet design and soft-projectile testing. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Agree on a soft-projectile test setup and the intended scale.\n- Sketch pivot, arm, counterweight, and release positions.\n- Record trial geometry and results before changing the design.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Frame material | TBD | Geometry and material selection TBD | Not selected |\n| Arm and pivot | TBD | Length, bearing, and mounting TBD | Not selected |\n| Counterweight assembly | TBD | Mass and attachment TBD | Not selected |\n| Sling and release | TBD | Material and release geometry TBD | Not selected |\n| Soft projectile | TBD | Mass and dimensions TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/pillow-trebuchet/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/pillow-trebuchet/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/pillow-trebuchet/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Related guides\n- [CAD](#/guides/mechanical/cad)\n- [Requirements and constraints](#/guides/design-practices/requirements-and-constraints)\n- [Testing and documentation](#/guides/design-practices/testing-and-documentation)\n- [Design reviews](#/guides/design-practices/design-reviews)\n\n## Build log\nNo build updates recorded yet.",
+    "links": [
+      "guides/design-practices/design-reviews",
+      "guides/design-practices/requirements-and-constraints",
+      "guides/design-practices/testing-and-documentation",
+      "guides/mechanical/cad"
+    ],
+    "backlinks": []
   },
   {
     "title": "Synthesizer night",
@@ -207,8 +324,21 @@
     "order": "02",
     "art": "synth",
     "image": "",
-    "discipline": "Electronics + sound",
+    "discipline": "Electrical, Design",
+    "tags": "audio, analog, workshop",
+    "lead": "",
+    "contact": "",
+    "updated": "2026-10-29",
+    "next_milestone": "Choose a first oscillator circuit and define the session format.",
+    "help_needed": "Analog audio circuits, prototyping, and workshop planning.",
     "slug": "projects/synthesizer-night",
-    "body": "## The idea\nDIY synthesizers, oscillators, and audio circuits. This is a starter project note; scope and build details are still to be agreed.\n\n## On the workbench\n- Define the first useful prototype.\n- Sketch the system and list the unknowns.\n- Record components, decisions, and test results here.\n\n## Build log\nAdd dated updates as the project develops.\n\n## Photos and files\nUpload a feature photo to `assets/uploads/`, then set `image` in this note’s frontmatter. Keep `featured: true` to show this project on the homepage."
+    "body": "## Scope\nDIY synthesizers, oscillators, and audio circuits. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Agree on the workshop format and available test equipment.\n- Choose a low-voltage prototype circuit and document its output limits.\n- Test one sound source before adding controls or an enclosure.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Sound-source circuit | TBD | Oscillator topology and frequency range TBD | Not selected |\n| Control components | TBD | Potentiometers, switches, and control range TBD | Not selected |\n| Output stage | TBD | Signal level and listening interface TBD | Not selected |\n| Prototyping board and wiring | TBD | Construction method TBD | Not selected |\n| Power source | TBD | Low-voltage supply requirements TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/synthesizer-night/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/synthesizer-night/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/synthesizer-night/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Related guides\n- [Good electrical practices](#/guides/electrical/good-practices)\n- [PCB design](#/guides/electrical/pcb-design)\n- [Tools](#/guides/mechanical/tools)\n- [Testing and documentation](#/guides/design-practices/testing-and-documentation)\n\n## Build log\nNo build updates recorded yet.",
+    "links": [
+      "guides/design-practices/testing-and-documentation",
+      "guides/electrical/good-practices",
+      "guides/electrical/pcb-design",
+      "guides/mechanical/tools"
+    ],
+    "backlinks": []
   }
 ]

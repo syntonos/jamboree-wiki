@@ -10,17 +10,127 @@ const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=
 let notes=[];const link=n=>'#/'+(n.slug==='index'?'':n.slug);
 const drawings={laser:'<path d="m45 65 60-23 58 18-9 20-44 9-12 30-20-6 9-29-42-4z"/><path d="m105 42 3 42m-63-19 63 19 55-24M57 58l45 15m17-20 29 9m-60 22 12 5m10 0 32-11"/><circle cx="132" cy="69" r="6"/><path stroke-dasharray="3 4" d="M22 130h165M23 30v100m162-90v90"/>',synth:'<path d="m31 70 140-19 21 52-140 19zM31 70l3 25 18 27m0-24 140-19M55 99l137-20"/><path d="m68 98 6 20m13-22 6 20m13-23 6 21m13-24 6 21m13-24 6 21m13-24 6 21"/><circle cx="64" cy="77" r="5"/><circle cx="86" cy="74" r="5"/><circle cx="109" cy="71" r="5"/><path d="m130 66 28-4 4 12-28 4zM32 44l137-19" stroke-dasharray="3 4"/>',cart:'<ellipse cx="56" cy="107" rx="12" ry="20"/><ellipse cx="168" cy="94" rx="12" ry="20"/><ellipse cx="76" cy="66" rx="9" ry="16"/><ellipse cx="177" cy="56" rx="9" ry="16"/><path d="m55 100 21-34 100-10-9 38-112 6 83-21 38-23m-92 40 8-36 36-5 13 29m-47-13 28-5m-7-3 7-15m-8 1 18-3M61 107l108-13"/><path d="M28 138h165m-160-6v12m160-12v12" stroke-dasharray="3 4"/>',trebuchet:'<path d="m52 124 53-74 53 74zM81 124l24-74 22 74M105 50l47-30m-47 30L62 79m90-59 17 43m-12-1 23 3-8 15-15-3zM42 124h126"/><circle cx="105" cy="50" r="6"/><path stroke-dasharray="3 4" d="M40 44q90-90 148 39"/>'};
 function art(kind='cart',label='CONCEPT STUDY / NOT TO SCALE',image=''){return `<div class="drawing">${image?`<img src="${esc(image)}" alt="Project feature photo" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><svg hidden viewBox="0 0 220 160" fill="none" stroke="currentColor">${drawings[kind]||drawings.cart}</svg>`:`<svg viewBox="0 0 220 160" fill="none" stroke="currentColor" stroke-width="1.2">${drawings[kind]||drawings.cart}</svg>`}<span class="drawing-label">${esc(label)}</span></div>`}
-function project(n){return `<a class="project-card" href="${link(n)}">${art(n.art,`FIG. ${n.order||'01'} / ${n.title.toUpperCase()}`,n.image)}<div class="project-body"><div class="project-meta"><span>● ${esc(n.status).toUpperCase()}</span><span>JMB—${esc(n.order||'01')}</span></div><h3>${esc(n.title)}</h3><p>${esc(n.description)}</p><div class="project-bottom"><span>${esc(n.discipline||'Club project')}</span><span>→</span></div></div></a>`}
+function project(n) {
+  return `<a class="project-card" href="${link(n)}">${art(n.art,`FIG. ${n.order||'01'} / ${n.title.toUpperCase()}`,n.image)}<div class="project-body"><div class="project-meta"><span>● ${esc(n.status).toUpperCase()}</span><span>JMB—${esc(n.order||'01')}</span></div><h3>${esc(n.title)}</h3><p>${esc(n.description)}</p>${window.JamboreeNotes.tags(n)}<div class="project-card-details"><span>Lead: ${esc(n.lead || 'Unassigned')}</span>${n.updated ? `<time datetime="${esc(n.updated)}">${esc(n.updated)}</time>` : ''}</div><div class="project-bottom"><span>${esc(n.discipline||'Club project')}</span><span>→</span></div></div></a>`;
+}
 const guideInfo=[['design-practices','Design practices','Requirements, reviews, testing & documentation.','⌖'],['mechanical','Mechanical','CAD, simulation, tools & materials.','⚙'],['electrical','Electrical','Circuits, PCBs, chips & firmware.','⏚'],['cs','Computer science','Programming, version control & testing.','⌘']];
 function guides(){return `<div class="guide-grid">${guideInfo.map(([slug,title,desc,icon])=>`<a class="guide-card" href="#/guides/${slug}"><span class="guide-icon">${icon}</span><div><h3>${title}</h3><p>${desc}</p></div><span>→</span></a>`).join('')}</div>`}
-function heading(id,num,title,more=''){return `<div class="section-heading" id="${id}"><h2><span>${num} /</span>${title}</h2>${more}</div>`}
+function heading(id,num,title,more=''){return `<div class="section-heading" id="${esc(id)}"><h2><span>${esc(num)} /</span>${esc(title)}</h2>${more}</div>`}
 function home(){return `<section class="hero" id="welcome"><h1>Jamboree wiki</h1><p>Projects, guides, and engineering notes.</p><div class="intro-links"><a href="#/projects/index">Explore projects →</a><a href="${esc(MAIN_SITE_URL || '#/main-site')}" data-main-site>Meet the team →</a></div><div class="hero-art"><svg viewBox="0 0 240 220" fill="none" stroke="currentColor" stroke-width=".8"><defs><pattern id="grid" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0v16" opacity=".15"/></pattern></defs><path fill="url(#grid)" stroke="none" d="M0 0h240v220H0z"/><g transform="translate(15 30)"><path d="m90 12 82 46v76l-82 46-71-43V58zM19 58l71 43 82-43m-82 43v79M90 12v76m0 0 67 40m-67-40-60 39"/><ellipse cx="94" cy="70" rx="32" ry="17"/><path d="M62 70v40q32 30 64 0V70M62 110q32-27 64 0"/><path d="M0 161l74 44m106-56-83 48M0 155v12m74 32v12m102-67 8 10M18 20h153" stroke-dasharray="3 4"/><text x="80" y="210" fill="currentColor" stroke="none" font-size="7" font-family="monospace">FIG. 001 / ASSEMBLY STUDY</text><path d="m178 25 8-8m-8 0 8 8M0 0h8m-4-4v8"/></g></svg></div></section>${heading('projects','01','Featured projects','<a href="#/projects/index">All projects →</a>')}<div class="projects-grid">${notes.filter(n=>n.type==='project'&&n.status==='current'&&n.featured==='true').sort((a,b)=>Number(a.order)-Number(b.order)).map(project).join('')||'<p>No featured projects yet.</p>'}</div>${heading('guides','02','Guides','<a href="#/guides/index">All guides →</a>')}${guides()}`}
-function inline(t){return esc(t).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\[([^\]]+)\]\(([^)]+)\)/g,(_,label,url)=>{let u=/^https?:\/\//.test(url)?url:'#/'+url.replace(/\.md$/,'');return `<a href="${esc(u)}">${label}</a>`})}
-function markdown(body){let ul=false;let result='';for(let l of body.split('\n')){if(!l.trim()){if(ul){result+='</ul>';ul=false}continue}if(l.startsWith('- ')){if(!ul){result+='<ul>';ul=true}result+='<li>'+inline(l.slice(2))+'</li>';continue}if(ul){result+='</ul>';ul=false}let h=l.match(/^(#{1,3}) (.*)/);result+=h?`<h${h[1].length} id="${esc(h[2].toLowerCase().replace(/\W+/g,'-'))}">${inline(h[2])}</h${h[1].length}>`:`<p>${inline(l)}</p>`}return result+(ul?'</ul>':'')}
-function article(n){let body='';if(n.hub==='projects'){for(let [s,t]of [['current','Current projects'],['past','Past projects'],['future','Future projects']]){let list=notes.filter(p=>p.type==='project'&&p.status===s);body+=heading(s,'›',t)+ (list.length?`<div class="projects-grid">${list.map(project).join('')}</div>`:`<div class="empty">${s==='past'?'No past projects yet.':'No future projects yet.'}</div>`)}}else if(n.hub==='guides')body=guides();else{let children=notes.filter(p=>p.slug.startsWith(n.slug+'/'));if(children.length)body=`<div class="guide-grid">${children.map(p=>`<a class="guide-card" href="${link(p)}"><span class="guide-icon">›</span><div><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p></div><span>→</span></a>`).join('')}</div>`;body+=`<div class="article-body">${markdown(n.body)}</div>`}return `<article class="article"><div class="eyebrow">FIELDBOOK / ${esc(n.type==='project'?n.status+' PROJECT':n.slug.split('/')[0]).toUpperCase()}</div><h1>${esc(n.title)}</h1><p class="description">${esc(n.description)}</p>${n.type==='project'?art(n.art,'CONCEPT DRAWING',n.image):''}${body}</article>`}
-function graph(slug){ window.JamboreeGraph.mountLocal(notes,slug); }
-function render(){let slug=decodeURIComponent(location.hash.slice(2)||'index');let n=notes.find(n=>n.slug===slug);const isGraph=slug==='graph';const isMainSite=slug==='main-site';window.JamboreeGraph.destroy();$('.shell').classList.toggle('graph-view',isGraph);$('.shell').classList.toggle('main-site-view',isMainSite);$('#main').innerHTML=isMainSite?'<article class="article main-site-placeholder"><h1>Jamboree</h1><p>Main site link coming soon.</p><a href="#/">Open wiki →</a></article>':isGraph?window.JamboreeGraph.markup(notes):n?(slug==='index'?home():article(n)):'<h1>Note not found</h1><p><a href="#/">Return to the fieldbook →</a></p>';document.title=(slug==='index'?'Wiki':(isMainSite?'Main site':isGraph?'Complete graph':n?.title)||'Not found')+' — Jamboree';$('#crumb').textContent=slug==='index'?'Overview':(isMainSite?'Main site':isGraph?'Complete graph':n?.title)||'Not found';document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(slug==='index'?'index':slug.split('/')[0])));$('#toc').innerHTML=[...$('#main').querySelectorAll('[id]')].filter(x=>x.tagName==='H2'||x.classList.contains('section-heading')||x.tagName==='SECTION').map(x=>`<a href="#" data-section="${x.id}">${esc(x.querySelector('h2')?.textContent.replace(/^.*?\//,'')||x.textContent.split('\n')[0].slice(0,28))}</a>`).join('');if(slug==='index')$('#toc').innerHTML='<a data-section="welcome" href="#">Overview</a><a data-section="projects" href="#">Featured projects</a><a data-section="guides" href="#">Guides</a>';$('#toc').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.section)?.scrollIntoView({behavior:'smooth'})});if(isGraph){$('#toc').innerHTML='';window.JamboreeGraph.mount(notes);}else if(!isMainSite){graph(slug);}$('#search').value='';$('#search-results').innerHTML='';window.scrollTo(0,0)}
-$('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();$('#search-results').innerHTML=q?(notes.filter(n=>(n.title+' '+n.description+' '+n.body).toLowerCase().includes(q)).slice(0,8).map(n=>`<a href="${link(n)}">${esc(n.title)} <small>— ${esc(n.slug)}</small></a>`).join('')||'<p style="padding:12px">No matching notes.</p>'):''});const mobileLayout = window.matchMedia('(max-width: 760px)');
+function markdown(body, slug) { return window.JamboreeNotes.markdown(body, slug, notes); }
+function projectGroups(filters) {
+  const projects = window.JamboreeProjects;
+  const matches = notes.filter(note => projects.matches(note, filters));
+  if (!matches.length && projects.isActive(filters)) return '<div class="project-empty" role="status"><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div>';
+  const statuses = filters.status ? [filters.status] : [...new Set(['current','past','future',...matches.map(note => note.status)])];
+  const titles = {current:'Current projects',past:'Past projects',future:'Future projects'};
+  return statuses.map(status => {
+    const statusKey = String(status).toLowerCase();
+    const group = matches.filter(note => String(note.status).toLowerCase() === statusKey).sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
+    return heading(statusKey,'›',titles[statusKey] || status + ' projects') + (group.length ? '<div class="projects-grid">' + group.map(project).join('') + '</div>' : '<div class="empty">No ' + esc(status) + ' projects yet.</div>');
+  }).join('');
+}
+function projectHub() {
+  const filters = window.JamboreeProjects.getFilters();
+  return '<div class="project-hub">' + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
+}
+function mountProjectHub() {
+  const hub = $('.project-hub');
+  if (!hub) return;
+  const projects = window.JamboreeProjects;
+  function refresh(filters) {
+    const total = notes.filter(note => note.type === 'project').length;
+    const count = notes.filter(note => projects.matches(note,filters)).length;
+    hub.querySelector('.project-results-summary').textContent = count + ' of ' + total + ' projects';
+    hub.querySelector('.project-groups').innerHTML = projectGroups(filters);
+    updateToc('projects/index');
+  }
+  hub.addEventListener('change', event => {
+    if (!event.target.matches('[data-filter]')) return;
+    const filters = projects.readFilters(hub);
+    projects.writeFilters(filters);
+    refresh(filters);
+  });
+  hub.addEventListener('click', event => {
+    if (!event.target.closest('[data-filter-reset]')) return;
+    const filters = {status:'',discipline:'',tag:''};
+    hub.querySelectorAll('[data-filter]').forEach(select => { select.value=''; });
+    projects.writeFilters(filters);
+    refresh(filters);
+  });
+  refresh(projects.getFilters());
+}
+function article(n) {
+  let body = '';
+  if (n.hub === 'projects') body = projectHub();
+  else if (n.hub === 'guides') body = guides();
+  else {
+    const children = notes.filter(note => note.slug.startsWith(n.slug+'/'));
+    if (children.length) body = '<div class="guide-grid">' + children.map(note => `<a class="guide-card" href="${link(note)}"><span class="guide-icon">›</span><div><h3>${esc(note.title)}</h3><p>${esc(note.description)}</p></div><span>→</span></a>`).join('') + '</div>';
+    body += '<div class="article-body">' + markdown(n.body,n.slug) + '</div>';
+  }
+  return `<article class="article"><div class="eyebrow">WIKI / ${esc(n.type === 'project' ? n.status + ' PROJECT' : n.slug.split('/')[0]).toUpperCase()}</div><h1>${esc(n.title)}</h1><p class="description">${esc(n.description)}</p>${n.type === 'project' ? window.JamboreeNotes.facts(n) + art(n.art,'CONCEPT DRAWING',n.image) : ''}${body}${window.JamboreeNotes.backlinks(n,notes)}</article>`;
+}
+function graph(slug) { window.JamboreeGraph.mountLocal(notes,slug); }
+function routeInfo() {
+  const parts = location.hash.replace(/^#\//,'').split('#');
+  try { return {slug: decodeURIComponent(parts[0] || 'index'), anchor: decodeURIComponent(parts.slice(1).join('#'))}; }
+  catch { return {slug:'invalid-route', anchor:''}; }
+}
+function anchorTarget(anchor) {
+  return [...$('#main').querySelectorAll('[data-heading-id], [id]')].find(element => element.dataset.headingId === anchor || element.id === anchor);
+}
+function updateToc(slug) {
+  const toc = $('#toc');
+  const entries = slug === 'index' ? [{id:'welcome',text:'Overview'},{id:'projects',text:'Featured projects'},{id:'guides',text:'Guides'}] : [
+    ...[...$('#main').querySelectorAll('.section-heading[id]')].map(element => ({id:element.id,text:element.querySelector('h2').textContent.replace(/^.*?\//,'').trim()})),
+    ...[...$('#main').querySelectorAll('[data-heading-id]')].map(element => ({id:element.dataset.headingId,text:element.textContent})),
+    ...($('#main').querySelector('.article-backlinks') ? [{id:'linked-from',text:'Linked from'}] : [])
+  ];
+  toc.innerHTML = entries.map(entry => `<a href="#/${slug === 'index' ? '' : esc(slug)}#${encodeURIComponent(entry.id)}" data-section="${esc(entry.id)}">${esc(entry.text)}</a>`).join('');
+  toc.querySelectorAll('a').forEach(anchor => anchor.addEventListener('click',event => {
+    event.preventDefault();
+    anchorTarget(anchor.dataset.section)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    history.replaceState(history.state,'',location.pathname+location.search+anchor.getAttribute('href'));
+  }));
+}
+function render() {
+  const {slug,anchor} = routeInfo();
+  const note = notes.find(note => note.slug === slug);
+  const isGraph = slug === 'graph', isMainSite = slug === 'main-site';
+  window.JamboreeGraph.destroy();
+  $('.shell').classList.toggle('graph-view',isGraph);
+  $('.shell').classList.toggle('main-site-view',isMainSite);
+  $('#main').innerHTML = isMainSite ? '<article class="article main-site-placeholder"><h1>Jamboree</h1><p>Main site link coming soon.</p><a href="#/">Open wiki →</a></article>' : isGraph ? window.JamboreeGraph.markup(notes) : note ? slug === 'index' ? home() : article(note) : '<h1>Note not found</h1><p><a href="#/">Return to the wiki →</a></p>';
+  const title = slug === 'index' ? 'Overview' : isMainSite ? 'Main site' : isGraph ? 'Complete graph' : note?.title || 'Not found';
+  document.title = title + ' — Jamboree';
+  $('#crumb').textContent = title;
+  document.querySelectorAll('[data-nav]').forEach(item => item.classList.toggle('active',item.dataset.nav === (slug === 'index' ? 'index' : slug.split('/')[0])));
+  const projectCount = notes.filter(note => note.type === 'project').length;
+  document.querySelector('[data-nav="projects"] small').textContent = String(projectCount).padStart(2,'0');
+  updateToc(slug);
+  if (isGraph) { $('#toc').innerHTML = ''; window.JamboreeGraph.mount(notes); }
+  else if (!isMainSite) { mountProjectHub(); graph(slug); }
+  $('#search').value = '';
+  $('#search-results').innerHTML = '';
+  if (anchor) requestAnimationFrame(() => anchorTarget(anchor)?.scrollIntoView());
+  else window.scrollTo(0,0);
+}
+$('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();$('#search-results').innerHTML=q?(notes.filter(n=>(n.title+' '+n.description+' '+n.body).toLowerCase().includes(q)).slice(0,8).map(n=>`<a href="${link(n)}">${esc(n.title)} <small>— ${esc(n.slug)}</small></a>`).join('')||'<p style="padding:12px">No matching notes.</p>'):''});$('#main').addEventListener('click', event => {
+  const anchor = event.target.closest('a');
+  const href = anchor?.getAttribute('href') || '';
+  if (!href.startsWith('#/') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  const parts = href.slice(2).split('#');
+  try {
+    const slug = decodeURIComponent(parts[0] || 'index');
+    const heading = decodeURIComponent(parts.slice(1).join('#'));
+    if (slug !== routeInfo().slug || !heading) return;
+    event.preventDefault();
+    history.pushState(history.state,'',location.pathname+location.search+href);
+    anchorTarget(heading)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  } catch {}
+});
+const mobileLayout = window.matchMedia('(max-width: 760px)');
 const menuToggle = $('#menu-toggle');
 function setMenu(open, returnFocus = false) {
   const expanded = mobileLayout.matches && open;

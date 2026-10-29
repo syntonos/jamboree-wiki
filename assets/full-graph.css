@@ -60,3 +60,11 @@
 .graph-node.label-collides text { visibility: hidden; }
 .graph-node.label-collides:hover text, .graph-node.label-collides:focus text { visibility: visible; }
 #graph .graph-node text { font-size: 30px; }
+
+.graph-project-filters { margin-bottom: 12px; }
+.graph-filter-summary { margin: 0 0 18px; color: var(--muted); font-size: 11px; }
+.graph-filter-empty { padding: 36px 20px; border: 1px solid var(--line); border-top: none; color: var(--muted); text-align: center; }
+.graph-filter-empty p { margin: 0 0 16px; }
+.graph-filter-empty button { padding: 8px 12px; color: var(--blue); border: 1px solid var(--line); border-radius: 2px; background: var(--panel); }
+.graph-filter-empty button:hover { border-color: var(--blue); background: var(--soft); }
+.graph-filter-empty[hidden], .full-graph-canvas[hidden], .full-graph-caption[hidden], .full-graph-directory[hidden] { display: none; }
