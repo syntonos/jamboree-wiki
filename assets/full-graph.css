@@ -11,25 +11,33 @@
 .full-graph-controls button:disabled { opacity: .35; cursor: default; }
 .full-graph-controls button[hidden] { display: none; }
 [data-graph-level] { color: var(--muted); min-width: 42px; text-align: center; font-size: 10px; }
-.full-graph-canvas, .local-graph-canvas { border: 1px solid var(--line); overflow: hidden; background-color: var(--panel); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; }
+.full-graph-canvas, .local-graph-canvas { border: 1px solid var(--line); overflow: hidden; background-color: var(--panel); background-image: none; }
 .full-graph-canvas:focus-visible, .local-graph-canvas:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 #full-graph-svg { display: block; width: 100%; height: max(720px, 78vh); max-height: 1200px; }
 .interactive-graph-svg { touch-action: none; cursor: grab; user-select: none; }
 .interactive-graph-svg.is-dragging { cursor: grabbing; }
 .graph-edges line { stroke: var(--line); stroke-width: 1.8; }
 .graph-edges line.is-connected { stroke: var(--blue); stroke-width: 2.5; }
-.graph-node { cursor: grab; outline: none; }
+.graph-node { --node-color: hsl(var(--node-hue, 218) 68% 40%); cursor: grab; outline: none; }
+.dark .graph-node { --node-color: hsl(var(--node-hue, 218) 74% 72%); }
 .graph-node .node-hit, #graph .node-hit { fill: transparent; stroke: none; }
-.graph-node .node-dot, #graph .node-dot { fill: var(--panel); stroke: var(--blue); stroke-width: 2; }
-.graph-node.is-hub .node-dot, #graph .is-hub .node-dot { fill: var(--blue); }
+.graph-node .node-dot, #graph .node-dot { fill: var(--panel); stroke: var(--node-color); stroke-width: 2; }
+.graph-node.is-hub .node-dot, #graph .is-hub .node-dot { fill: var(--node-color); }
 .graph-node text, #graph .graph-node text { fill: var(--ink); font: 20px var(--font-body); }
 .graph-node:hover .node-dot, .graph-node:focus .node-dot { stroke-width: 5; }
-.graph-node:hover text, .graph-node:focus text { fill: var(--blue); }
+.graph-node:hover text, .graph-node:focus text { fill: var(--node-color); }
+.graph-grid-dot, #graph .graph-grid-dot { fill: var(--graph-grid-dot, #7895ad); opacity: .25; }
+.graph-grid-cross { fill: none; stroke: var(--graph-grid-dot, #7895ad); stroke-width: .9; opacity: .23; }
+.dark .graph-grid { --graph-grid-dot: #97adc2; opacity: .65; }
 .has-highlight .graph-node:not(.is-neighbor) { opacity: .28; }
 .full-graph-caption { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; color: var(--muted); font: 10px var(--font-body); padding: 14px 0; }
 .full-graph-caption > span:first-child { display: flex; align-items: center; gap: 7px; }
 .full-graph-caption i { width: 8px; height: 8px; display: inline-block; border: 1px solid var(--blue); border-radius: 50%; margin-left: 6px; }
 .graph-key-hub { background: var(--blue); }
+.graph-distance-key { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font: 11px var(--font-body); white-space: nowrap; }
+.graph-distance-key i, .full-graph-caption .graph-distance-key i { display: inline-block; width: 52px; height: 5px; margin: 0; border: 0; border-radius: 0; background: linear-gradient(90deg, hsl(218 68% 40%), hsl(176 68% 40%)); }
+.dark .graph-distance-key i { background: linear-gradient(90deg, hsl(218 74% 72%), hsl(176 74% 72%)); }
+.local-graph-controls > .graph-distance-key { display: flex; justify-content: center; margin-top: 12px; font-size: 11px; }
 .full-graph-directory { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
 .full-graph-directory summary { cursor: pointer; color: var(--blue); font-size: 12px; }
 .graph-note-directory { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 18px; }

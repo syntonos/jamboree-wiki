@@ -1,13 +1,13 @@
 /* Cool cardstock with a quiet white grid. Dark mode keeps the grid, without grain. */
 body:not(.dark) {
-  --bg: #eaf1f6;
-  --panel: #f4f8fb;
+  --bg: #e5eff8;
+  --panel: #f1f7fb;
   --muted: #657783;
   --line: #c6d5e1;
   --soft: #e0ebf4;
-  --grid: rgba(255, 255, 255, .48);
+  --grid: rgba(255, 255, 255, .34);
 }
-body.dark { --grid: rgba(255, 255, 255, .035); }
+body.dark { --grid: rgba(255, 255, 255, .025); }
 body:not(.dark)::before {
   opacity: .1;
   mix-blend-mode: multiply;
@@ -17,18 +17,20 @@ body:not(.dark)::before {
 .shell {
   background-color: var(--bg);
   background-image:
-    linear-gradient(var(--grid) .7px, transparent .7px),
-    linear-gradient(90deg, var(--grid) .7px, transparent .7px);
+    linear-gradient(var(--grid) .5px, transparent .5px),
+    linear-gradient(90deg, var(--grid) .5px, transparent .5px);
   background-size: 28px 28px;
   background-position: -1px -1px;
 }
 body:not(.dark) header {
-  background: rgba(244,248,251,.94);
+  background: rgba(241,247,251,.94);
   border-bottom-color: var(--line);
 }
 body:not(.dark) .sidebar {
+  background-color: #f8f8f3;
   box-shadow: inset -1px 0 0 rgba(255,255,255,.7);
 }
+body:not(.dark) .sidebar-search { background-color: #fdfdf9; }
 body:not(.dark) .project-card,
 body:not(.dark) .guide-card,
 body:not(.dark) .project-facts,
@@ -43,11 +45,10 @@ body:not(.dark) .project-facts,
 body:not(.dark) .project-filters { border-top: 2px solid rgba(23,96,192,.32); }
 body:not(.dark) .hero { border-bottom-color: rgba(23,96,192,.3); }
 body:not(.dark) footer {
-  background: rgba(244,248,251,.9);
+  background: rgba(241,247,251,.9);
   border-top-color: rgba(23,96,192,.2);
 }
 .full-graph-canvas, .local-graph-canvas {
   background-color: var(--bg);
-  background-image: linear-gradient(var(--grid) .7px, transparent .7px), linear-gradient(90deg, var(--grid) .7px, transparent .7px);
-  background-size: 28px 28px;
+  background-image: none;
 }

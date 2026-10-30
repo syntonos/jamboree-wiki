@@ -142,6 +142,9 @@ function syncSidebars() {
   const leftHidden = !mobileLayout.matches && navigationClosed;
   document.body.classList.toggle('left-sidebar-collapsed', leftHidden);
   $('#left-sidebar-toggle').setAttribute('aria-expanded', String(!leftHidden));
+  const navigationLabel = (leftHidden ? 'Open' : 'Close') + ' navigation sidebar';
+  $('#left-sidebar-toggle').setAttribute('aria-label', navigationLabel);
+  $('#left-sidebar-toggle').title = navigationLabel;
   const hasNotes = !$('.shell').matches('.graph-view, .main-site-view');
   const notesVisible = hasNotes && (compactNotes.matches ? notesDrawerOpen : !notesClosed);
   document.body.classList.toggle('right-sidebar-collapsed', !compactNotes.matches && notesClosed);
@@ -171,7 +174,7 @@ function setNavigationClosed(closed, focus = false) {
   navigationClosed = closed;
   localStorage.setItem('jamboree-navigation-closed', String(closed));
   syncSidebars();
-  if (focus) $(closed ? '#left-sidebar-toggle' : '#close-left-sidebar').focus();
+  if (focus) $('#left-sidebar-toggle').focus();
 }
 function setNotesOpen(open, focus = false) {
   if (compactNotes.matches) notesDrawerOpen = open;
@@ -182,8 +185,7 @@ function setNotesOpen(open, focus = false) {
   syncSidebars();
   if (focus) $(open && compactNotes.matches ? '#close-right-sidebar' : '#right-sidebar-toggle').focus();
 }
-$('#close-left-sidebar').addEventListener('click', () => setNavigationClosed(true, true));
-$('#left-sidebar-toggle').addEventListener('click', () => setNavigationClosed(false, true));
+$('#left-sidebar-toggle').addEventListener('click', () => setNavigationClosed(!navigationClosed, true));
 $('#right-sidebar-toggle').addEventListener('click', () => setNotesOpen($('#right-sidebar-toggle').getAttribute('aria-expanded') !== 'true', true));
 $('#close-right-sidebar').addEventListener('click', () => setNotesOpen(false, true));
 $('#sidebar-backdrop').addEventListener('click', () => setNotesOpen(false, true));

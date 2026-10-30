@@ -4,7 +4,7 @@
   let engineCleanup = () => {};
   let viewCleanup = () => {};
 
-  function model(notes) {
+  function model(notes, distances) {
     const nodes = notes.map(note => ({...note, children: [], vx: 0, vy: 0}));
     const bySlug = new Map(nodes.map(note => [note.slug, note]));
     const connections = new Map();
@@ -43,6 +43,34 @@
         addEdge(note.slug, bySlug.has(target) ? target : target + '/index');
       }
     }
+    // Distance is measured over actual graph connections, including Markdown links.
+    // Filtered and local views reuse the complete graph's distances and palette range.
+    const edges = [...connections.values()];
+    if (!distances) {
+      distances = new Map();
+      const adjacent = new Map(nodes.map(node => [node.slug, []]));
+      for (const edge of edges) {
+        adjacent.get(edge.source.slug).push(edge.target.slug);
+        adjacent.get(edge.target.slug).push(edge.source.slug);
+      }
+      if (bySlug.has('index')) {
+        const queue = ['index'];
+        distances.set('index', 0);
+        for (let cursor = 0; cursor < queue.length; cursor++) {
+          const slug = queue[cursor];
+          for (const neighbor of adjacent.get(slug)) {
+            if (distances.has(neighbor)) continue;
+            distances.set(neighbor, distances.get(slug) + 1);
+            queue.push(neighbor);
+          }
+        }
+      }
+    }
+    const maxDistance = Math.max(1, ...distances.values());
+    for (const node of nodes) {
+      node.distance = distances.get(node.slug) ?? null;
+      node.hue = Math.round(218 - (node.distance ?? maxDistance) / maxDistance * 42);
+    }
     const weight = note => note.children.length ? note.children.reduce((sum, child) => sum + weight(child), 0) : 1.4;
     function place(note, start, end, depth) {
       const angle = (start + end) / 2;
@@ -59,7 +87,7 @@
       }
     }
     if (bySlug.has('index')) place(bySlug.get('index'), -Math.PI * .95, Math.PI * 1.05, 0);
-    return {nodes, edges: [...connections.values()]};
+    return {nodes, edges, distances};
   }
 
   function labelLines(title, limit = 20) {
@@ -73,7 +101,11 @@
   }
 
   function controls(local = false) {
-    return `<div class="full-graph-controls" role="group" aria-label="${local ? 'Connected notes' : 'Complete graph'} controls"><button type="button" data-graph-zoom="out" aria-label="Zoom out">−</button><span ${local ? '' : 'id="full-graph-zoom-level"'} data-graph-level aria-live="polite">100%</span><button type="button" data-graph-zoom="in" aria-label="Zoom in">+</button><button type="button" data-graph-fit ${local ? '' : 'id="full-graph-reset"'} aria-label="Fit graph to view">Fit</button><button type="button" data-graph-motion aria-pressed="false">Pause motion</button>${local ? '' : '<button type="button" data-graph-fullscreen>Fullscreen</button>'}</div>`;
+    return `<div class="full-graph-controls" role="group" aria-label="${local ? 'Connected notes' : 'Complete graph'} controls"><button type="button" data-graph-zoom="out" aria-label="Zoom out">−</button><span ${local ? '' : 'id="full-graph-zoom-level"'} data-graph-level aria-live="polite">100%</span><button type="button" data-graph-zoom="in" aria-label="Zoom in">+</button><button type="button" data-graph-fit ${local ? '' : 'id="full-graph-reset"'} aria-label="Fit graph to view">Fit</button>${local ? '' : '<button type="button" data-graph-fullscreen>Fullscreen</button>'}</div>${local ? distanceKey() : ''}`;
+  }
+
+  function distanceKey() {
+    return '<span class="graph-distance-key" title="Color follows the shortest connection path from Jamboree"><span>Jamboree</span><i aria-hidden="true"></i><span>Further away</span></span>';
   }
 
   function projectCount(notes, filters) {
@@ -91,7 +123,7 @@
     const {nodes, edges} = model(visible);
     const count = projectCount(notes, filters);
     const empty = !nodes.length;
-    return `<article class="complete-graph"><h1>Complete graph</h1><div class="graph-project-filters">${projects.controls(notes, filters)}</div><p class="graph-filter-summary" aria-live="polite">${count} ${projects.isActive(filters) ? 'matching ' : ''}project${count === 1 ? '' : 's'}${projects.isActive(filters) && count ? ' · connected notes included' : ''}</p><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="graph-filter-empty" role="status" ${empty ? '' : 'hidden'}><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div><div class="full-graph-canvas" tabindex="0" ${empty ? 'hidden' : ''} aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="${nodes.length} notes in the graph"></svg></div><div class="full-graph-caption" ${empty ? 'hidden' : ''}><span><i class="graph-key-hub"></i> Hub <i class="graph-key-note"></i> Note</span><span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory" ${empty ? 'hidden' : ''}><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${directory(nodes)}</div></details></article>`;
+    return `<article class="complete-graph"><h1>Complete graph</h1><div class="graph-project-filters">${projects.controls(notes, filters)}</div><p class="graph-filter-summary" aria-live="polite">${count} ${projects.isActive(filters) ? 'matching ' : ''}project${count === 1 ? '' : 's'}${projects.isActive(filters) && count ? ' · connected notes included' : ''}</p><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="graph-filter-empty" role="status" ${empty ? '' : 'hidden'}><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div><div class="full-graph-canvas" tabindex="0" ${empty ? 'hidden' : ''} aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="${nodes.length} notes in the graph"></svg></div><div class="full-graph-caption" ${empty ? 'hidden' : ''}><span><i class="graph-key-hub"></i> Hub <i class="graph-key-note"></i> Note</span>${distanceKey()}<span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory" ${empty ? 'hidden' : ''}><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${directory(nodes)}</div></details></article>`;
   }
 
   function mountGraph(svg, frame, data, local = false) {
@@ -103,7 +135,7 @@
     const listeners = new AbortController();
     const on = (target, type, handler, options = {}) => target?.addEventListener(type, handler, {...options, signal: listeners.signal});
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let paused = frame.dataset.motionPaused === undefined ? reducedMotion.matches : frame.dataset.motionPaused === 'true', alpha = .85, animation = 0, alive = true, interacted = false;
+    let paused = reducedMotion.matches, alpha = .85, animation = 0, alive = true, interacted = false;
     let motionTime = 0, previousFrame = 0, lastPaint = 0, layoutFitted = false;
     let camera = {scale: 1, tx: 0, ty: 0}, fittedScale = 1;
     let drag = null, pinch = null, handledPointer = 0;
@@ -116,13 +148,17 @@
     for (const edge of edges) { edge.source.degree++; edge.target.degree++; }
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.classList.add('interactive-graph-svg');
-    svg.innerHTML = `<g class="graph-world" ${local ? '' : 'id="full-graph-world"'}><g class="graph-edges ${local ? 'local' : 'full'}-graph-edges">${edges.map(() => '<line/>').join('')}</g>${nodes.map(node => {
+    const gridId = local ? 'local-graph-grid' : 'complete-graph-grid';
+    svg.innerHTML = `<defs><pattern id="${gridId}-dots" class="graph-grid-pattern" patternUnits="userSpaceOnUse" width="40" height="40"><circle class="graph-grid-dot" cx="20" cy="20" r="1.15"/></pattern><pattern id="${gridId}-crosses" class="graph-grid-pattern" patternUnits="userSpaceOnUse" width="200" height="200"><path class="graph-grid-cross" d="M96 100h8m-4-4v8"/></pattern></defs><g class="graph-grid" aria-hidden="true" pointer-events="none"><rect width="${width}" height="${height}" fill="url(#${gridId}-dots)"/><rect width="${width}" height="${height}" fill="url(#${gridId}-crosses)"/></g><g class="graph-world" ${local ? '' : 'id="full-graph-world"'}><g class="graph-edges ${local ? 'local' : 'full'}-graph-edges">${edges.map(() => '<line/>').join('')}</g>${nodes.map(node => {
       const right = Math.cos(node.angle || 0) >= 0, x = right ? 21 : -21;
       const title = node.slug === 'index' ? 'Jamboree' : node.title;
       const hub = node.children.length > 0;
-      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''}" data-slug="${escape(node.slug)}" aria-label="Open ${escape(title)}"><title>${escape(title)}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${hub ? (local ? 17 : 13) : (local ? 12 : 9)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title, local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
+      const distance = node.distance === null ? 'No path from Jamboree' : node.distance === 0 ? 'Main note' : node.distance + ' connection' + (node.distance === 1 ? '' : 's') + ' from Jamboree';
+      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''}" data-slug="${escape(node.slug)}" data-distance="${node.distance ?? 'unconnected'}" style="--node-hue:${node.hue}" aria-label="Open ${escape(title)}. ${distance}"><title>${escape(title)} · ${distance}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${hub ? (local ? 17 : 13) : (local ? 12 : 9)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title, local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
     }).join('')}</g>`;
     const world = svg.querySelector('.graph-world');
+    const gridPatterns = [...svg.querySelectorAll('.graph-grid-pattern')];
+    const gridRects = [...svg.querySelectorAll('.graph-grid > rect')];
     const anchors = [...svg.querySelectorAll('.graph-node')];
     const lineElements = [...svg.querySelectorAll('.graph-edges line')];
     const bySlug = new Map(nodes.map(node => [node.slug, node]));
@@ -174,15 +210,14 @@
     }
     measureLabels();
     const level = frame.querySelector('[data-graph-level]');
-    const motion = frame.querySelector('[data-graph-motion]');
     const full = frame.querySelector('[data-graph-fullscreen]');
 
     function paint() {
       // Keep the solved layout stable; the ambient movement is a small visual offset.
-      // It uses an animation clock so pausing or hiding the tab freezes every node.
+      // Reduced-motion preferences and hidden tabs freeze the animation clock.
       nodes.forEach((node, i) => {
         const time = motionTime - node.driftStart, phase = node.driftPhase;
-        const amplitude = local ? 8 : 9;
+        const amplitude = local ? 12 : 13;
         node.renderX = node.x + (node.fx != null ? 0 : amplitude * (Math.sin(time * .48 + phase) - Math.sin(phase)));
         node.renderY = node.y + (node.fy != null ? 0 : amplitude * (Math.sin(time * .39 + phase * 1.7) - Math.sin(phase * 1.7)));
         anchors[i].querySelector('g').setAttribute('transform', `translate(${node.renderX} ${node.renderY})`);
@@ -195,7 +230,19 @@
       });
     }
     function updateCamera() {
-      world.setAttribute('transform', `translate(${camera.tx} ${camera.ty}) scale(${camera.scale})`);
+      const transform = `translate(${camera.tx} ${camera.ty}) scale(${camera.scale})`;
+      world.setAttribute('transform', transform);
+      gridPatterns.forEach(pattern => pattern.setAttribute('patternTransform', transform));
+      // Cover the SVG's entire viewport, including portrait letterboxing on mobile.
+      const viewport = svg.getBoundingClientRect(), inverse = svg.getScreenCTM()?.inverse();
+      if (viewport.width && inverse) {
+        const start = new DOMPoint(viewport.left, viewport.top).matrixTransform(inverse);
+        const end = new DOMPoint(viewport.right, viewport.bottom).matrixTransform(inverse);
+        for (const rect of gridRects) {
+          rect.setAttribute('x', start.x); rect.setAttribute('y', start.y);
+          rect.setAttribute('width', end.x - start.x); rect.setAttribute('height', end.y - start.y);
+        }
+      }
       if (level) level.textContent = Math.round(camera.scale / fittedScale * 100) + '%';
       const ratio = camera.scale / fittedScale;
       frame.querySelector('[data-graph-zoom="in"]').disabled = ratio >= 6 - .001;
@@ -262,8 +309,6 @@
     }
     function reheat() { alpha = Math.max(alpha, .6); layoutFitted = false; if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate); }
     function updateMotion() {
-      frame.dataset.motionPaused = String(paused);
-      if (motion) { motion.textContent = paused ? 'Resume motion' : 'Pause motion'; motion.setAttribute('aria-pressed', String(paused)); }
       if (paused) { cancelAnimationFrame(animation); animation = 0; previousFrame = 0; }
       else if (!animation && !document.hidden) animation = requestAnimationFrame(simulate);
     }
@@ -277,7 +322,6 @@
     on(frame.querySelector('[data-graph-zoom="in"]'), 'click', () => zoom(1.25));
     on(frame.querySelector('[data-graph-zoom="out"]'), 'click', () => zoom(.8));
     on(frame.querySelector('[data-graph-fit]'), 'click', () => { interacted = true; fit(); });
-    on(motion, 'click', () => { paused = !paused; updateMotion(); });
     on(reducedMotion, 'change', event => { paused = event.matches; updateMotion(); });
     on(document, 'visibilitychange', () => {
       cancelAnimationFrame(animation); animation = 0; previousFrame = 0;
@@ -373,7 +417,11 @@
       on(document, 'fullscreenchange', () => { full.textContent = document.fullscreenElement === frame ? 'Exit fullscreen' : 'Fullscreen'; });
     }
     const sizeObserver = new ResizeObserver(() => {
-      if (alive && svg.getBoundingClientRect().width) { if (!interacted) fit(); reheat(); }
+      if (alive && svg.getBoundingClientRect().width) {
+        if (!interacted) fit();
+        else updateCamera();
+        reheat();
+      }
     });
     sizeObserver.observe(svg);
     paint(); fit(); updateMotion();
@@ -390,6 +438,7 @@
     const svg = article?.querySelector('#full-graph-svg');
     if (!svg) return;
     const projects = window.JamboreeProjects;
+    const distances = model(notes).distances;
     const filterContainer = article.querySelector('.graph-project-filters');
     const frame = article.querySelector('.full-graph-panel');
     const listeners = new AbortController();
@@ -398,7 +447,7 @@
     function renderFilteredGraph(filters) {
       projects.enhanceControls?.(filterContainer);
       const visible = projects.graphNotes(notes, filters);
-      const data = model(visible);
+      const data = model(visible, distances);
       const count = projectCount(notes, filters);
       const empty = !data.nodes.length;
       // Stop the old layout before hiding or replacing its nodes.

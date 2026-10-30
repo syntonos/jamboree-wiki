@@ -15,8 +15,7 @@ body.dark { --scroll-thumb: #46627c; color-scheme: dark; }
 .header-start { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .header-start .breadcrumb { margin-right: 0; }
 .sidebar-toggle[hidden], .sidebar-backdrop[hidden] { display: none; }
-#left-sidebar-toggle { display: none; }
-.sidebar-close { position: absolute; top: 5px; right: 5px; width: 28px; height: 28px; padding: 5px; }
+#left-sidebar-toggle { display: inline-flex; }
 .rail-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
 .rail-heading .rail-title { margin: 0; }
 .rail-heading .icon-button { width: 30px; height: 30px; padding: 6px; }
@@ -30,6 +29,29 @@ body.right-sidebar-collapsed .rightbar { display: none; }
 body.right-sidebar-collapsed .page-layout { grid-template-columns: minmax(0, 1fr); }
 body.left-sidebar-collapsed.right-sidebar-collapsed .page-layout { max-width: 1200px; }
 .graph-view #right-sidebar-toggle, .main-site-view #right-sidebar-toggle { display: none; }
+
+header .header-graph-link, header .main-site-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  text-decoration: none;
+}
+header .header-graph-link:hover, header .main-site-link:hover,
+header .header-graph-link.active { border-color: var(--blue); color: var(--blue); background: var(--soft); }
+@media (min-width: 761px) and (max-width: 1100px) {
+  header { padding-left: 20px; padding-right: 20px; }
+  .header-start .breadcrumb { display: none; }
+  .top-actions { gap: 6px; }
+  .desktop-socials { padding-right: 6px; gap: 1px; }
+  header .icon-button { width: 32px; height: 36px; padding: 7px; }
+  header .header-graph-link, header .main-site-link { font-size: 11px; padding-left: 8px; padding-right: 8px; }
+}
 
 @media (max-width: 1250px) {
   body.right-sidebar-open .rightbar {
@@ -51,11 +73,12 @@ body.left-sidebar-collapsed.right-sidebar-collapsed .page-layout { max-width: 12
   .rail-heading .icon-button { width: 40px; height: 40px; }
 }
 @media (max-width: 760px) {
-  .sidebar-close, body.left-sidebar-collapsed #left-sidebar-toggle { display: none; }
+  #left-sidebar-toggle, body.left-sidebar-collapsed #left-sidebar-toggle { display: none; }
   .sidebar { overflow: visible; }
   .top-actions { gap: 4px; }
   .breadcrumb { display: none; }
   .header-start { display: none; }
   header { justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
   .top-actions { width: 100%; justify-content: space-between; }
+  header .header-graph-link, header .main-site-link { min-height: 44px; padding: 7px 8px; gap: 6px; }
 }
