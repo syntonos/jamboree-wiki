@@ -113,6 +113,7 @@ function render() {
   updateToc(slug);
   if (isGraph) { $('#toc').innerHTML = ''; window.JamboreeGraph.mount(notes); }
   else if (!isMainSite) { mountProjectHub(); graph(slug); }
+  window.JamboreeTechnical.enhance($('#main'));
   $('#search').value = '';
   $('#search-results').innerHTML = '';
   if (anchor) requestAnimationFrame(() => anchorTarget(anchor)?.scrollIntoView());
@@ -245,6 +246,7 @@ document.addEventListener('keydown', event => {
 syncSidebars();
 function setTheme(dark) {
   document.body.classList.toggle('dark', dark);
+  window.JamboreeTechnical.enhance($('#main'));
   const label = dark ? 'Switch to light mode' : 'Switch to dark mode';
   $('#theme').setAttribute('aria-label', label);
   $('#theme').setAttribute('title', label);

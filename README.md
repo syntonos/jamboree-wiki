@@ -1,5 +1,5 @@
 # Jamboree
-An open access engineering club wiki, built from Markdown with no package dependencies.
+An open access engineering club wiki, built from Markdown with no build-time package dependencies. KaTeX and Mermaid browser bundles are included locally for math and diagrams.
 
 Use Node.js 20 or later. No package installation is required. Run `npm run dev` to build the Markdown notes and start the local preview on port 4173. Run `npm run build` after editing notes; `npm start` serves an existing build. Set `PORT` or `HOST` to change the preview listener. Both the build step and preview server use only built-in Node modules. Run `npm test` for the build, content, filter, rendering, and server checks. `npm run check:links` validates internal note links, heading anchors, image paths, and local downloads without rewriting the generated data. Every normal build also checks links; errors include the source file and line and preserve the previous successful build. External URLs are not requested during validation.
 
@@ -29,3 +29,7 @@ Markdown pipe tables render BOMs and other tabular data. Place CAD, STEP/STL, Ki
 
 ## Navigation and search
 The Complete graph link is in the top header. Find a note is an editable search field in the sidebar; on mobile it is inside the hamburger menu. Press `/` to focus search (and open the mobile menu when necessary); Escape clears it.
+
+## Math and diagrams
+
+Notes support inline LaTeX (`$E = mc^2$` or `\(E = mc^2\)`), display equations (`$$…$$`), and fenced `mermaid` diagrams. KaTeX and Mermaid load from bundled local assets, with no CDN dependency. See [Editing the wiki](docs/editing.md) for syntax and examples.

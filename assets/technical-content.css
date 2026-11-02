@@ -1,0 +1,11 @@
+.note-math { font-size: 1.05em; }
+.note-math-display { display: block; max-width: 100%; overflow-x: auto; margin: 20px 0; }
+.note-math .katex-display { margin: .5em 0; }
+.math-error { color: var(--muted); font-family: var(--font-body); }
+.note-diagram { margin: 24px 0; padding: 16px; border: 1px solid var(--line); background: var(--panel); }
+.mermaid-output { overflow-x: auto; text-align: center; }
+.mermaid-output svg { display: block; max-width: 100%; height: auto; margin: auto; }
+.note-diagram .mermaid-source { margin: 0; text-align: left; white-space: pre; }
+.note-diagram .mermaid-source[hidden] { display: none; }
+.diagram-status { color: var(--muted); font-size: 11px; }
+.diagram-status:empty { display: none; }

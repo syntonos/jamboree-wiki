@@ -17,6 +17,7 @@
   }
   function inline(text, slug, notes) {
     const tokens = content.extractLinks(text).map(reference => ({...reference,kind:'link'}));
+    tokens.push(...content.mathTokens(text).map(token => ({...token, kind: 'math'})));
     for (const match of text.matchAll(/`([^`]+)`/g)) tokens.push({kind:'code',start:match.index,end:match.index+match[0].length,value:match[1]});
     for (const match of text.matchAll(/\*\*([^*]+)\*\*|\*([^*\n]+)\*/g)) tokens.push({kind:match[1] === undefined ? 'em' : 'strong',start:match.index,end:match.index+match[0].length,value:match[1] || match[2]});
     tokens.sort((a,b) => a.start-b.start || b.end-a.end);
@@ -24,14 +25,16 @@
     for (const token of tokens) {
       if (token.start<cursor) continue;
       html+=escape(text.slice(cursor,token.start));
-      if (token.kind==='link') {
+      if (token.kind === 'math') {
+        html += `<span class="note-math${token.display ? ' note-math-display' : ''}" data-math-display="${token.display}">${escape(token.value)}</span>`;
+      } else if (token.kind==='link') {
         let label=token.label;
         if (token.syntax==='wiki' && !text.slice(token.start,token.end).includes('|')) {
           const resolved=content.resolveLink(token.target,slug,notes);
           label=notes.find(note=>note.slug===resolved.slug)?.title || token.target;
         }
         html+=renderLink(label,token.target,slug,notes,token.image);
-      } else html+='<'+token.kind+'>'+escape(token.value)+'</'+token.kind+'>';
+      } else html+='<'+token.kind+'>'+(token.kind === 'code' ? escape(token.value) : inline(token.value, slug, notes))+'</'+token.kind+'>';
       cursor=token.end;
     }
     return html+escape(text.slice(cursor)).replace(/\\\|/g,'|');
@@ -41,12 +44,12 @@
     let backslashes = 0;
     for (let i = source.length - 2; i >= 0 && source[i] === '\\'; i--) backslashes++;
     if (source.endsWith('|') && backslashes % 2 === 0) source = source.slice(0,-1);
-    const links = content.extractLinks(source);
+    const links = [...content.extractLinks(source), ...content.mathTokens(source)];
     const inLink = index => links.some(link => index >= link.start && index < link.end);
     const result = []; let cell = '', code = false;
     for (let i = 0; i < source.length; i++) {
-      if (source[i] === '\\' && source[i+1] === '|') { cell += '|'; i++; }
-      else if (inLink(i)) cell += source[i];
+      if (inLink(i)) cell += source[i];
+      else if (source[i] === '\\' && source[i+1] === '|') { cell += '|'; i++; }
       else if (source[i] === '`') { code = !code; cell += source[i]; }
       else if (source[i] === '|' && !code) { result.push(cell.trim()); cell = ''; }
       else cell += source[i];
@@ -62,11 +65,24 @@
     while (i < lines.length) {
       const line = lines[i];
       if (!line.trim()) { i++; continue; }
+      if (/^\s*(?:\$\$|\\\[)/.test(line)) {
+        const remaining = lines.slice(i).join('\n');
+        const math = content.mathTokens(remaining)[0];
+        if (math?.display && !remaining.slice(0, math.start).trim() && !remaining.slice(math.end).split('\n')[0].trim()) {
+          html += `<div class="note-math note-math-display" data-math-display="true">${escape(math.value)}</div>`;
+          i += remaining.slice(0, math.end).split('\n').length;
+          continue;
+        }
+      }
       const fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
       if (fence) {
         const code = []; i++;
         while (i < lines.length && !new RegExp('^\\s*' + fence[1][0] + '{' + fence[1].length + ',}\\s*$').test(lines[i])) code.push(lines[i++]);
-        i++; html += `<pre><code>${escape(code.join('\n'))}</code></pre>`; continue;
+        i++;
+        html += fence[2].trim().toLowerCase() === 'mermaid'
+          ? `<figure class="note-diagram"><pre class="mermaid-source"><code>${escape(code.join('\n'))}</code></pre><div class="mermaid-output" role="img" aria-label="Mermaid diagram"></div><figcaption class="diagram-status" role="status"></figcaption></figure>`
+          : `<pre><code>${escape(code.join('\n'))}</code></pre>`;
+        continue;
       }
       if (i+1 < lines.length && line.includes('|') && tableDivider(lines[i+1])) {
         const header = cells(line), alignment = cells(lines[i+1]);

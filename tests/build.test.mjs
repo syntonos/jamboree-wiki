@@ -13,6 +13,29 @@ async function fixture(t) {
   return root;
 }
 
+test('math and Mermaid syntax do not generate false links during the build', async t => {
+  const root = await fixture(t);
+  await writeFile(path.join(root, 'content', 'index.md'), String.raw`---
+title: Math and diagrams
+---
+Inline $[x](not-a-note.md)$.
+
+$$
+\begin{bmatrix} a & b \\ c & d \end{bmatrix}
+$$
+
+~~~mermaid
+flowchart LR
+  A[Input] --> B[Output]
+~~~
+`);
+  const notes = await build(root);
+  assert.equal(notes.length, 1);
+  assert.deepEqual(notes[0].links, []);
+  assert.match(notes[0].body, /flowchart LR/);
+  assert.match(notes[0].body, /\\begin\{bmatrix\}/);
+});
+
 test('build preserves Markdown, string metadata, nested slugs, and note order', async t => {
   const root = await fixture(t);
   await writeFile(path.join(root, 'content', 'guides', 'mechanical.md'), '---\r\ntitle: Mechanical\r\n---\r\nHub note.\r\n');

@@ -14,7 +14,7 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `status` | `current`, `past`, or `future`. |
 | `featured` | `true` shows a current project on the homepage; `false` hides it there. |
 | `order` | Numeric display order for featured projects. |
-| `discipline` | Comma-separated disciplines, such as `Mechanical, Electrical, Computer science, Design`. |
+| `discipline` | Comma-separated disciplines, such as `Mechanical, Electrical, Computer science`. |
 | `tags` | Comma-separated skills people can learn through the project, such as `CAD modeling, Firmware programming, Prototype testing`. Reuse existing spellings. |
 | `lead` | Project lead or team name. Leave blank until assigned. |
 | `contact` | Public contact email or HTTPS URL. Leave blank if unavailable. |
@@ -65,3 +65,35 @@ Existing starter resources are:
 CAD, STL, STEP, KiCad projects, schematic PDFs, firmware archives, and other files can use the same directory. Add a link only after the file exists. A missing local resource fails the link check. Name files clearly, identify their revision, and describe whether they are concepts, prototypes, or released build files.
 
 Upload feature photos to `assets/uploads/` and set `image` to the actual filename. Do not put private credentials or private contact details in downloadable files or notes.
+
+## LaTeX math
+
+Use dollar signs or LaTeX parentheses for inline equations: `$E = mc^2$` or `\(I = \frac{V}{R}\)`. Equations work in paragraphs, lists, headings, and table cells. Keep inline delimiters on the same line, without spaces directly inside `$…$`. Escape a literal dollar sign with `\$`, or put it in inline code.
+
+For a centered display equation, put double dollar signs (or `\[` and `\]`) on their own lines:
+
+```latex
+$$
+\int_0^1 x^2\,dx = \frac{1}{3}
+$$
+```
+
+KaTeX renders the supported LaTeX math commands, including fractions, subscripts, superscripts, sums, matrices, and aligned equations. It is a math renderer, not a full LaTeX document compiler. Code spans and ordinary fenced code blocks stay literal. Invalid equations show their source instead of breaking the note.
+
+## Mermaid diagrams
+
+Use a fenced code block with the language `mermaid`:
+
+````markdown
+```mermaid
+flowchart LR
+  A[Requirements] --> B[Prototype]
+  B --> C{Test passes?}
+  C -->|Yes| D[Document]
+  C -->|No| B
+```
+````
+
+Mermaid also supports sequence diagrams, state diagrams, and other built-in diagram types. Diagrams follow the light/dark theme and fit the content width. Invalid diagrams show their source and an error message. Mermaid runs in strict mode; scripts and diagram click callbacks are disabled.
+
+Both renderers and their fonts are bundled under `assets/vendor/` and loaded locally. No CDN connection, API key, or package installation is needed. Build and serve the wiki normally with `npm run dev`; opening `index.html` directly as a file is not supported.

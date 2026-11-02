@@ -85,3 +85,46 @@ test('Markdown links retain balanced URLs, title metadata, and wiki aliases insi
   assert.match(html,/>A\|B<\/td>/);
   assert.equal((html.match(/<td /g)||[]).length,2);
 });
+
+test('LaTeX delimiters preserve equations and exclude code, escaped dollars, and currency', () => {
+  const body = String.raw`Energy $E = mc^2$ and \(\frac{a_1}{b}\).
+
+$$
+\begin{aligned} x &= 1 \\ y &= 2 \end{aligned}
+$$
+
+\[
+\sum_{i=1}^n i
+\]
+
+Literal \$5, $10 and $20, and ` + '`$not_math$`' + '\n\n```latex\n$also_literal$\n```';
+  const math = content.mathTokens(body);
+  assert.equal(math.length, 4);
+  assert.deepEqual(math.map(token => token.display), [false, false, true, true]);
+  const html = renderer.markdown(body, 'projects/laser', notes);
+  assert.equal((html.match(/class="note-math(?: note-math-display)?"/g) || []).length, 4);
+  assert.match(html, /<code>\$not_math\$<\/code>/);
+  assert.match(html, /<pre><code>\$also_literal\$<\/code><\/pre>/);
+  assert.match(html, /\\frac\{a_1\}\{b\}/);
+  assert.match(renderer.inline('**$x^2$**', 'projects/laser', notes), /<strong><span class="note-math"/);
+});
+
+test('math does not create Markdown links and table pipes remain inside math cells', () => {
+  const source = String.raw`$[x](missing.md) + \left|x\right|$ [Firmware](#/guides/electrical/firmware)`;
+  assert.deepEqual(content.extractLinks(source).map(link => link.target), ['#/guides/electrical/firmware']);
+  const table = renderer.markdown('| Equation | Meaning |\n| --- | --- |\n| $\\|v\\|$ | Norm |', 'projects/laser', notes);
+  assert.equal((table.match(/<td /g) || []).length, 2);
+  assert.match(table, />\\\|v\\\|<\/span>/);
+});
+
+test('Mermaid fences are escaped placeholders; other code fences remain literal', () => {
+  const source = '```mermaid\nflowchart LR\nA["<script>alert(1)</script>"] --> B[Done]\n```\n\n~~~js\nconst price = "$5";\n~~~';
+  const html = renderer.markdown(source, 'projects/laser', notes);
+  assert.match(html, /<figure class="note-diagram">/);
+  assert.match(html, /class="mermaid-source"/);
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.ok(!html.includes('<script>'));
+  assert.equal((html.match(/class="note-diagram"/g) || []).length, 1);
+  assert.match(html, /<pre><code>const price = &quot;\$5&quot;;<\/code><\/pre>/);
+  assert.deepEqual(content.extractLinks(source), []);
+});

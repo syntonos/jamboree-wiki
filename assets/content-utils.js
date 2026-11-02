@@ -57,8 +57,34 @@
     return count % 2 === 1;
   }
 
-  function extractLinks(body) {
+  function mathTokens(body) {
     const original = String(body || ''), source = maskCode(original), result = [];
+    for (let i = 0; i < source.length; i++) {
+      if (escaped(source, i)) continue;
+      let open, close, display = false;
+      if (source.startsWith('$$', i)) { open = close = '$$'; display = true; }
+      else if (source.startsWith('\\[', i)) { open = '\\['; close = '\\]'; display = true; }
+      else if (source.startsWith('\\(', i)) { open = '\\('; close = '\\)'; }
+      else if (source[i] === '$' && !/\s/.test(source[i + 1] || ' ')) open = close = '$';
+      else continue;
+      let end = i + open.length;
+      while ((end = source.indexOf(close, end)) >= 0) {
+        if (!escaped(source, end) && (close !== '$' || (!/\s/.test(source[end - 1]) && !/\d/.test(source[end + 1] || '')))) break;
+        end += close.length;
+      }
+      if (end < 0 || (!display && source.slice(i, end).includes('\n'))) continue;
+      result.push({start: i, end: end + close.length, value: original.slice(i + open.length, end), display});
+      i = end + close.length - 1;
+    }
+    return result;
+  }
+
+  function extractLinks(body) {
+    const original = String(body || '');
+    let source = maskCode(original);
+    const math = mathTokens(original);
+    for (const token of math.reverse()) source = source.slice(0, token.start) + source.slice(token.start, token.end).replace(/[^\n]/g, ' ') + source.slice(token.end);
+    const result = [];
     let line = 1;
     for (let i = 0; i < source.length; i++) {
       if (source[i] === '\n') { line++; continue; }
@@ -179,5 +205,5 @@
     return { kind: 'invalid', reason: relative === null && !rooted ? 'path escapes the site root' : 'note does not exist: ' + expected };
   }
 
-  return { resolveLink, extractLinks, headingId, headings, headingIds: body => headings(body).map(heading => heading.id), noteHref };
+  return { resolveLink, extractLinks, mathTokens, headingId, headings, headingIds: body => headings(body).map(heading => heading.id), noteHref };
 });
