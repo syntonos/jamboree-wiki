@@ -5,7 +5,7 @@
   let viewCleanup = () => {};
 
   function model(notes, distances) {
-    const nodes = notes.map(note => ({...note, children: [], vx: 0, vy: 0}));
+    const nodes = notes.filter(note => !['index', 'about'].includes(note.slug)).map(note => ({...note, children: [], vx: 0, vy: 0}));
     const bySlug = new Map(nodes.map(note => [note.slug, note]));
     const connections = new Map();
     function addEdge(from, to) {
@@ -66,13 +66,10 @@
         }
       }
     }
-    const maxDistance = Math.max(1, ...distances.values());
-    for (const node of nodes) {
+        for (const node of nodes) {
       node.distance = distances.get(node.slug) ?? null;
       const folder = node.slug.includes('/') ? node.slug.split('/')[0] : '';
-      let hue = 0;
-      for (const letter of folder) hue = (hue * 31 + letter.charCodeAt(0)) % 360;
-      node.hue = folder ? hue : 250;
+      node.hue = folder === 'projects' ? 215 : folder === 'guides' ? 190 : 210;
     }
     const weight = note => note.children.length ? note.children.reduce((sum, child) => sum + weight(child), 0) : 1.4;
     function place(note, start, end, depth) {
@@ -89,7 +86,9 @@
         cursor += span;
       }
     }
-    if (bySlug.has('index')) place(bySlug.get('index'), -Math.PI * .95, Math.PI * 1.05, 0);
+    const children = new Set(nodes.flatMap(node => node.children));
+    const roots = nodes.filter(node => !children.has(node));
+    roots.forEach((node, i) => place(node, -Math.PI + i / roots.length * Math.PI * 2, -Math.PI + (i + 1) / roots.length * Math.PI * 2, 1));
     return {nodes, edges, distances};
   }
 
@@ -156,8 +155,8 @@
       const right = Math.cos(node.angle || 0) >= 0, x = right ? 21 : -21;
       const title = node.slug === 'index' ? 'Jamboree' : node.title;
       const hub = node.children.length > 0;
-      const distance = node.distance === null ? 'No path from Jamboree' : node.distance === 0 ? 'Main note' : node.distance + ' connection' + (node.distance === 1 ? '' : 's') + ' from Jamboree';
-      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''} ${local && node === nodes[0] ? 'is-current' : ''}" data-slug="${escape(node.slug)}" data-distance="${node.distance ?? 'unconnected'}" style="--node-hue:${node.hue}" aria-label="Open ${escape(title)}. ${distance}"><title>${escape(title)} · ${distance}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${(local ? 9 : 5) + Math.min(node.degree, 8) * (local ? 1.8 : 1.2)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title.toUpperCase(), local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
+      const distance = node.distance === null ? 'Wiki note' : node.distance === 0 ? 'Main note' : 'Wiki note';
+      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''} ${local && node.slug === data.currentSlug ? 'is-current' : ''}" data-slug="${escape(node.slug)}" data-distance="${node.distance ?? 'unconnected'}" style="--node-hue:${node.hue}" aria-label="Open ${escape(title)}. ${distance}"><title>${escape(title)} · ${distance}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${5 + Math.min(node.degree, 8) * 1.2}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title.toUpperCase(), 20).map((line, index) => `<tspan x="${x}" dy="${index ? (24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
     }).join('')}</g>`;
     const world = svg.querySelector('.graph-world');
     const gridPatterns = [...svg.querySelectorAll('.graph-grid-pattern')];
@@ -170,9 +169,9 @@
     function measureLabels() {
       for (const label of labels) {
         const box = label.text.getBBox();
-        const fontSize = local ? 34 : 20;
+        const fontSize = 20;
         label.width = box.width || Math.max(...[...label.text.querySelectorAll('tspan')].map(line => line.textContent.length)) * fontSize * .6;
-        label.height = box.height || label.text.querySelectorAll('tspan').length * (local ? 36 : 24);
+        label.height = box.height || label.text.querySelectorAll('tspan').length * (24);
         label.fontSize = fontSize;
       }
     }
@@ -274,13 +273,13 @@
       if (!alive || paused || document.hidden || !svg.getBoundingClientRect().width) { previousFrame = 0; return; }
       motionTime += previousFrame ? Math.min((timestamp - previousFrame) / 1000, .05) : 0;
       previousFrame = timestamp;
-      if (alpha > .008) {
+      if (alpha > .03) {
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
             const a = nodes[i], b = nodes[j];
             const dx = b.x - a.x || .1, dy = b.y - a.y || .1;
             const distance = Math.max(8, Math.hypot(dx, dy));
-            const repulsion = (local ? 2400 : 7000) * alpha / (distance * distance);
+            const repulsion = 2600 * alpha / (distance * distance);
             const collision = Math.max(0, (local ? 105 : 115) - distance) * .04 * alpha;
             const force = repulsion + collision;
             a.vx -= dx / distance * force; a.vy -= dy / distance * force;
@@ -290,24 +289,24 @@
         for (const {source, target} of edges) {
           const dx = target.x - source.x, dy = target.y - source.y;
           const distance = Math.max(1, Math.hypot(dx, dy));
-          const force = (distance - (local ? 155 : 180)) * .022 * alpha;
+          const force = (distance - 90) * .02 * alpha;
           source.vx += dx / distance * force / Math.sqrt(source.degree || 1);
           source.vy += dy / distance * force / Math.sqrt(source.degree || 1);
           target.vx -= dx / distance * force / Math.sqrt(target.degree || 1);
           target.vy -= dy / distance * force / Math.sqrt(target.degree || 1);
         }
         for (const node of nodes) {
-          node.vx = (node.vx + (node.initialX - node.x) * .001 * alpha) * .8;
-          node.vy = (node.vy + (node.initialY - node.y) * .001 * alpha) * .8;
+          node.vx = (node.vx + (width / 2 - node.x) * .004 * alpha) * .8;
+          node.vy = (node.vy + (height / 2 - node.y) * .004 * alpha) * .8;
           node.x = node.fx ?? Math.max(60, Math.min(width - 60, node.x + Math.max(-12, Math.min(12, node.vx))));
           node.y = node.fy ?? Math.max(60, Math.min(height - 60, node.y + Math.max(-12, Math.min(12, node.vy))));
         }
-        alpha *= .975;
+        alpha *= .994;
         if (drag?.node) alpha = Math.max(alpha, .25);
       }
       // Once settled, 30 frames per second is enough for the gentle drift.
-      if (alpha > .008 || timestamp - lastPaint >= 1000 / 30) { paint(); lastPaint = timestamp; }
-      if (alpha <= .008 && !interacted && !layoutFitted) { fit(); layoutFitted = true; }
+      if (alpha > .03 || timestamp - lastPaint >= 1000 / 30) { paint(); lastPaint = timestamp; }
+      if (alpha <= .03 && !interacted && !layoutFitted) { fit(); layoutFitted = true; }
       animation = requestAnimationFrame(simulate);
     }
     function reheat() { alpha = Math.max(alpha, .6); layoutFitted = false; if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate); }
@@ -498,26 +497,18 @@
   function mountLocal(notes, slug) {
     viewCleanup();
     viewCleanup = () => {};
-    const complete = model(notes), bySlug = new Map(complete.nodes.map(node => [node.slug, node]));
-    const center = bySlug.get(slug) || bySlug.get('index');
-    if (!center) return;
-    const included = new Set([center.slug]);
-    const neighbors = slug => complete.edges.map(edge => edge.source.slug === slug ? edge.target : edge.target.slug === slug ? edge.source : null).filter(Boolean);
-    for (const node of neighbors(center.slug)) { if (included.size < 8) included.add(node.slug); }
-    if (included.size < 3) {
-      for (const node of neighbors(center.slug)) for (const sibling of neighbors(node.slug)) {
-        if (included.size < 8) included.add(sibling.slug);
-      }
+    const complete = model(notes);
+    for (const node of complete.nodes) {
+      node.x *= .5;
+      node.y *= 700 / 1100;
     }
-    const nodes = [center, ...complete.nodes.filter(node => node !== center && included.has(node.slug))];
-    nodes.forEach((node, i) => {
-      node.angle = i === 0 ? 0 : (i - 1) / (nodes.length - 1) * Math.PI * 2;
-      node.x = 350 + (i === 0 ? 0 : Math.cos(node.angle) * 175);
-      node.y = 350 + (i === 0 ? 0 : Math.sin(node.angle) * 175);
-    });
+    // Keep the same complete set of notes and links in the sidebar inset.
+    complete.currentSlug = slug;
+    const current = complete.nodes.find(node => node.slug === slug);
+    if (current) complete.nodes = [current, ...complete.nodes.filter(node => node !== current)];
     const frame = document.querySelector('.local-graph-panel');
     frame.querySelector('.local-graph-controls').innerHTML = controls(true);
-    mountGraph(document.querySelector('#graph'), frame, {nodes, edges: complete.edges.filter(edge => included.has(edge.source.slug) && included.has(edge.target.slug))}, true);
+    mountGraph(document.querySelector('#graph'), frame, complete, true);
   }
   window.JamboreeGraph = {markup, mount, mountLocal, destroy: () => {
     engineCleanup(); viewCleanup();

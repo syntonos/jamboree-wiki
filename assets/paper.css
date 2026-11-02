@@ -44,7 +44,7 @@ body:not(.dark) footer {
   border-top-color: rgba(23,96,192,.2);
 }
 .full-graph-canvas, .local-graph-canvas {
-  background-color: var(--panel);
+  background-color: var(--bg);
   background-image: none;
 }
 
@@ -59,3 +59,5 @@ body.right-sidebar-open .rightbar { background: var(--panel); }
 @media (max-width: 760px) {
   header { height: 52px; }
 }
+
+.full-graph-panel { background: var(--bg); }
