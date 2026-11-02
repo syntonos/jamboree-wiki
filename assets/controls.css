@@ -1,12 +1,12 @@
 /* Slim, theme-aware scrollbars for the page, rails, and menus. */
-:root { --scroll-thumb: #9bb2c6; color-scheme: light; }
-:root:has(body.dark) { --scroll-thumb: #46627c; color-scheme: dark; }
-body.dark { --scroll-thumb: #46627c; color-scheme: dark; }
+:root { --scroll-thumb: #d5dae4; color-scheme: light; }
+:root:has(body.dark) { --scroll-thumb: #344557; color-scheme: dark; }
+body.dark { --scroll-thumb: #344557; color-scheme: dark; }
 * { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border: 1px solid transparent; border-radius: 4px; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background-color: var(--blue); }
+::-webkit-scrollbar-thumb:hover { background-color: var(--muted); }
 
 .guide-card { align-items: center; grid-template-columns: 36px minmax(0, 1fr) 12px; }
 .guide-icon { display: flex; align-items: center; justify-content: center; width: 36px; min-height: 36px; line-height: 1; text-align: center; }

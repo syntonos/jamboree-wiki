@@ -1,19 +1,14 @@
 /* Cool cardstock with a quiet white grid. Dark mode keeps the grid, without grain. */
 body:not(.dark) {
-  --bg: #e5eff8;
-  --panel: #f1f7fb;
+  --bg: #f8f9ff;
+  --panel: #ffffff;
   --muted: #657783;
   --line: #c6d5e1;
   --soft: #e0ebf4;
   --grid: rgba(255, 255, 255, .34);
 }
 body.dark { --grid: rgba(255, 255, 255, .025); }
-body:not(.dark)::before {
-  opacity: .1;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22grain%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.76%22%20numOctaves%3D%223%22%20seed%3D%2211%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20type%3D%22saturate%22%20values%3D%220%22%2F%3E%3C%2Ffilter%3E%3Cfilter%20id%3D%22fibers%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.025%20.48%22%20numOctaves%3D%223%22%20seed%3D%227%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20type%3D%22saturate%22%20values%3D%220%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20filter%3D%22url(%23grain)%22%20opacity%3D%22.38%22%2F%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20filter%3D%22url(%23fibers)%22%20opacity%3D%22.12%22%2F%3E%3C%2Fsvg%3E");
-  background-size: 240px 240px;
-}
+body:not(.dark)::before { display: none; }
 .shell {
   background-color: var(--bg);
   background-image:
@@ -23,14 +18,14 @@ body:not(.dark)::before {
   background-position: -1px -1px;
 }
 body:not(.dark) header {
-  background: rgba(241,247,251,.94);
+  background: var(--panel);
   border-bottom-color: var(--line);
 }
 body:not(.dark) .sidebar {
-  background-color: #f8f8f3;
+  background-color: var(--panel);
   box-shadow: inset -1px 0 0 rgba(255,255,255,.7);
 }
-body:not(.dark) .sidebar-search { background-color: #fdfdf9; }
+body:not(.dark) .sidebar-search { background-color: var(--panel); }
 body:not(.dark) .project-card,
 body:not(.dark) .guide-card,
 body:not(.dark) .project-facts,
@@ -45,10 +40,22 @@ body:not(.dark) .project-facts,
 body:not(.dark) .project-filters { border-top: 2px solid rgba(23,96,192,.32); }
 body:not(.dark) .hero { border-bottom-color: rgba(23,96,192,.3); }
 body:not(.dark) footer {
-  background: rgba(241,247,251,.9);
+  background: var(--panel);
   border-top-color: rgba(23,96,192,.2);
 }
 .full-graph-canvas, .local-graph-canvas {
-  background-color: var(--bg);
+  background-color: var(--panel);
   background-image: none;
+}
+
+/* Solid surfaces keep the light background separate from navigation panels. */
+header { height: 56px; background: var(--panel); }
+.rightbar { background: var(--panel); }
+body.right-sidebar-open .rightbar { background: var(--panel); }
+.full-graph-panel, footer { background: var(--panel); }
+@media (min-width: 1251px) {
+  .page-layout { max-width: 1470px; padding-right: 20px; column-gap: 48px; }
+}
+@media (max-width: 760px) {
+  header { height: 52px; }
 }

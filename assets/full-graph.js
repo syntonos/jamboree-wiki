@@ -69,7 +69,10 @@
     const maxDistance = Math.max(1, ...distances.values());
     for (const node of nodes) {
       node.distance = distances.get(node.slug) ?? null;
-      node.hue = Math.round(218 - (node.distance ?? maxDistance) / maxDistance * 42);
+      const folder = node.slug.includes('/') ? node.slug.split('/')[0] : '';
+      let hue = 0;
+      for (const letter of folder) hue = (hue * 31 + letter.charCodeAt(0)) % 360;
+      node.hue = folder ? hue : 250;
     }
     const weight = note => note.children.length ? note.children.reduce((sum, child) => sum + weight(child), 0) : 1.4;
     function place(note, start, end, depth) {
@@ -105,7 +108,7 @@
   }
 
   function distanceKey() {
-    return '<span class="graph-distance-key" title="Color follows the shortest connection path from Jamboree"><span>Jamboree</span><i aria-hidden="true"></i><span>Further away</span></span>';
+    return '<span class="graph-distance-key" title="Nodes are colored by top-level folder; size follows connection count"><span>Color: folder · Size: connections</span></span>';
   }
 
   function projectCount(notes, filters) {
@@ -123,7 +126,7 @@
     const {nodes, edges} = model(visible);
     const count = projectCount(notes, filters);
     const empty = !nodes.length;
-    return `<article class="complete-graph"><h1>Complete graph</h1><div class="graph-project-filters">${projects.controls(notes, filters)}</div><p class="graph-filter-summary" aria-live="polite">${count} ${projects.isActive(filters) ? 'matching ' : ''}project${count === 1 ? '' : 's'}${projects.isActive(filters) && count ? ' · connected notes included' : ''}</p><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="graph-filter-empty" role="status" ${empty ? '' : 'hidden'}><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div><div class="full-graph-canvas" tabindex="0" ${empty ? 'hidden' : ''} aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="${nodes.length} notes in the graph"></svg></div><div class="full-graph-caption" ${empty ? 'hidden' : ''}><span><i class="graph-key-hub"></i> Hub <i class="graph-key-note"></i> Note</span>${distanceKey()}<span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory" ${empty ? 'hidden' : ''}><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${directory(nodes)}</div></details></article>`;
+    return `<article class="complete-graph"><h1>Complete graph</h1><div class="graph-project-filters">${projects.controls(notes, filters)}</div><p class="graph-filter-summary" aria-live="polite">${count} ${projects.isActive(filters) ? 'matching ' : ''}project${count === 1 ? '' : 's'}${projects.isActive(filters) && count ? ' · connected notes included' : ''}</p><div class="full-graph-panel"><div class="full-graph-toolbar"><span class="full-graph-stats">${nodes.length} NOTES <span>/</span> ${edges.length} CONNECTIONS</span>${controls()}</div><div class="graph-filter-empty" role="status" ${empty ? '' : 'hidden'}><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div><div class="full-graph-canvas" tabindex="0" ${empty ? 'hidden' : ''} aria-label="Complete graph. Drag a node to move it; drag the background to pan; scroll or pinch to zoom. Arrow keys pan; plus and minus zoom; Home fits the graph."><svg id="full-graph-svg" viewBox="0 0 1400 1100" role="group" aria-label="${nodes.length} notes in the graph"></svg></div><div class="full-graph-caption" ${empty ? 'hidden' : ''}><span>Glowing nodes · Connected notes</span>${distanceKey()}<span>Drag nodes · Scroll to zoom · Click to open</span></div></div><details class="full-graph-directory" ${empty ? 'hidden' : ''}><summary>All ${nodes.length} notes</summary><div class="graph-note-directory">${directory(nodes)}</div></details></article>`;
   }
 
   function mountGraph(svg, frame, data, local = false) {
@@ -154,7 +157,7 @@
       const title = node.slug === 'index' ? 'Jamboree' : node.title;
       const hub = node.children.length > 0;
       const distance = node.distance === null ? 'No path from Jamboree' : node.distance === 0 ? 'Main note' : node.distance + ' connection' + (node.distance === 1 ? '' : 's') + ' from Jamboree';
-      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''}" data-slug="${escape(node.slug)}" data-distance="${node.distance ?? 'unconnected'}" style="--node-hue:${node.hue}" aria-label="Open ${escape(title)}. ${distance}"><title>${escape(title)} · ${distance}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${hub ? (local ? 17 : 13) : (local ? 12 : 9)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title, local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
+      return `<a href="${href(node)}" class="graph-node ${local ? 'local' : 'full'}-graph-node ${hub ? 'is-hub' : ''} ${local && node === nodes[0] ? 'is-current' : ''}" data-slug="${escape(node.slug)}" data-distance="${node.distance ?? 'unconnected'}" style="--node-hue:${node.hue}" aria-label="Open ${escape(title)}. ${distance}"><title>${escape(title)} · ${distance}</title><g><circle class="node-hit" r="25"/><circle class="node-dot" r="${(local ? 9 : 5) + Math.min(node.degree, 8) * (local ? 1.8 : 1.2)}"/><text x="${x}" y="-3" text-anchor="${right ? 'start' : 'end'}">${labelLines(title.toUpperCase(), local ? 14 : 20).map((line, index) => `<tspan x="${x}" dy="${index ? (local ? 36 : 24) : 0}">${escape(line)}</tspan>`).join('')}</text></g></a>`;
     }).join('')}</g>`;
     const world = svg.querySelector('.graph-world');
     const gridPatterns = [...svg.querySelectorAll('.graph-grid-pattern')];

@@ -76,3 +76,23 @@
 .graph-filter-empty button { padding: 8px 12px; color: var(--blue); border: 1px solid var(--line); border-radius: 2px; background: var(--panel); }
 .graph-filter-empty button:hover { border-color: var(--blue); background: var(--soft); }
 .graph-filter-empty[hidden], .full-graph-canvas[hidden], .full-graph-caption[hidden], .full-graph-directory[hidden] { display: none; }
+
+/* Folder colors and softly glowing dots, matching the supplied graph reference. */
+.graph-grid { display: none; }
+.graph-node { --node-color: hsl(var(--node-hue, 250) 65% 45%); }
+.dark .graph-node { --node-color: hsl(var(--node-hue, 250) 85% 72%); }
+.graph-node .node-dot, #graph .graph-node .node-dot {
+  fill: var(--node-color);
+  stroke: none;
+  filter: drop-shadow(0 0 5px var(--node-color));
+}
+.graph-node.is-current { --node-color: #008da8; }
+.dark .graph-node.is-current { --node-color: #4de1ff; }
+.graph-node:hover .node-dot, .graph-node:focus .node-dot {
+  stroke: var(--panel);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 9px var(--node-color));
+}
+.graph-edges line { stroke: rgba(130, 120, 255, .4); stroke-width: 1; }
+.graph-node text, #graph .graph-node text { letter-spacing: .5px; }
+.graph-distance-key { white-space: normal; }
