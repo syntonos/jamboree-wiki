@@ -7,7 +7,7 @@ featured: false
 order: 04
 art: trebuchet
 image:
-discipline: Mechanical, Design
+discipline: Mechanical
 tags: CAD modeling, Mechanism design, Prototype testing, Test documentation
 lead:
 contact:

@@ -7,7 +7,7 @@ featured: true
 order: 03
 art: cart
 image:
-discipline: Mechanical, Design
+discipline: Mechanical
 tags: CAD modeling, Mechanism design, Requirements definition, Prototype testing
 lead:
 contact:

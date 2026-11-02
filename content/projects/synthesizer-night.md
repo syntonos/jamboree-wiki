@@ -7,7 +7,7 @@ featured: true
 order: 02
 art: synth
 image:
-discipline: Electrical, Design
+discipline: Electrical
 tags: Analog circuit design, Audio synthesis, Circuit prototyping, Circuit debugging
 lead:
 contact:
