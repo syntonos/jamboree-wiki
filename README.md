@@ -5,8 +5,21 @@ Use Node.js 20 or later. No package installation is required. Run `npm run dev` 
 
 Deploy the directory to any static host; navigation uses hash routes. The published site needs no running Node server.
 
+## Publish to GitHub Pages
+
+The [Pages workflow](.github/workflows/pages.yml) runs the tests and builds the notes on branch pushes and pull requests. Successful pushes to the repository's default branch deploy automatically; manual runs deploy only when the default branch is selected. The workflow follows the default branch setting, so no branch name needs to be hardcoded.
+
+1. Open the repository's **Settings → Pages**. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+2. Commit and push the workflow to the default branch (currently `codex/jamboree-blueprint`), or merge a pull request containing it into that branch.
+3. Open **Actions → Deploy wiki to GitHub Pages** to watch the run. To publish again without a new commit, choose **Run workflow** and select the default branch.
+4. After the deployment succeeds, open the URL shown by the deployment. With the standard project domain, this repository's URL is `https://syntonos.github.io/jamboree-wiki/`.
+
+No personal access token, repository secret, package installation, or `gh-pages` branch is needed. The workflow uses GitHub's automatic token and the `github-pages` deployment environment. If that environment has approval or branch protection rules, allow deployment from the default branch and complete any required approval.
+
+The published artifact contains `index.html`, `assets/` (including generated notes, fonts, KaTeX, Mermaid, and resources), and `content/` for downloads stored alongside notes. Application assets and hash routes work under the `/jamboree-wiki/` project path. For project feature photos, use `image: assets/uploads/photo.jpg` without a leading slash so the browser keeps that project path.
+
 ## Content
-All notes live in `content/`. Project frontmatter supports `status: current`, `past`, or `future`; `featured: true`; `order`; comma-separated `discipline` and `tags`; `lead`; `contact`; `updated` (YYYY-MM-DD); `next_milestone`; `help_needed`; and `image: /assets/uploads/photo.jpg`. Add photos to `assets/uploads/`. Featured current projects appear automatically on the homepage, ordered by `order`. Project and guide hubs are assembled from the note paths. The past and future sections begin empty until projects are assigned those statuses. See `docs/project-template.md` for a complete reusable template.
+All notes live in `content/`. Project frontmatter supports `status: current`, `past`, or `future`; `featured: true`; `order`; comma-separated `discipline` and `tags`; `lead`; `contact`; `updated` (YYYY-MM-DD); `next_milestone`; `help_needed`; and `image: assets/uploads/photo.jpg`. Add photos to `assets/uploads/`. Featured current projects appear automatically on the homepage, ordered by `order`. Project and guide hubs are assembled from the note paths. The past and future sections begin empty until projects are assigned those statuses. See `docs/project-template.md` for a complete reusable template.
 
 Set the YouTube, Instagram, and GitHub URLs in `assets/app.js` using `SOCIAL_LINKS`. Icons appear in the desktop topbar and the mobile hamburger menu. YouTube and Instagram show a coming-soon dialog until their URLs are set; GitHub links to this wiki repository. Editing instructions are in `docs/editing.md`. Both graph views connect notes through the hierarchy and internal Markdown links. The theme button saves your choice locally. Search and graph nodes navigate to notes.
 
