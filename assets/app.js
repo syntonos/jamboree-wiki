@@ -31,8 +31,8 @@ function projectGroups(filters) {
   const projects = window.JamboreeProjects;
   const matches = notes.filter(note => projects.matches(note, filters));
   if (!matches.length && projects.isActive(filters)) return '<div class="project-empty" role="status"><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div>';
-  const statuses = filters.status ? [filters.status] : [...new Set(['current','past','future',...matches.map(note => note.status)])];
-  const titles = {current:'Current projects',past:'Past projects',future:'Future projects'};
+  const statuses = filters.status ? [filters.status] : [...new Set(matches.map(note => note.status))];
+  const titles = {current:'Present projects',past:'Past projects',future:'Future projects'};
   return statuses.map(status => {
     const statusKey = String(status).toLowerCase();
     const group = matches.filter(note => String(note.status).toLowerCase() === statusKey).sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
@@ -42,7 +42,7 @@ function projectGroups(filters) {
 function projectHub() {
   const filters = window.JamboreeProjects.getFilters();
   const archives = window.JamboreeContent.navigationLinks({slug:'projects/index'},notes).map(slug => notes.find(note => note.slug === slug)).filter(note => note.type !== 'project');
-  const archiveLinks = '<nav class="intro-links" aria-label="Project archives">' + archives.map(note => `<a href="${link(note)}">${esc(note.title)} ${icon('arrow')}</a>`).join('') + '</nav>';
+  const archiveLinks = '<nav class="intro-links" aria-label="Project groups">' + archives.map(note => `<a href="${link(note)}">${esc(note.title)} ${icon('arrow')}</a>`).join('') + '</nav>';
   return '<div class="project-hub">' + archiveLinks + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
 }
 function mountProjectHub() {
@@ -77,13 +77,16 @@ function article(n) {
   if (n.hub === 'projects') body = projectHub();
   else if (n.hub === 'guides') body = guides();
   else {
-    const children = window.JamboreeContent.navigationLinks(n,notes).map(slug => notes.find(note => note.slug === slug));
-    if (children.length) body = n.slug === 'projects/past' || n.slug === 'projects/future'
+    const children = n.type === 'project' ? [] : window.JamboreeContent.navigationLinks(n,notes).map(slug => notes.find(note => note.slug === slug));
+    if (children.length) body = ['projects/present','projects/past','projects/future'].includes(n.slug)
       ? '<div class="projects-grid">' + children.map(project).join('') + '</div>'
       : '<div class="guide-grid">' + children.map(note => `<a class="guide-card" href="${link(note)}"><span class="guide-icon">${icon('note')}</span><div><h3>${esc(note.title)}</h3><p>${esc(note.description)}</p></div>${icon('arrow')}</a>`).join('') + '</div>';
     if (n.body.trim()) body += '<div class="article-body">' + markdown(n.body,n.slug) + '</div>';
   }
-  return `<article class="article"><h1>${esc(n.title)}</h1><p class="description">${esc(n.description)}</p>${n.type === 'project' ? window.JamboreeNotes.facts(n) + art(n.art,n.image) : ''}${body}${window.JamboreeNotes.backlinks(n,notes)}</article>`;
+  const groupSlug = n.type === 'project' ? window.JamboreeContent.navigationLinks(n,notes)[0] : null;
+  const group = notes.find(note => note.slug === groupSlug);
+  const groupLink = group ? `<a class="project-group-link" href="${link(group)}">${icon('arrow')}<span>${esc(group.title)}</span></a>` : '';
+  return `<article class="article"><h1>${esc(n.title)}</h1><p class="description">${esc(n.description)}</p>${groupLink}${n.type === 'project' ? window.JamboreeNotes.facts(n) + art(n.art,n.image) : ''}${body}${window.JamboreeNotes.backlinks(n,notes)}</article>`;
 }
 function graph(slug) { window.JamboreeGraph.mountLocal(notes,slug); }
 function routeInfo() {
@@ -122,6 +125,10 @@ function render() {
   document.title = title + ' — Jamboree';
   $('#crumb').textContent = title;
   document.querySelectorAll('[data-nav]').forEach(item => item.classList.toggle('active',item.dataset.nav === (slug === 'index' ? 'index' : slug.split('/')[0])));
+  document.querySelectorAll('[data-discipline]').forEach(item => {
+    const route = 'guides/' + item.dataset.discipline;
+    item.classList.toggle('active',slug === route || slug.startsWith(route+'/'));
+  });
   const projectCount = notes.filter(note => note.type === 'project').length;
   document.querySelector('[data-nav="projects"] small').textContent = String(projectCount).padStart(2,'0');
   updateToc(slug);

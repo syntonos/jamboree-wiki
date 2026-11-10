@@ -211,7 +211,12 @@
     const existing = new Set(notes.map(item => item.slug));
     const projects = status => notes.filter(item => item.type === 'project' && item.status === status)
       .sort((a,b) => Number(a.order || 0) - Number(b.order || 0) || a.slug.localeCompare(b.slug)).map(item => item.slug);
-    if (note.slug === 'projects/index') return [...projects('current'), ...['projects/past','projects/future'].filter(slug => existing.has(slug))];
+    if (note.type === 'project') {
+      const group = {current:'projects/present',past:'projects/past',future:'projects/future'}[note.status];
+      return existing.has(group) ? [group] : [];
+    }
+    if (note.slug === 'projects/index') return ['projects/present','projects/past','projects/future'].filter(slug => existing.has(slug));
+    if (note.slug === 'projects/present') return projects('current');
     if (note.slug === 'projects/past') return projects('past');
     if (note.slug === 'projects/future') return projects('future');
     if (note.slug === 'guides/index') return ['design-practices','mechanical','electrical','cs'].map(slug => 'guides/' + slug).filter(slug => existing.has(slug));

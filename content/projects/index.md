@@ -1,5 +1,5 @@
 ---
 title: Projects
-description: Current, past, and planned projects.
+description: Present, past, and future projects.
 hub: projects
 ---

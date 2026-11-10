@@ -11,7 +11,7 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `title` | Page and card title. |
 | `description` | Short factual summary. |
 | `type` | Set to `project` for project cards and project filters. |
-| `status` | Hub/archive group: `current`, `past`, or `future`. |
+| `status` | Project group: `current` for Present, `past` for Past, or `future` for Future. |
 | `featured` | `true` shows a current project on the homepage; `false` hides it there. |
 | `order` | Numeric display order for featured projects. |
 | `discipline` | Comma-separated disciplines, such as `Mechanical, Electrical, Computer science`. |
@@ -27,7 +27,9 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 
 Copy `docs/project-template.md` into a new file under `content/projects/`, then replace its title, description, metadata, and starter sections. `updated` is a documentation date, not a claim that the project itself has finished a milestone.
 
-Set `stage` to the project's actual progress. Keep `status` for its current/past/future group; when archiving a completed project, use `status: past` and `stage: completed`.
+Set `stage` to the project's actual progress. Keep `status` for its Present/Past/Future group; when archiving a completed project, use `status: past` and `stage: completed`. The Projects folder links to all three group pages: `#/projects/present`, `#/projects/past`, and `#/projects/future`.
+
+Each individual project's navigation and graph link only to its assigned group page. The group page links back to every project with that status; changing `status` moves the project and its graph connection to the corresponding group. Keep related-guide sections off individual project pages.
 
 Choose a few concrete skill tags that fit the planned work, and replace the template's examples. These tags appear on project cards and notes and can filter both Projects and Complete graph. They describe learning opportunities, not prerequisites or completed milestones.
 

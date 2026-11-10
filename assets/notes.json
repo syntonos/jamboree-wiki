@@ -259,24 +259,23 @@
     "stage": "in design",
     "slug": "projects/go-cart-pair",
     "body": "## Scope\nDesign and build two go-carts. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Define rider fit, intended surface, and prototype constraints.\n- Compare steering and braking layouts before selecting parts.\n- Model packaging and inspect component clearances.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Chassis material | TBD | Geometry and material selection TBD | Not selected |\n| Wheels and hubs | TBD | Diameter, load rating, and mounting TBD | Not selected |\n| Steering components | TBD | Geometry and linkage details TBD | Not selected |\n| Braking components | TBD | Architecture and test criteria TBD | Not selected |\n| Seat and restraints | TBD | Fit and mounting requirements TBD | Not selected |\n| Drive components | TBD | Propulsion choice and layout TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/go-cart-pair/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/go-cart-pair/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/go-cart-pair/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Build log\nNo build updates recorded yet.",
-    "links": [],
+    "links": [
+      "projects/present"
+    ],
     "backlinks": [
-      "projects/index"
+      "projects/present"
     ]
   },
   {
     "title": "Projects",
-    "description": "Current, past, and planned projects.",
+    "description": "Present, past, and future projects.",
     "hub": "projects",
     "slug": "projects/index",
     "body": "",
     "links": [
       "projects/future",
-      "projects/go-cart-pair",
-      "projects/laser-tag",
       "projects/past",
-      "projects/pillow-trebuchet",
-      "projects/synthesizer-night"
+      "projects/present"
     ],
     "backlinks": []
   },
@@ -298,9 +297,11 @@
     "stage": "in design",
     "slug": "projects/laser-tag",
     "body": "## Standard issue\nInfrared tag system with hit detection and scoring. The “Standard issue” concept uses a trumpet with the PCB inside and an IR receiver strapped to the player's arm. Enclosure dimensions, optics, and the final circuit remain undecided.\n\n## Next steps\n- Agree on range, scoring rules, and the first prototype test.\n- Prototype with the XIAO ESP32-C3 and compare receiver options; decide whether a three-pin sensor is required.\n- Choose an IR transmitter and test its driver, optics, and receiver response.\n- Log received signals before adding game logic.\n- Check the WS2812B strip's 5 V power and data-level requirements before connecting it to the controller.\n\n## Bill of materials\n[Shared bill of materials](https://docs.google.com/spreadsheets/d/1V3B1yuoh8lKiNzFN5HOxmlRPhACA-VsLT4hC5OJaBHg/edit?usp=sharing)\n\nCandidate parts from the project research; quantities per unit and compatibility still need testing. Prices below are research quotes, not current purchasing totals.\n\n| Part | Candidate | Notes |\n| --- | --- | --- |\n| Controller | [Seeed Studio XIAO ESP32-C3, three-pack](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C3-3PCS-p-5920.html) | Prototype controller candidate. |\n| LED feedback | [WS2812B ECO strip](https://www.amazon.com/dp/B097BWJGYK) | 16.4 ft, 60 LEDs/m, DC 5 V. |\n| Input switches | [Keyboard switches, 200-pack](https://www.amazon.com/dp/B0HCNVN67G) | Switch choice and mounting to be tested. |\n| IR receiver | [VS1838B](https://www.makerfabs.com/infrared-receiver-vs1838b.html) | Research quote: $0.05 each. [Datasheet](https://www.sivago.com.cn/upload/pdf/2022/VS1838B.pdf). |\n| IR transmitter | TBD | Emitter, driver, and optics still to be selected. |\n| Alternative IR parts | [Gikfun infrared emitter/receiver, 10 pairs](https://www.amazon.com/dp/B06XYNDRGF) | Research quote: $5.99 per 10 pairs. Bare parts need supporting resistors and capacitors; a possible teaching option. |\n| Connectors | [JST plugs](https://www.amazon.com/dp/B088NQBF3V) | Connector type and wiring to be checked against the final circuit. |\n| Power and enclosure | TBD | Supply capacity, enclosure dimensions, and mounting remain open. |\n\n## Research\n- [Lens arrangements for laser tag](https://engineering.stackexchange.com/questions/51849/lens-arrangement-for-laser-tag)\n- [OpenLaserTag optical emitter tube](https://openlasertag.org/language/en/optical-emmiter-tube/)\n- [Driving 5 V WS2812 LEDs from a 3.3 V data line](https://hackaday.com/2017/01/20/cheating-at-5v-ws2812-control-to-use-a-3-3v-data-line/)\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/laser-tag/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/laser-tag/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/laser-tag/design-brief.md)\n\nThese local downloads are starter planning files; the shared sheet above contains the linked parts research.",
-    "links": [],
+    "links": [
+      "projects/present"
+    ],
     "backlinks": [
-      "projects/index"
+      "projects/present"
     ]
   },
   {
@@ -332,9 +333,31 @@
     "stage": "in design",
     "slug": "projects/pillow-trebuchet",
     "body": "## Scope\nTrebuchet design and soft-projectile testing. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Agree on a soft-projectile test setup and the intended scale.\n- Sketch pivot, arm, counterweight, and release positions.\n- Record trial geometry and results before changing the design.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Frame material | TBD | Geometry and material selection TBD | Not selected |\n| Arm and pivot | TBD | Length, bearing, and mounting TBD | Not selected |\n| Counterweight assembly | TBD | Mass and attachment TBD | Not selected |\n| Sling and release | TBD | Material and release geometry TBD | Not selected |\n| Soft projectile | TBD | Mass and dimensions TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/pillow-trebuchet/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/pillow-trebuchet/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/pillow-trebuchet/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Build log\nNo build updates recorded yet.",
-    "links": [],
+    "links": [
+      "projects/present"
+    ],
     "backlinks": [
-      "projects/index"
+      "projects/present"
+    ]
+  },
+  {
+    "title": "Present projects",
+    "description": "Ongoing projects.",
+    "status": "current",
+    "slug": "projects/present",
+    "body": "",
+    "links": [
+      "projects/go-cart-pair",
+      "projects/laser-tag",
+      "projects/pillow-trebuchet",
+      "projects/synthesizer-night"
+    ],
+    "backlinks": [
+      "projects/go-cart-pair",
+      "projects/index",
+      "projects/laser-tag",
+      "projects/pillow-trebuchet",
+      "projects/synthesizer-night"
     ]
   },
   {
@@ -355,9 +378,11 @@
     "stage": "in design",
     "slug": "projects/synthesizer-night",
     "body": "## Scope\nDIY synthesizers, oscillators, and audio circuits. Scope, parts, and dimensions are still to be agreed.\n\n## Next steps\n- Agree on the workshop format and available test equipment.\n- Choose a low-voltage prototype circuit and document its output limits.\n- Test one sound source before adding controls or an enclosure.\n\n## Bill of materials\nStarter planning list. Quantities and specifications are TBD; these are not verified purchasing recommendations.\n\n| Item | Quantity | Specification | Status |\n| --- | --- | --- | --- |\n| Sound-source circuit | TBD | Oscillator topology and frequency range TBD | Not selected |\n| Control components | TBD | Potentiometers, switches, and control range TBD | Not selected |\n| Output stage | TBD | Signal level and listening interface TBD | Not selected |\n| Prototyping board and wiring | TBD | Construction method TBD | Not selected |\n| Power source | TBD | Low-voltage supply requirements TBD | Not selected |\n\n## Resources\n- [Download the editable BOM (CSV)](/assets/resources/synthesizer-night/bom.csv)\n- [Download the concept diagram (SVG)](/assets/resources/synthesizer-night/concept.svg)\n- [Download the design brief (Markdown)](/assets/resources/synthesizer-night/design-brief.md)\n\nThe concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.\n\n## Build log\nNo build updates recorded yet.",
-    "links": [],
+    "links": [
+      "projects/present"
+    ],
     "backlinks": [
-      "projects/index"
+      "projects/present"
     ]
   }
 ]
