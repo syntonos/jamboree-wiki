@@ -46,6 +46,7 @@ header, footer { flex-shrink: 0; }
 .article-body:empty { display: none; }
 .article-body > :first-child { margin-top: 24px; }
 .article-backlinks { margin-top: 28px; padding-top: 20px; }
+#main [id], #main [data-heading-id] { scroll-margin-top: 68px; }
 .backlink-list a { background: var(--panel); }
 body:not(.dark) .backlink-list a { background: #ffffff; }
 .rightbar { padding: 16px 12px 16px 16px; }
@@ -55,11 +56,15 @@ body:not(.dark) .backlink-list a { background: #ffffff; }
 .rightbar .local-graph-controls { margin-top: 8px; }
 .full-graph-canvas, .local-graph-canvas {
   --graph-dot: rgba(38, 60, 77, .09);
-  background-image: radial-gradient(circle, var(--graph-dot) .65px, transparent .8px);
-  background-size: 18px 18px;
-  background-position: 9px 9px;
+  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2290%22%20height%3D%2290%22%20viewBox%3D%220%200%2090%2090%22%3E%3Cpath%20d%3D%22M41%2045h8M45%2041v8%22%20fill%3D%22none%22%20stroke%3D%22%23263c4d%22%20stroke-opacity%3D%22.12%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+  background-image: var(--graph-cross), radial-gradient(circle, var(--graph-dot) var(--graph-dot-radius, .65px), transparent var(--graph-dot-edge, .8px));
+  background-size: var(--graph-cross-size, 90px) var(--graph-cross-size, 90px), var(--graph-dot-size, 18px) var(--graph-dot-size, 18px);
+  background-position: var(--graph-offset-x, 0px) var(--graph-offset-y, 0px);
 }
-.dark .full-graph-canvas, .dark .local-graph-canvas { --graph-dot: rgba(220, 232, 239, .06); }
+.dark .full-graph-canvas, .dark .local-graph-canvas {
+  --graph-dot: rgba(220, 232, 239, .06);
+  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2290%22%20height%3D%2290%22%20viewBox%3D%220%200%2090%2090%22%3E%3Cpath%20d%3D%22M41%2045h8M45%2041v8%22%20fill%3D%22none%22%20stroke%3D%22%23dce8ef%22%20stroke-opacity%3D%22.08%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+}
 .rail-heading .rail-title[hidden] { display: none; }
 .rail-heading:has(.rail-title[hidden]) { justify-content: flex-end; margin-bottom: 0; }
 .rightbar:has(#toc:empty) .graph-head { border-top: 0; margin-top: 0; padding-top: 4px; }
@@ -105,7 +110,7 @@ header .header-graph-link, header .main-site-link {
 header .header-graph-link:hover, header .main-site-link:hover,
 header .header-graph-link.active { color: var(--blue); background: transparent; }
 header .header-graph-link + .main-site-link { margin-left: 12px; }
-header { --topbar-gap: 16px; height: 64px; padding-left: 24px; }
+header { --topbar-gap: 16px; height: 52px; position: sticky; top: 0; z-index: 20; padding-left: 24px; }
 .breadcrumb { font-size: 12px; }
 .top-actions, .desktop-socials { gap: var(--topbar-gap); }
 .desktop-socials { padding-right: 0; border-right: 0; }
@@ -146,13 +151,14 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
   .sidebar { overflow: visible; }
   .breadcrumb { display: none; }
   .header-start { display: none; }
-  header { --topbar-gap: 12px; height: 60px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
+  header { --topbar-gap: 12px; height: 48px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
   .top-actions { width: 100%; justify-content: space-between; }
   header .header-graph-link, header .main-site-link { min-height: 44px; font-size: 12px; padding: 7px 0; gap: 8px; }
   header .header-graph-link + .main-site-link { margin-left: 8px; }
   .sidebar-heading { margin-bottom: 0; }
   .menu-is-open .sidebar-heading { margin-bottom: 20px; }
   .hero { min-height: 240px; }
+  #main [id], #main [data-heading-id] { scroll-margin-top: 64px; }
 }
 @media (max-width: 360px) {
   header { --topbar-gap: 8px; }

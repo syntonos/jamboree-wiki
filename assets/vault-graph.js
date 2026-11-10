@@ -10,12 +10,13 @@
   else root.JamboreeVaultGraph = api;
 })(typeof window === 'undefined' ? globalThis : window, function () {
   function create(canvas, options) {
-    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}, disconnectedRepulsion = 1} = options;
+    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}, disconnectedRepulsion = 1, onCameraChange} = options;
     const backlinks = p => names.filter(n => out[n].has(p));
     const ref = {current:canvas}, api = {current:{}}, cur = {current}, open = {current:onOpen};
     const cv = ref.current, cx = cv.getContext('2d')
     let W = 0, H = 0, raf, drag = null, hover = null, moved = false, alpha = 1, pan = null, pinch = null
     const T = { k: 1, x: 0, y: 0 }, P = new Map()
+    let paintedCamera = ''
     const size = () => { const d = devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; alpha = 1 }
     size()
     const ro = new ResizeObserver(size); ro.observe(cv)
@@ -56,6 +57,10 @@
         if (!drag) alpha *= 0.994
       }
       const d = devicePixelRatio || 1, style = getComputedStyle(cv)
+      const cameraKey = `${T.k}:${T.x}:${T.y}`
+      if (onCameraChange && cameraKey !== paintedCamera) {
+        paintedCamera = cameraKey; onCameraChange({...T})
+      }
       cx.setTransform(d, 0, 0, d, 0, 0); cx.clearRect(0, 0, W, H)
       if (!N.length) { cx.fillStyle = '#9a90c4'; cx.font = '12px "JetBrains Mono", monospace'; cx.textAlign = 'center'; cx.fillText('NO NOTES', W / 2, H / 2) }
       cx.setTransform(d * T.k, 0, 0, d * T.k, d * T.x, d * T.y)

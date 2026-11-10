@@ -13,7 +13,7 @@ const port=await readFile(portPath,'utf8');
 // including initialization, numerical loop and pointer code, executes unchanged.
 const adapted=original.replace(/^import[^\n]*\n/gm,'').replace('export default function Graph','function Graph').replace(/\n  return \(\n[\s\S]*$/,'\n  return {api};\n}\nglobalThis.ReferenceGraph=Graph;\n');
 assert(adapted.includes('for (const a of N)'));
-function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion=1}){
+function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion=1,onCameraChange}){
  let nextId=0,timestamp=0,seed=0x12345678,callbacks=new Map(),effect,refIndex=0,api;
  const resizers=[],listeners=new Map(),opened=[];
  const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
@@ -30,7 +30,7 @@ function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion
   destroy=effect();api={zoom:f=>refs.api.current.zoom(f),reset:()=>refs.api.current.reset()};
  }else{
   vm.runInContext(port,context,{filename:portPath});
-  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local,disconnectedRepulsion});destroy=api.destroy;
+  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local,disconnectedRepulsion,onCameraChange});destroy=api.destroy;
  }
  return{cv,cx,opened,api,advance(){const entry=callbacks.entries().next().value;assert(entry,`${kind}: no scheduled RAF`);callbacks.delete(entry[0]);entry[1](timestamp+=1000/60);},event(type,values){const e={type,pointerId:1,clientX:0,clientY:0,deltaY:0,preventDefault(){},...values};cv['on'+type]?.(e);for(const fn of listeners.get(type)||[])fn(e);},resize(w,h){cv.clientWidth=w;cv.clientHeight=h;for(const r of resizers)if(!r.disconnected)r.fn();},destroy(){destroy();assert.equal(callbacks.size,0,`${kind}: RAF not cancelled`);},commands(){return structuredClone(cx.commands);},arcs(){return cx.commands.filter(c=>c[0]==='arc').map(c=>({x:c[1],y:c[2],r:c[3]}));},world(){const c=cx.commands.filter(c=>c[0]==='setTransform').at(-1);return{k:c[1]/dpr,x:c[5]/dpr,y:c[6]/dpr};}};
 }
@@ -88,4 +88,73 @@ test('extra disconnected repulsion increases spacing between separate components
   const after=meanSeparation(componentCenters(boosted.arcs()));
   assert(after>before,`disconnected spacing did not increase: ${before} -> ${after}`);
  }finally{baseline.destroy();boosted.destroy();}
+});
+
+
+test('camera updates follow the rendered vault transform without changing graph motion',()=>{
+ const fixture={names:ids,out,current:'notes/hub'};
+ const updates=[];
+ const original=harness('reference',fixture);
+ const observed=harness('port',{...fixture,onCameraChange:camera=>updates.push({...camera})});
+ const equal=label=>{
+  assert.deepEqual(observed.commands(),original.commands(),label+' changed graph rendering or motion');
+  assert.deepEqual(updates.at(-1),observed.world(),label+' grid camera differs from rendered graph');
+ };
+ const frame=label=>{original.advance();observed.advance();equal(label);};
+ const event=(type,values)=>{original.event(type,values);observed.event(type,values);};
+ try {
+  assert.equal(updates.length,1,'initial drawing reports its camera once');
+  equal('initial');
+  for(let i=0;i<12;i++)frame('node simulation');
+  assert.equal(updates.length,1,'node movement alone does not move the background camera');
+
+  event('pointerdown',{pointerId:10,clientX:-400,clientY:-400});
+  event('pointermove',{pointerId:10,clientX:-340,clientY:-425});
+  event('pointerup',{pointerId:10,clientX:-340,clientY:-425});
+  frame('pan');
+  assert.deepEqual(updates.at(-1),{k:1,x:60,y:-25});
+  assert.equal(updates.length,2);
+
+  event('wheel',{clientX:300,clientY:220,deltaY:-160});
+  frame('wheel zoom');
+  assert(updates.at(-1).k>1);
+  assert.equal(updates.length,3);
+
+  original.api.zoom(1.3);observed.api.zoom(1.3);frame('button zoom');
+  assert.equal(updates.length,4);
+  original.api.reset();observed.api.reset();frame('reset');
+  assert.deepEqual(updates.at(-1),{k:1,x:0,y:0});
+  assert.equal(updates.length,5);
+
+  event('pointerdown',{pointerId:11,clientX:30,clientY:30});
+  event('pointerdown',{pointerId:12,clientX:130,clientY:30});
+  event('pointermove',{pointerId:11,clientX:10,clientY:40});
+  event('pointermove',{pointerId:12,clientX:170,clientY:40});
+  frame('pinch');
+  assert(updates.at(-1).k>1);
+  assert.equal(updates.length,6,'one drawing publishes the latest pinch camera once');
+  event('pointerup',{pointerId:11,clientX:10,clientY:40});
+  event('pointerup',{pointerId:12,clientX:170,clientY:40});
+  frame('pinch release');
+  assert.equal(updates.length,6);
+  original.resize(640,420);observed.resize(640,420);frame('resize');
+  assert.equal(updates.length,6,'viewport resize without a transform does not move world-grid coordinates');
+ }finally{original.destroy();observed.destroy();}
+});
+
+test('camera callbacks receive copies rather than mutable graph state',()=>{
+ const fixture={names:ids,out,current:'notes/hub'};
+ const baseline=harness('port',fixture);
+ let calls=0;
+ const observed=harness('port',{...fixture,onCameraChange:camera=>{calls++;camera.k=99;camera.x=-1e6;camera.y=1e6;}});
+ try {
+  assert.equal(calls,1);
+  assert.deepEqual(observed.commands(),baseline.commands(),'callback mutation changed the initial graph camera');
+  baseline.api.zoom(1.3);observed.api.zoom(1.3);
+  baseline.advance();observed.advance();
+  assert.equal(calls,2);
+  assert.deepEqual(observed.commands(),baseline.commands(),'callback mutation changed zoom or node motion');
+  for(let i=0;i<12;i++){baseline.advance();observed.advance();assert.deepEqual(observed.commands(),baseline.commands());}
+  assert.equal(calls,2,'mutating callback copies does not manufacture additional camera changes');
+ }finally{baseline.destroy();observed.destroy();}
 });

@@ -53,9 +53,18 @@
     const bySlug = new Map(data.nodes.map(node => [node.slug,node]));
     const out = Object.fromEntries(names.map(slug => [slug,new Set()]));
     for (const {source,target} of data.edges) out[source.slug].add(target.slug);
+    const grid = canvas.parentElement;
     const engine = window.JamboreeVaultGraph.create(canvas, {
       names, out, current: data.currentSlug, local: Boolean(data.currentSlug),
       disconnectedRepulsion: 1.35,
+      onCameraChange: ({k,x,y}) => {
+        grid.style.setProperty('--graph-dot-size',18*k+'px');
+        grid.style.setProperty('--graph-cross-size',90*k+'px');
+        grid.style.setProperty('--graph-dot-radius',.65*k+'px');
+        grid.style.setProperty('--graph-dot-edge',.8*k+'px');
+        grid.style.setProperty('--graph-offset-x',x+'px');
+        grid.style.setProperty('--graph-offset-y',y+'px');
+      },
       title: slug => bySlug.get(slug).title,
       onOpen: slug => { location.hash = '#/' + slug; },
       color: (slug, hover) => hover

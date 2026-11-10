@@ -34,6 +34,8 @@ Node colors grade from darker central notes to lighter outer notes. Each connect
 
 Both graphs include fit controls. The Complete graph also includes fullscreen where supported and a note directory. Keyboard users can focus the canvas and use +/− to zoom and Home to reset; linked notes are also available through keyboard-accessible note links.
 
+The faint graph grid has a small cross every five dot intervals. It shares the graph's pan and zoom coordinates. The compact topbar stays visible while the page scrolls.
+
 ## Main site
 The Jamboree title/logo always opens Overview. Set `MAIN_SITE_URL` at the top of `assets/app.js` when the club’s main site is ready. The topbar and homepage “Meet the team” links use this destination. Until then, they open the explicit `#/main-site` placeholder.
 
