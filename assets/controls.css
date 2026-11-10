@@ -53,6 +53,13 @@ body:not(.dark) .backlink-list a { background: #ffffff; }
 .rightbar .graph-head { margin-top: 20px; padding-top: 16px; }
 .rightbar .local-graph-panel { margin-top: 8px; }
 .rightbar .local-graph-controls { margin-top: 8px; }
+.full-graph-canvas, .local-graph-canvas {
+  --graph-dot: rgba(38, 60, 77, .09);
+  background-image: radial-gradient(circle, var(--graph-dot) .65px, transparent .8px);
+  background-size: 18px 18px;
+  background-position: 9px 9px;
+}
+.dark .full-graph-canvas, .dark .local-graph-canvas { --graph-dot: rgba(220, 232, 239, .06); }
 .rail-heading .rail-title[hidden] { display: none; }
 .rail-heading:has(.rail-title[hidden]) { justify-content: flex-end; margin-bottom: 0; }
 .rightbar:has(#toc:empty) .graph-head { border-top: 0; margin-top: 0; padding-top: 4px; }
