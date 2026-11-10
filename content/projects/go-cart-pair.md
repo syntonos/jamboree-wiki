@@ -43,10 +43,5 @@ Starter planning list. Quantities and specifications are TBD; these are not veri
 
 The concept diagram shows candidate system blocks only. Final CAD, PCB, and schematic files can be added here when they exist.
 
-## Related guides
-- [CAD](#/guides/mechanical/cad)
-- [ANSYS](#/guides/mechanical/ansys)
-- [Tools](#/guides/mechanical/tools)
-
 ## Build log
 No build updates recorded yet.

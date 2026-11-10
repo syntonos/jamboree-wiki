@@ -21,11 +21,17 @@ body:not(.dark) { --ink: #000000; --muted: #000000; }
 .sidebar .disciplines .ui-icon { width: 14px; height: 14px; }
 .sidebar-search .search-icon { width: 17px; height: 17px; }
 .sidebar-heading { margin-bottom: 24px; }
+.brand .brand-copy { display: flex; flex-direction: column; gap: 3px; }
+.brand-title { line-height: 1.15; }
+.brand-subtitle { color: var(--ink); font: 10px/1.2 var(--font-body); letter-spacing: 1.5px; }
 .project-bottom { align-items: center; }
 .project-status { display: inline-flex; align-items: center; gap: 7px; }
 .project-status::before { content: ''; width: 5px; height: 5px; flex: none; background: currentColor; border-radius: 50%; }
 .intro-links a, .section-heading > a { display: inline-flex; align-items: center; gap: 8px; }
 .intro-links .ui-icon, .section-heading .ui-icon { width: 16px; height: 16px; }
+.project-hub > .intro-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 20px; }
+.project-hub > .intro-links a { padding: 7px 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.project-hub > .intro-links a:hover { color: var(--blue); border-color: var(--blue); }
 
 /* Short notes use the available page height; the footer keeps its own dimensions. */
 body { display: flex; flex-direction: column; min-height: 100dvh; }
@@ -91,6 +97,7 @@ header .header-graph-link, header .main-site-link {
 }
 header .header-graph-link:hover, header .main-site-link:hover,
 header .header-graph-link.active { color: var(--blue); background: transparent; }
+header .header-graph-link + .main-site-link { margin-left: 12px; }
 header { --topbar-gap: 16px; height: 64px; padding-left: 24px; }
 .breadcrumb { font-size: 12px; }
 .top-actions, .desktop-socials { gap: var(--topbar-gap); }
@@ -135,6 +142,7 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
   header { --topbar-gap: 12px; height: 60px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
   .top-actions { width: 100%; justify-content: space-between; }
   header .header-graph-link, header .main-site-link { min-height: 44px; font-size: 12px; padding: 7px 0; gap: 8px; }
+  header .header-graph-link + .main-site-link { margin-left: 8px; }
   .sidebar-heading { margin-bottom: 0; }
   .menu-is-open .sidebar-heading { margin-bottom: 20px; }
   .hero { min-height: 240px; }
@@ -142,6 +150,7 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
 @media (max-width: 360px) {
   header { --topbar-gap: 8px; }
   header .header-graph-link, header .main-site-link { font-size: 11px; }
+  header .header-graph-link + .main-site-link { margin-left: 6px; }
   header .icon-button { width: 36px; }
   header .header-graph-link > svg { width: 18px; height: 18px; }
 }

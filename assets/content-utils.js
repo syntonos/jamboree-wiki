@@ -205,5 +205,22 @@
     return { kind: 'invalid', reason: relative === null && !rooted ? 'path escapes the site root' : 'note does not exist: ' + expected };
   }
 
-  return { resolveLink, extractLinks, mathTokens, headingId, headings, headingIds: body => headings(body).map(heading => heading.id), noteHref };
+  // These are real links rendered by the wiki's navigation cards. Keep the
+  // generated note links, backlinks, and graph in sync with those destinations.
+  function navigationLinks(note, notes) {
+    const existing = new Set(notes.map(item => item.slug));
+    const projects = status => notes.filter(item => item.type === 'project' && item.status === status)
+      .sort((a,b) => Number(a.order || 0) - Number(b.order || 0) || a.slug.localeCompare(b.slug)).map(item => item.slug);
+    if (note.slug === 'projects/index') return [...projects('current'), ...['projects/past','projects/future'].filter(slug => existing.has(slug))];
+    if (note.slug === 'projects/past') return projects('past');
+    if (note.slug === 'projects/future') return projects('future');
+    if (note.slug === 'guides/index') return ['design-practices','mechanical','electrical','cs'].map(slug => 'guides/' + slug).filter(slug => existing.has(slug));
+    if (note.slug.startsWith('guides/')) {
+      const prefix = note.slug + '/';
+      return notes.filter(item => item.slug.startsWith(prefix) && !item.slug.slice(prefix.length).includes('/')).map(item => item.slug);
+    }
+    return [];
+  }
+
+  return { resolveLink, extractLinks, mathTokens, headingId, headings, headingIds: body => headings(body).map(heading => heading.id), noteHref, navigationLinks };
 });

@@ -92,7 +92,7 @@ export async function build(root = projectRoot, { checkOnly = false } = {}) {
       await validateReference(note, {...reference, line: reference.line + source.bodyLineOffset}, reference.image);
     }
     if (note.image) await validateReference(note, {target: note.image, line: source.imageLine || 1}, true);
-    note.links = [...new Set(note.links)].sort();
+    note.links = [...new Set([...note.links, ...content.navigationLinks(note,notes)])].sort();
   }
   if (errors.length) throw new Error(`Broken internal links (${errors.length}):\n${errors.join('\n')}`);
   for (const note of notes) for (const slug of note.links) bySlug.get(slug).backlinks.push(note.slug);

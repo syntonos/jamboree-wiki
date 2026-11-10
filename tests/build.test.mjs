@@ -36,6 +36,54 @@ flowchart LR
   assert.match(notes[0].body, /\\begin\{bmatrix\}/);
 });
 
+test('hub navigation generates logical project, archive, guide, and child links with matching backlinks', async t => {
+  const root = await fixture(t);
+  const sources = {
+    'projects/index': 'title: Projects\nhub: projects',
+    'projects/past': 'title: Past projects\nstatus: past',
+    'projects/future': 'title: Future projects\nstatus: future',
+    'projects/active': 'title: Active\ntype: project\nstatus: current',
+    'projects/completed': 'title: Completed\ntype: project\nstatus: past',
+    'projects/planned': 'title: Planned\ntype: project\nstatus: future',
+    'guides/index': 'title: Guides\nhub: guides',
+    'guides/design-practices': 'title: Design',
+    'guides/design-practices/reviews': 'title: Reviews',
+    'guides/mechanical': 'title: Mechanical',
+    'guides/mechanical/cad': 'title: CAD',
+    'guides/mechanical/cad/sketching': 'title: Sketching',
+    'guides/electrical': 'title: Electrical',
+    'guides/electrical/firmware': 'title: Firmware',
+    'guides/cs': 'title: Computer science',
+    'guides/cs/testing': 'title: Testing',
+  };
+  for (const [slug,frontmatter] of Object.entries(sources)) {
+    const filename = path.join(root,'content',slug+'.md');
+    await mkdir(path.dirname(filename),{recursive:true});
+    await writeFile(filename,`---\n${frontmatter}\n---\n`);
+  }
+  const built = await build(root);
+  const bySlug = new Map(built.map(note => [note.slug,note]));
+  assert.deepEqual(bySlug.get('projects/index').links,['projects/active','projects/future','projects/past']);
+  assert.deepEqual(bySlug.get('projects/past').links,['projects/completed']);
+  assert.deepEqual(bySlug.get('projects/future').links,['projects/planned']);
+  assert.deepEqual(bySlug.get('guides/index').links,['guides/cs','guides/design-practices','guides/electrical','guides/mechanical']);
+  for (const [hub,child] of [['design-practices','reviews'],['mechanical','cad'],['electrical','firmware'],['cs','testing']]) {
+    assert.deepEqual(bySlug.get('guides/'+hub).links,['guides/'+hub+'/'+child]);
+    assert.deepEqual(bySlug.get('guides/'+hub+'/'+child).backlinks,['guides/'+hub]);
+  }
+  assert.deepEqual(bySlug.get('guides/mechanical/cad').links,['guides/mechanical/cad/sketching']);
+  for (const slug of ['projects/active','projects/completed','projects/planned']) assert.deepEqual(bySlug.get(slug).links,[]);
+  assert.deepEqual(bySlug.get('projects/active').backlinks,['projects/index']);
+  assert.deepEqual(bySlug.get('projects/completed').backlinks,['projects/past']);
+  assert.deepEqual(bySlug.get('projects/planned').backlinks,['projects/future']);
+
+  await writeFile(path.join(root,'content/projects/active.md'),'---\ntitle: Active\ntype: project\nstatus: past\n---\n');
+  const updated = new Map((await build(root)).map(note => [note.slug,note]));
+  assert.deepEqual(updated.get('projects/index').links,['projects/future','projects/past']);
+  assert.deepEqual(updated.get('projects/past').links,['projects/active','projects/completed']);
+  assert.deepEqual(updated.get('projects/active').backlinks,['projects/past']);
+});
+
 test('build preserves Markdown, string metadata, nested slugs, and note order', async t => {
   const root = await fixture(t);
   await writeFile(path.join(root, 'content', 'guides', 'mechanical.md'), '---\r\ntitle: Mechanical\r\n---\r\nHub note.\r\n');

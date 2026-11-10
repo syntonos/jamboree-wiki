@@ -53,8 +53,3 @@ Candidate parts from the project research; quantities per unit and compatibility
 - [Download the design brief (Markdown)](/assets/resources/laser-tag/design-brief.md)
 
 These local downloads are starter planning files; the shared sheet above contains the linked parts research.
-
-## Related guides
-- [PCB design](#/guides/electrical/pcb-design)
-- [Firmware](#/guides/electrical/firmware)
-- [Software testing](#/guides/cs/software-testing)

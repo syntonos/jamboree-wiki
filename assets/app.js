@@ -41,7 +41,9 @@ function projectGroups(filters) {
 }
 function projectHub() {
   const filters = window.JamboreeProjects.getFilters();
-  return '<div class="project-hub">' + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
+  const archives = window.JamboreeContent.navigationLinks({slug:'projects/index'},notes).map(slug => notes.find(note => note.slug === slug)).filter(note => note.type !== 'project');
+  const archiveLinks = '<nav class="intro-links" aria-label="Project archives">' + archives.map(note => `<a href="${link(note)}">${esc(note.title)} ${icon('arrow')}</a>`).join('') + '</nav>';
+  return '<div class="project-hub">' + archiveLinks + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
 }
 function mountProjectHub() {
   const hub = $('.project-hub');
@@ -75,8 +77,10 @@ function article(n) {
   if (n.hub === 'projects') body = projectHub();
   else if (n.hub === 'guides') body = guides();
   else {
-    const children = notes.filter(note => note.slug.startsWith(n.slug+'/'));
-    if (children.length) body = '<div class="guide-grid">' + children.map(note => `<a class="guide-card" href="${link(note)}"><span class="guide-icon">${icon('note')}</span><div><h3>${esc(note.title)}</h3><p>${esc(note.description)}</p></div>${icon('arrow')}</a>`).join('') + '</div>';
+    const children = window.JamboreeContent.navigationLinks(n,notes).map(slug => notes.find(note => note.slug === slug));
+    if (children.length) body = n.slug === 'projects/past' || n.slug === 'projects/future'
+      ? '<div class="projects-grid">' + children.map(project).join('') + '</div>'
+      : '<div class="guide-grid">' + children.map(note => `<a class="guide-card" href="${link(note)}"><span class="guide-icon">${icon('note')}</span><div><h3>${esc(note.title)}</h3><p>${esc(note.description)}</p></div>${icon('arrow')}</a>`).join('') + '</div>';
     if (n.body.trim()) body += '<div class="article-body">' + markdown(n.body,n.slug) + '</div>';
   }
   return `<article class="article"><h1>${esc(n.title)}</h1><p class="description">${esc(n.description)}</p>${n.type === 'project' ? window.JamboreeNotes.facts(n) + art(n.art,n.image) : ''}${body}${window.JamboreeNotes.backlinks(n,notes)}</article>`;
