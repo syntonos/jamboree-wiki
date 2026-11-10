@@ -1,6 +1,6 @@
 /* Cool cardstock with a quiet white grid. Dark mode keeps the grid, without grain. */
 body:not(.dark) {
-  --bg: #f8f9ff;
+  --bg: #f4f8ff;
   --panel: #ffffff;
   --muted: #657783;
   --line: #c6d5e1;
