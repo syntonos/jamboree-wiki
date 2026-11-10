@@ -23,7 +23,7 @@ body:not(.dark) { --ink: #000000; --muted: #000000; }
 .sidebar-heading { margin-bottom: 24px; }
 .brand .brand-copy { display: flex; flex-direction: column; gap: 3px; }
 .brand-title { line-height: 1.15; }
-.brand-subtitle { color: var(--ink); font: 10px/1.2 var(--font-body); letter-spacing: 1.5px; }
+.brand-subtitle { color: var(--ink); font: 12px/1.2 var(--font-body); letter-spacing: 1.5px; }
 .project-bottom { align-items: center; }
 .project-status { display: inline-flex; align-items: center; gap: 7px; }
 .project-status::before { content: ''; width: 5px; height: 5px; flex: none; background: currentColor; border-radius: 50%; }

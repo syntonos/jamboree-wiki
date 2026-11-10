@@ -1,8 +1,8 @@
 /* Direct Canvas port of vault/src/components/Graph.jsx from the supplied vault.zip.
  * Reference SHA-256: 99fd51cfc74fc97d8ead9afc99b36a0033b4464319a307eed93eef6d250d068a.
- * React's effect/ref boundary is replaced with create/destroy. Physics, initial
- * positions, cooling, and pointer handling are unchanged. Only drawing colors
- * use the wiki theme and the requested central-node gradient.
+ * React's effect/ref boundary is replaced with create/destroy. The default
+ * physics match the reference; callers can increase repulsion between separate
+ * components. Drawing colors use the wiki theme and central-node gradient.
  */
 (function (root, factory) {
   const api = factory();
@@ -10,7 +10,7 @@
   else root.JamboreeVaultGraph = api;
 })(typeof window === 'undefined' ? globalThis : window, function () {
   function create(canvas, options) {
-    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}} = options;
+    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}, disconnectedRepulsion = 1} = options;
     const backlinks = p => names.filter(n => out[n].has(p));
     const ref = {current:canvas}, api = {current:{}}, cur = {current}, open = {current:onOpen};
     const cv = ref.current, cx = cv.getContext('2d')
@@ -28,6 +28,19 @@
     const E = []
     ids.forEach((a) => out[a].forEach((b) => { if (ix[b]) { E.push([ix[a], ix[b]]); ix[a].deg++; ix[b].deg++ } }))
 
+    // Treat indirect links as connected too. Only separate components receive
+    // the optional extra push; springs and forces within a component stay intact.
+    const adjacent = new Map(N.map(n => [n, []])), component = new Map()
+    for (const [a, b] of E) { adjacent.get(a).push(b); adjacent.get(b).push(a) }
+    for (const root of N) {
+      if (component.has(root)) continue
+      const queue = [root]; component.set(root, root)
+      for (let i = 0; i < queue.length; i++) for (const next of adjacent.get(queue[i])) {
+        if (component.has(next)) continue
+        component.set(next, root); queue.push(next)
+      }
+    }
+
     const toW = (x, y) => [(x - T.x) / T.k, (y - T.y) / T.k]
     const zoomAt = (x, y, f) => { const k = Math.min(4, Math.max(0.25, T.k * f)); const [wx, wy] = toW(x, y); T.k = k; T.x = x - wx * k; T.y = y - wy * k }
     api.current = { zoom: (f) => zoomAt(W / 2, H / 2, f), reset: () => { T.k = 1; T.x = 0; T.y = 0 } }
@@ -35,7 +48,7 @@
     const loop = () => {
       if (alpha > 0.03) {
         for (const a of N) {
-          for (const b of N) { if (a === b) continue; const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy + 0.1, d = Math.sqrt(d2), f = 2600 / d2 * alpha; a.vx += dx / d * f; a.vy += dy / d * f }
+          for (const b of N) { if (a === b) continue; const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy + 0.1, d = Math.sqrt(d2), strength = component.get(a) === component.get(b) ? 1 : disconnectedRepulsion, f = 2600 / d2 * alpha * strength; a.vx += dx / d * f; a.vy += dy / d * f }
           a.vx += (W / 2 - a.x) * 0.004 * alpha; a.vy += (H / 2 - a.y) * 0.004 * alpha
         }
         for (const [a, b] of E) { const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, f = (d - 90) * 0.02 * alpha; a.vx += dx / d * f; a.vy += dy / d * f; b.vx -= dx / d * f; b.vy -= dy / d * f }

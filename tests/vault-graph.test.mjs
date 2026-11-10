@@ -13,7 +13,7 @@ const port=await readFile(portPath,'utf8');
 // including initialization, numerical loop and pointer code, executes unchanged.
 const adapted=original.replace(/^import[^\n]*\n/gm,'').replace('export default function Graph','function Graph').replace(/\n  return \(\n[\s\S]*$/,'\n  return {api};\n}\nglobalThis.ReferenceGraph=Graph;\n');
 assert(adapted.includes('for (const a of N)'));
-function harness(kind,{names,out,current,local=false,dpr=1}){
+function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion=1}){
  let nextId=0,timestamp=0,seed=0x12345678,callbacks=new Map(),effect,refIndex=0,api;
  const resizers=[],listeners=new Map(),opened=[];
  const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
@@ -30,7 +30,7 @@ function harness(kind,{names,out,current,local=false,dpr=1}){
   destroy=effect();api={zoom:f=>refs.api.current.zoom(f),reset:()=>refs.api.current.reset()};
  }else{
   vm.runInContext(port,context,{filename:portPath});
-  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local});destroy=api.destroy;
+  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local,disconnectedRepulsion});destroy=api.destroy;
  }
  return{cv,cx,opened,api,advance(){const entry=callbacks.entries().next().value;assert(entry,`${kind}: no scheduled RAF`);callbacks.delete(entry[0]);entry[1](timestamp+=1000/60);},event(type,values){const e={type,pointerId:1,clientX:0,clientY:0,deltaY:0,preventDefault(){},...values};cv['on'+type]?.(e);for(const fn of listeners.get(type)||[])fn(e);},resize(w,h){cv.clientWidth=w;cv.clientHeight=h;for(const r of resizers)if(!r.disconnected)r.fn();},destroy(){destroy();assert.equal(callbacks.size,0,`${kind}: RAF not cancelled`);},commands(){return structuredClone(cx.commands);},arcs(){return cx.commands.filter(c=>c[0]==='arc').map(c=>({x:c[1],y:c[2],r:c[3]}));},world(){const c=cx.commands.filter(c=>c[0]==='setTransform').at(-1);return{k:c[1]/dpr,x:c[5]/dpr,y:c[6]/dpr};}};
 }
@@ -54,4 +54,38 @@ for(const fixture of [{name:'complete-directed-reciprocal-disconnected',names:id
  event('wheel',{clientX:300,clientY:240,deltaY:-210});frames(1,'wheel zoom');a.api.zoom(1.3);b.api.zoom(1.3);frames(1,'button zoom');a.api.reset();b.api.reset();frames(1,'reset camera');
  event('pointerdown',{pointerId:11,clientX:40,clientY:40});event('pointerdown',{pointerId:12,clientX:140,clientY:40});event('pointermove',{pointerId:11,clientX:15,clientY:50});event('pointermove',{pointerId:12,clientX:170,clientY:50});frames(1,'two pointer pinch');event('pointerup',{pointerId:11,clientX:15,clientY:50});event('pointerup',{pointerId:12,clientX:170,clientY:50});frames(1,'pinch release');
  a.resize(640,420);b.resize(640,420);frames(650,'resize reheat and cool');a.destroy();b.destroy();
+});
+
+
+test('extra disconnected repulsion leaves directly and indirectly connected nodes unchanged',()=>{
+ const names=['a','b','c','d'];
+ const links={a:new Set(['b']),b:new Set(['c']),c:new Set(['d']),d:new Set()};
+ const baseline=harness('port',{names,out:links,current:'a'});
+ const boosted=harness('port',{names,out:links,current:'a',disconnectedRepulsion:1.35});
+ try {
+  assert.deepEqual(boosted.commands(),baseline.commands());
+  for(let frame=0;frame<650;frame++) {
+   baseline.advance();boosted.advance();
+   assert.deepEqual(boosted.commands(),baseline.commands(),`connected chain changed at frame ${frame}`);
+  }
+ }finally{baseline.destroy();boosted.destroy();}
+});
+
+test('extra disconnected repulsion increases spacing between separate components and isolates',()=>{
+ const names=['a','b','c','d','isolated'];
+ const links={a:new Set(['b']),b:new Set(),c:new Set(['d']),d:new Set(),isolated:new Set()};
+ const baseline=harness('port',{names,out:links,current:'a'});
+ const boosted=harness('port',{names,out:links,current:'a',disconnectedRepulsion:1.35});
+ const componentCenters=arcs=>[
+  {x:(arcs[0].x+arcs[1].x)/2,y:(arcs[0].y+arcs[1].y)/2},
+  {x:(arcs[2].x+arcs[3].x)/2,y:(arcs[2].y+arcs[3].y)/2},
+  arcs[4],
+ ];
+ const meanSeparation=centers=>(Math.hypot(centers[0].x-centers[1].x,centers[0].y-centers[1].y)+Math.hypot(centers[0].x-centers[2].x,centers[0].y-centers[2].y)+Math.hypot(centers[1].x-centers[2].x,centers[1].y-centers[2].y))/3;
+ try {
+  for(let frame=0;frame<650;frame++){baseline.advance();boosted.advance();}
+  const before=meanSeparation(componentCenters(baseline.arcs()));
+  const after=meanSeparation(componentCenters(boosted.arcs()));
+  assert(after>before,`disconnected spacing did not increase: ${before} -> ${after}`);
+ }finally{baseline.destroy();boosted.destroy();}
 });

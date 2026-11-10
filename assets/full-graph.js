@@ -55,6 +55,7 @@
     for (const {source,target} of data.edges) out[source.slug].add(target.slug);
     const engine = window.JamboreeVaultGraph.create(canvas, {
       names, out, current: data.currentSlug, local: Boolean(data.currentSlug),
+      disconnectedRepulsion: 1.35,
       title: slug => bySlug.get(slug).title,
       onOpen: slug => { location.hash = '#/' + slug; },
       color: (slug, hover) => hover
