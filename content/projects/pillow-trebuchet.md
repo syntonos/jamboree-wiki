@@ -44,9 +44,6 @@ The concept diagram shows candidate system blocks only. Final CAD, PCB, and sche
 
 ## Related guides
 - [CAD](#/guides/mechanical/cad)
-- [Requirements and constraints](#/guides/design-practices/requirements-and-constraints)
-- [Testing and documentation](#/guides/design-practices/testing-and-documentation)
-- [Design reviews](#/guides/design-practices/design-reviews)
 
 ## Build log
 No build updates recorded yet.

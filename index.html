@@ -55,7 +55,7 @@
       <aside class="rightbar" id="notes-sidebar" aria-label="On this page and note graph">
         <div class="rail-heading"><div class="rail-title">ON THIS PAGE</div><button class="icon-button" id="close-right-sidebar" type="button" aria-label="Close notes sidebar" title="Close notes sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg></button></div><div id="toc"></div>
         <div class="graph-head"><span id="graph-heading">Complete graph</span><a class="icon-button" href="#/graph" aria-label="Open complete graph" title="Open complete graph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
-        <div class="local-graph-panel"><div class="local-graph-canvas" tabindex="0" aria-label="Complete graph. Drag nodes, scroll to zoom, or drag the background to pan."><svg id="graph" viewBox="0 0 700 700" role="group" aria-label="Complete graph"></svg></div><div class="local-graph-controls"></div></div>
+        <div class="local-graph-panel"><div class="local-graph-canvas" aria-label="Complete graph"><canvas id="graph" class="vault-graph" tabindex="0" role="img" aria-label="Complete graph"></canvas></div><div class="local-graph-controls"></div></div>
       </aside>
     </div>
     <footer><span>JAMBOREE WIKI</span></footer>
@@ -68,6 +68,8 @@
   <script src="assets/content-utils.js"></script>
   <script src="assets/projects.js"></script>
   <script src="assets/note-features.js"></script>
+  <script src="assets/graph-data.js"></script>
+  <script src="assets/vault-graph.js"></script>
   <script src="assets/full-graph.js"></script>
   <script src="assets/technical-content.js"></script>
   <script src="assets/app.js"></script>

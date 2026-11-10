@@ -47,7 +47,6 @@ The concept diagram shows candidate system blocks only. Final CAD, PCB, and sche
 - [CAD](#/guides/mechanical/cad)
 - [ANSYS](#/guides/mechanical/ansys)
 - [Tools](#/guides/mechanical/tools)
-- [Design reviews](#/guides/design-practices/design-reviews)
 
 ## Build log
 No build updates recorded yet.
