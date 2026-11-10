@@ -2,6 +2,7 @@
 :root { --scroll-thumb: #d5dae4; color-scheme: light; }
 :root:has(body.dark) { --scroll-thumb: #344557; color-scheme: dark; }
 body.dark { --scroll-thumb: #344557; color-scheme: dark; }
+body:not(.dark) { --ink: #000000; --muted: #000000; }
 * { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -39,6 +40,13 @@ header, footer { flex-shrink: 0; }
 .article-body:empty { display: none; }
 .article-body > :first-child { margin-top: 24px; }
 .article-backlinks { margin-top: 28px; padding-top: 20px; }
+.backlink-list a { background: var(--panel); }
+body:not(.dark) .backlink-list a { background: #ffffff; }
+.rightbar { padding: 16px 12px 16px 16px; }
+.rightbar #toc a { padding: 4px 0; line-height: 1.5; }
+.rightbar .graph-head { margin-top: 20px; padding-top: 16px; }
+.rightbar .local-graph-panel { margin-top: 8px; }
+.rightbar .local-graph-controls { margin-top: 8px; }
 .rail-heading .rail-title[hidden] { display: none; }
 .rail-heading:has(.rail-title[hidden]) { justify-content: flex-end; margin-bottom: 0; }
 .rightbar:has(#toc:empty) .graph-head { border-top: 0; margin-top: 0; padding-top: 4px; }
@@ -50,7 +58,7 @@ header, footer { flex-shrink: 0; }
 .header-start .breadcrumb { margin-right: 0; }
 .sidebar-toggle[hidden], .sidebar-backdrop[hidden] { display: none; }
 #left-sidebar-toggle { display: inline-flex; }
-.rail-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.rail-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .rail-heading .rail-title { margin: 0; }
 .rail-heading .icon-button { width: 30px; height: 30px; padding: 6px; }
 .sidebar { overflow-y: auto; }
@@ -63,27 +71,30 @@ body.right-sidebar-collapsed .rightbar { display: none; }
 body.right-sidebar-collapsed .page-layout { grid-template-columns: minmax(0, 1fr); }
 body.left-sidebar-collapsed.right-sidebar-collapsed .page-layout { max-width: 1200px; }
 .graph-view #right-sidebar-toggle, .main-site-view #right-sidebar-toggle { display: none; }
+@media (min-width: 1251px) {
+  .page-layout { max-width: none; column-gap: 32px; padding-right: 8px; }
+}
 
 header .header-graph-link, header .main-site-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   min-height: 44px;
   padding: 6px 0;
   border: 0;
   border-radius: 0;
   background: transparent;
-  font-size: 15px;
+  font-size: 13px;
   white-space: nowrap;
   text-decoration: none;
 }
 header .header-graph-link:hover, header .main-site-link:hover,
 header .header-graph-link.active { color: var(--blue); background: transparent; }
-header { height: 64px; padding-left: 24px; }
-.breadcrumb { font-size: 14px; }
-.top-actions { gap: 18px; }
-.desktop-socials { gap: 4px; padding-right: 14px; }
+header { --topbar-gap: 16px; height: 64px; padding-left: 24px; }
+.breadcrumb { font-size: 12px; }
+.top-actions, .desktop-socials { gap: var(--topbar-gap); }
+.desktop-socials { padding-right: 0; border-right: 0; }
 header .icon-button { width: 40px; height: 40px; padding: 8px; border: 0; }
 header .icon-button:hover { border: 0; background: transparent; color: var(--blue); }
 header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 22px; }
@@ -91,12 +102,10 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
 .sidebar .menu-toggle { padding: 6px; }
 #left-sidebar-toggle svg, .menu-toggle svg { width: 28px; height: 28px; stroke-width: 1.7; }
 @media (min-width: 761px) and (max-width: 1100px) {
-  header { padding-left: 12px; padding-right: 20px; }
+  header { --topbar-gap: 12px; padding-left: 12px; padding-right: 20px; }
   .header-start .breadcrumb { display: none; }
-  .top-actions { gap: 10px; }
-  .desktop-socials { padding-right: 10px; gap: 2px; }
   header .icon-button { width: 36px; height: 40px; padding: 7px; }
-  header .header-graph-link, header .main-site-link { font-size: 13px; }
+  header .header-graph-link, header .main-site-link { font-size: 12px; }
 }
 
 @media (max-width: 1250px) {
@@ -108,7 +117,7 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
     right: 0;
     bottom: 0;
     width: min(350px, calc(100vw - 28px));
-    padding: 22px;
+    padding: 16px;
     overflow-y: auto;
     overscroll-behavior: contain;
     background: var(--bg);
@@ -121,18 +130,18 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
 @media (max-width: 760px) {
   #left-sidebar-toggle, body.left-sidebar-collapsed #left-sidebar-toggle { display: none; }
   .sidebar { overflow: visible; }
-  .top-actions { gap: 4px; }
   .breadcrumb { display: none; }
   .header-start { display: none; }
-  header { height: 60px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
+  header { --topbar-gap: 12px; height: 60px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
   .top-actions { width: 100%; justify-content: space-between; }
-  header .header-graph-link, header .main-site-link { min-height: 44px; font-size: 13px; padding: 7px 0; gap: 6px; }
+  header .header-graph-link, header .main-site-link { min-height: 44px; font-size: 12px; padding: 7px 0; gap: 8px; }
   .sidebar-heading { margin-bottom: 0; }
   .menu-is-open .sidebar-heading { margin-bottom: 20px; }
   .hero { min-height: 240px; }
 }
 @media (max-width: 360px) {
-  header .header-graph-link, header .main-site-link { font-size: 12px; }
+  header { --topbar-gap: 8px; }
+  header .header-graph-link, header .main-site-link { font-size: 11px; }
   header .icon-button { width: 36px; }
   header .header-graph-link > svg { width: 18px; height: 18px; }
 }

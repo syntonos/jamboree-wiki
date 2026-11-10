@@ -1,4 +1,4 @@
-// Shared destination for the title and Meet the team links. Set when the main site is available.
+// Destination for Meet the team links. The Jamboree logo always opens Overview.
 const MAIN_SITE_URL = '';
 // Add the club's channel/profile URLs when they are available.
 const SOCIAL_LINKS = {

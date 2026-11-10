@@ -5,12 +5,10 @@
   let viewCleanup = () => {};
 
   function model(notes) {
-    const nodes = notes.filter(note => !['index', 'about'].includes(note.slug)).map((note, index) => {
+    const nodes = notes.filter(note => !['index', 'about'].includes(note.slug)).map(note => {
       const folder = note.slug.includes('/') ? note.slug.split('/')[0] : '';
-      let hue = 0, seed = 7;
-      for (const letter of folder) hue = (hue * 31 + letter.charCodeAt(0)) % 360;
-      for (const letter of note.slug) seed = (seed * 31 + letter.charCodeAt(0)) >>> 0;
-      return {...note, children: [], hue: folder ? hue : 250, x: Math.cos(index) * 60 + seed % 20, y: Math.sin(index) * 60 + (seed >>> 8) % 20, vx: 0, vy: 0};
+      const hue = folder === 'projects' ? 215 : folder === 'guides' ? 190 : 210;
+      return {...note, children: [], hue, degree: 0, vx: 0, vy: 0};
     });
     const bySlug = new Map(nodes.map(note => [note.slug, note]));
     const connections = new Map();
@@ -25,7 +23,9 @@
       addEdge(parent, note.slug);
       for (const target of note.links || []) addEdge(note.slug, target);
     }
-    return {nodes, edges: [...connections.values()]};
+    const edges = [...connections.values()];
+    for (const {source, target} of edges) { source.degree++; target.degree++; }
+    return {nodes, edges};
   }
 
   function localModel(notes, slug) {
@@ -43,32 +43,74 @@
     };
   }
 
-  // The reference graph's repulsion, centering, springs, and damping. Positions
-  // use CSS pixels so the same forces work in both the inset and full window.
-  function step(nodes, edges, width, height, alpha) {
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j], dx = a.x - b.x, dy = a.y - b.y;
-        const squared = dx * dx + dy * dy + .1, distance = Math.sqrt(squared);
-        const force = 2600 / squared * alpha;
-        a.vx += dx / distance * force; a.vy += dy / distance * force;
-        b.vx -= dx / distance * force; b.vy -= dy / distance * force;
+  function initialize(data, width, height, random = Math.random) {
+    const current = data.nodes.find(node => node.slug === data.currentSlug);
+    const neighbors = data.nodes.filter(node => node !== current);
+    const nodes = data.nodes.map((node, index) => {
+      let x, y;
+      if (current) {
+        const neighborIndex = neighbors.indexOf(node);
+        const angle = -Math.PI / 2 + neighborIndex / Math.max(1, neighbors.length) * Math.PI * 2;
+        x = width / 2 + (node === current ? 0 : Math.cos(angle) * 90);
+        y = height / 2 + (node === current ? 0 : Math.sin(angle) * 90);
+      } else {
+        x = width / 2 + Math.cos(index) * 60 + random() * 20;
+        y = height / 2 + Math.sin(index) * 60 + random() * 20;
       }
-      a.vx += (width / 2 - a.x) * .004 * alpha;
-      a.vy += (height / 2 - a.y) * .004 * alpha;
+      return {...node, x, y, vx: 0, vy: 0};
+    });
+    const bySlug = new Map(nodes.map(node => [node.slug, node]));
+    return {...data, nodes, edges: data.edges.map(edge => ({source: bySlug.get(edge.source.slug), target: bySlug.get(edge.target.slug)}))};
+  }
+
+  // Pure numerical step: the vault's nested-loop force integration and alpha
+  // lifecycle are copied in their original order, including velocity accumulation
+  // on a dragged node. The caller owns frame timing; one call equals one RAF.
+  function simulationStep(state, width, height) {
+    const nodes = state.nodes.map(node => ({...node}));
+    const bySlug = new Map(nodes.map(node => [node.slug, node]));
+    const edges = state.edges.map(edge => ({source: bySlug.get(edge.source.slug), target: bySlug.get(edge.target.slug)}));
+    const dragged = bySlug.get(state.draggedSlug);
+    let alpha = state.alpha;
+    if (alpha > .03) {
+      for (const a of nodes) {
+        for (const b of nodes) {
+          if (a === b) continue;
+          const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy + .1, d = Math.sqrt(d2), f = 2600 / d2 * alpha;
+          a.vx += dx / d * f; a.vy += dy / d * f;
+        }
+        a.vx += (width / 2 - a.x) * .004 * alpha;
+        a.vy += (height / 2 - a.y) * .004 * alpha;
+      }
+      for (const {source: a, target: b} of edges) {
+        const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, f = (d - 90) * .02 * alpha;
+        a.vx += dx / d * f; a.vy += dy / d * f;
+        b.vx -= dx / d * f; b.vy -= dy / d * f;
+      }
+      for (const node of nodes) {
+        if (node === dragged) continue;
+        node.vx *= .8; node.vy *= .8;
+        node.x += node.vx; node.y += node.vy;
+      }
+      if (!dragged) alpha *= .994;
     }
-    for (const {source: a, target: b} of edges) {
-      const dx = b.x - a.x, dy = b.y - a.y, distance = Math.hypot(dx, dy) || 1;
-      const force = (distance - 90) * .02 * alpha;
-      a.vx += dx / distance * force; a.vy += dy / distance * force;
-      b.vx -= dx / distance * force; b.vy -= dy / distance * force;
+    let anchorReturning = Boolean(state.anchorReturning);
+    const focal = bySlug.get(state.currentSlug);
+    if (focal && focal !== dragged) {
+      // Local-only focal constraint: keep the viewed note centered at rest. A
+      // released focal note returns smoothly using the same .004/.8 centering
+      // and damping, without cooling this constraint before it reaches home.
+      // Other nodes above retain the unmodified vault forces and cooling.
+      const before = state.nodes.find(node => node.slug === state.currentSlug);
+      if (anchorReturning) {
+        focal.vx = (before.vx + (width / 2 - before.x) * .004) * .8;
+        focal.vy = (before.vy + (height / 2 - before.y) * .004) * .8;
+        focal.x = before.x + focal.vx; focal.y = before.y + focal.vy;
+        if (Math.hypot(focal.x - width / 2, focal.y - height / 2) < .25 && Math.hypot(focal.vx, focal.vy) < .05) anchorReturning = false;
+      }
+      if (!anchorReturning) { focal.x = width / 2; focal.y = height / 2; focal.vx = focal.vy = 0; }
     }
-    for (const node of nodes) {
-      if (node.fx != null) { node.x = node.fx; node.y = node.fy; node.vx = node.vy = 0; continue; }
-      node.vx *= .8; node.vy *= .8;
-      node.x += node.vx; node.y += node.vy;
-    }
+    return {...state, nodes, edges, alpha, anchorReturning};
   }
 
   function labelLines(title, limit = 20) {
@@ -108,24 +150,20 @@
     engineCleanup = () => {};
     if (!data.nodes.length) { svg.innerHTML = ''; return; }
     let width = svg.clientWidth || (local ? 280 : 900), height = svg.clientHeight || (local ? 360 : 720);
-    const {nodes, edges} = data;
+    const {nodes, edges} = initialize(data, width, height);
     const listeners = new AbortController();
     const on = (target, type, handler, options = {}) => target?.addEventListener(type, handler, {...options, signal: listeners.signal});
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let paused = reducedMotion.matches, alpha = 1, animation = 0, alive = true, interacted = false;
-    let previousFrame = 0, frameCount = 0;
+    let anchorReturning = false;
     let camera = {scale: 1, tx: 0, ty: 0}, fittedScale = 1;
     let drag = null, pinch = null, handledPointer = 0;
     const pointers = new Map();
-    for (const node of nodes) {
-      node.x += width / 2; node.y += height / 2; node.degree = 0;
+    function advance() {
+      const next = simulationStep({nodes, edges, alpha, currentSlug: data.currentSlug, draggedSlug: drag?.node?.slug, anchorReturning}, width, height);
+      next.nodes.forEach((node, index) => Object.assign(nodes[index], node));
+      alpha = next.alpha; anchorReturning = next.anchorReturning;
     }
-    for (const edge of edges) { edge.source.degree++; edge.target.degree++; }
-    // Resolve the most crowded initial positions before showing the first frame.
-    // Reduced-motion users get the settled layout with no running animation.
-    const initialSteps = paused ? 600 : 35;
-    for (let i = 0; i < initialSteps; i++) step(nodes, edges, width, height, Math.pow(.994, i));
-    if (paused) alpha = .03;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.classList.remove('has-highlight', 'is-dragging');
     svg.classList.add('interactive-graph-svg');
@@ -166,13 +204,17 @@
       frame.querySelector('[data-graph-zoom="in"]').disabled = ratio >= 4 - .001;
       frame.querySelector('[data-graph-zoom="out"]').disabled = ratio <= .25 + .001;
     }
-    function fit() {
+    function fit(initial = false) {
       if (!svg.getBoundingClientRect().width) return;
-      const xs = nodes.map(node => node.x), ys = nodes.map(node => node.y);
-      const left = Math.min(...xs), right = Math.max(...xs), top = Math.min(...ys), bottom = Math.max(...ys);
-      const marginX = local ? Math.min(72, width * .22) : 90, marginY = 48;
-      fittedScale = Math.min((width - marginX * 2) / Math.max(1, right - left), (height - marginY * 2) / Math.max(1, bottom - top), 1);
-      camera = {scale: fittedScale, tx: width / 2 - (left + right) / 2 * fittedScale, ty: height / 2 - (top + bottom) / 2 * fittedScale};
+      const centerX = width / 2, centerY = height / 2;
+      // Reserve space for complete graphs to spread on narrow viewports without
+      // moving the camera every few frames. An explicit Fit uses actual bounds.
+      const initialExtent = initial && !data.currentSlug ? 90 + Math.sqrt(nodes.length) * 32 : 90;
+      const extentX = Math.max(initialExtent, ...nodes.map(node => Math.abs(node.x - centerX)));
+      const extentY = Math.max(initialExtent, ...nodes.map(node => Math.abs(node.y - centerY)));
+      const marginX = local ? Math.min(58, width * .2) : 75, marginY = 44;
+      fittedScale = Math.min((width - marginX * 2) / (extentX * 2), (height - marginY * 2) / (extentY * 2), 1);
+      camera = {scale: fittedScale, tx: width / 2 - centerX * fittedScale, ty: height / 2 - centerY * fittedScale};
       updateCamera();
     }
     const screenPoint = event => new DOMPoint(event.clientX, event.clientY).matrixTransform(svg.getScreenCTM().inverse());
@@ -185,33 +227,26 @@
       interacted = true;
       updateCamera();
     }
-    function simulate(timestamp) {
+    function simulate() {
       animation = 0;
-      if (!alive || paused || document.hidden || !svg.getBoundingClientRect().width) { previousFrame = 0; return; }
-      // Use a fixed 60 Hz step so high-refresh displays do not speed up physics.
-      const elapsed = previousFrame ? Math.min(timestamp - previousFrame, 50) : 1000 / 60;
-      const count = Math.max(1, Math.round(elapsed / (1000 / 60)));
-      if (previousFrame && timestamp - previousFrame < 1000 / 75) { animation = requestAnimationFrame(simulate); return; }
-      previousFrame = timestamp;
-      for (let iteration = 0; iteration < count && alpha > .03; iteration++) {
-        step(nodes, edges, width, height, alpha);
-        if (!drag?.node) alpha *= .994;
-      }
-      paint();
-      if (!interacted && ++frameCount % 12 === 0) fit();
-      if (alpha > .03 || drag?.node) animation = requestAnimationFrame(simulate);
-      else if (!interacted) fit();
+      if (!alive || paused || document.hidden || !svg.getBoundingClientRect().width) return;
+      // Exactly one vault integration step per animation frame. The camera is
+      // unchanged while the graph moves, including during node drag/release.
+      advance(); paint();
+      if (alpha > .03 || drag?.node || anchorReturning) animation = requestAnimationFrame(simulate);
     }
     function reheat() {
-      alpha = 1; previousFrame = 0;
+      alpha = 1;
       if (!animation && !paused && !document.hidden) animation = requestAnimationFrame(simulate);
     }
     function updateMotion() {
-      cancelAnimationFrame(animation); animation = 0; previousFrame = 0;
+      cancelAnimationFrame(animation); animation = 0;
       if (paused) {
-        for (let i = 0; i < 600; i++) step(nodes, edges, width, height, Math.pow(.994, i));
-        alpha = .03; paint(); if (!interacted) fit();
-      } else if (!document.hidden && alpha > .03) animation = requestAnimationFrame(simulate);
+        // The reduced-motion exception computes the equilibrium without showing
+        // animation; normal-motion graphs never pre-solve or auto-refit.
+        for (let i = 0; i < 1000 && (alpha > .03 || anchorReturning); i++) advance();
+        paint();
+      } else if (!document.hidden && (alpha > .03 || anchorReturning)) animation = requestAnimationFrame(simulate);
     }
     function highlight(slug) {
       const connected = new Set([slug]);
@@ -225,8 +260,8 @@
     on(frame.querySelector('[data-graph-fit]'), 'click', () => { interacted = true; fit(); });
     on(reducedMotion, 'change', event => { paused = event.matches; updateMotion(); });
     on(document, 'visibilitychange', () => {
-      cancelAnimationFrame(animation); animation = 0; previousFrame = 0;
-      if (!document.hidden && !paused && alpha > .03) animation = requestAnimationFrame(simulate);
+      cancelAnimationFrame(animation); animation = 0;
+      if (!document.hidden && !paused && (alpha > .03 || anchorReturning)) animation = requestAnimationFrame(simulate);
     });
     on(svg, 'wheel', event => {
       event.preventDefault();
@@ -239,7 +274,7 @@
     on(svg, 'focusout', () => highlight(null));
 
     function releaseNode() {
-      if (drag?.node) { drag.node.fx = null; drag.node.fy = null; }
+      if (drag?.node?.slug === data.currentSlug) anchorReturning = true;
     }
     on(svg, 'pointerdown', event => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
@@ -257,7 +292,7 @@
       const node = anchor ? bySlug.get(anchor.dataset.slug) : null;
       const grab = worldPoint(point);
       drag = {id: event.pointerId, node, anchor, offsetX: node ? node.x - grab.x : 0, offsetY: node ? node.y - grab.y : 0, x: point.x, y: point.y, clientX: event.clientX, clientY: event.clientY, tx: camera.tx, ty: camera.ty, moved: false};
-      if (node) { node.fx = node.x; node.fy = node.y; anchor.focus({preventScroll: true}); reheat(); }
+      if (node) { anchor.focus({preventScroll: true}); reheat(); }
     });
     on(svg, 'pointermove', event => {
       if (!pointers.has(event.pointerId)) return;
@@ -279,8 +314,8 @@
       interacted = true; svg.classList.add('is-dragging');
       if (drag.node) {
         const pointInWorld = worldPoint(point);
-        drag.node.x = drag.node.fx = pointInWorld.x + drag.offsetX; drag.node.y = drag.node.fy = pointInWorld.y + drag.offsetY;
-        drag.node.vx = drag.node.vy = 0; paint(); reheat();
+        drag.node.x = pointInWorld.x + drag.offsetX; drag.node.y = pointInWorld.y + drag.offsetY;
+        paint();
       } else {
         camera.tx = drag.tx + point.x - drag.x; camera.ty = drag.ty + point.y - drag.y; updateCamera();
       }
@@ -296,6 +331,7 @@
         drag = {id, node: null, x: point.x, y: point.y, tx: camera.tx, ty: camera.ty, moved: true, clientX: -Infinity, clientY: -Infinity};
       } else { pinch = null; svg.classList.remove('is-dragging'); }
       if (svg.hasPointerCapture(event.pointerId)) svg.releasePointerCapture(event.pointerId);
+      if (paused) updateMotion();
       if (open) location.hash = open;
     }
     on(svg, 'pointerup', stopPointer); on(svg, 'pointercancel', stopPointer); on(svg, 'lostpointercapture', stopPointer);
@@ -323,12 +359,12 @@
       for (const node of nodes) { node.x += dx; node.y += dy; }
       width = nextWidth; height = nextHeight;
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      if (!interacted) fit(); else updateCamera();
+      if (!interacted) fit(true); else updateCamera();
       reheat();
     });
     sizeObserver.observe(svg);
-    paint(); fit(); updateMotion();
-    document.fonts?.ready.then(() => { if (alive) { paint(); if (!interacted) fit(); } });
+    paint(); fit(true); updateMotion();
+    document.fonts?.ready.then(() => { if (alive) paint(); });
     engineCleanup = () => {
       alive = false; listeners.abort(); sizeObserver.disconnect(); cancelAnimationFrame(animation); releaseNode();
       if (document.fullscreenElement === frame) document.exitFullscreen().catch(() => {});
@@ -350,6 +386,8 @@
       projects.enhanceControls?.(filterContainer);
       const visible = projects.graphNotes(notes, filters);
       const data = model(visible);
+      const degrees = new Map(model(notes).nodes.map(node => [node.slug, node.degree]));
+      data.nodes.forEach(node => { node.degree = degrees.get(node.slug) || 0; });
       const count = projectCount(notes, filters);
       const empty = !data.nodes.length;
       // Stop the old layout before hiding or replacing its nodes.
@@ -409,7 +447,7 @@
     frame.querySelector('.local-graph-controls').innerHTML = controls(true);
     mountGraph(svg, frame, data, true);
   }
-  window.JamboreeGraph = {model, localModel, markup, mount, mountLocal, destroy: () => {
+  window.JamboreeGraph = {model, localModel, initialize, simulationStep, markup, mount, mountLocal, destroy: () => {
     engineCleanup(); viewCleanup();
     engineCleanup = () => {}; viewCleanup = () => {};
   }};

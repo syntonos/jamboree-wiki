@@ -16,16 +16,16 @@
 #full-graph-svg { display: block; width: 100%; height: max(620px, 72vh); max-height: 1100px; }
 .interactive-graph-svg { touch-action: none; cursor: grab; user-select: none; }
 .interactive-graph-svg.is-dragging { cursor: grabbing; }
-.graph-edges line, #graph .graph-edges line { stroke: hsl(246 58% 57% / .32); stroke-width: 1; }
-.dark .graph-edges line, .dark #graph .graph-edges line { stroke: rgb(130 120 255 / .4); }
+.graph-edges line, #graph .graph-edges line { stroke: var(--line); stroke-width: 1; }
 .graph-edges line.is-connected, #graph .graph-edges line.is-connected { stroke: var(--blue); stroke-width: 1.5; }
-.graph-node { --node-color: hsl(var(--node-hue, 250) 65% 41%); cursor: pointer; outline: none; }
-.dark .graph-node { --node-color: hsl(var(--node-hue, 250) 85% 72%); }
+.graph-node { --node-color: hsl(var(--node-hue, 210) 25% 47%); cursor: pointer; outline: none; }
+.dark .graph-node { --node-color: hsl(var(--node-hue, 210) 28% 66%); }
 .graph-node .node-hit, #graph .node-hit { fill: transparent; stroke: none; }
-.graph-node .node-dot, #graph .graph-node .node-dot { fill: var(--node-color); stroke: none; filter: drop-shadow(0 0 6px var(--node-color)); }
-.graph-node.is-current { --node-color: #007f9c; }
-.dark .graph-node.is-current { --node-color: #4de1ff; }
-.graph-node:hover, .graph-node:focus { --node-color: var(--ink); }
+.graph-node .node-dot, #graph .graph-node .node-dot { fill: var(--node-color); stroke: none; filter: drop-shadow(0 0 2px var(--node-color)); }
+.graph-node.is-current { --node-color: #4d718b; }
+.dark .graph-node.is-current { --node-color: #9cb4c8; }
+.graph-node:hover .node-dot, .graph-node:focus .node-dot { stroke: var(--panel); stroke-width: 2; filter: drop-shadow(0 0 4px var(--node-color)); }
+.graph-node:hover text, .graph-node:focus text { fill: var(--node-color); }
 .graph-node:focus-visible .node-dot { stroke: var(--ink); stroke-width: 2; }
 .graph-node text, #graph .graph-node text { fill: var(--ink); font: 11px var(--font-body); letter-spacing: .2px; text-anchor: middle; paint-order: stroke fill; stroke: var(--bg); stroke-width: 2px; stroke-linejoin: round; }
 .has-highlight .graph-node:not(.is-neighbor) { opacity: .4; }
