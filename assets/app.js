@@ -30,20 +30,22 @@ function markdown(body, slug) { return window.JamboreeNotes.markdown(body, slug,
 function projectGroups(filters) {
   const projects = window.JamboreeProjects;
   const matches = notes.filter(note => projects.matches(note, filters));
-  if (!matches.length && projects.isActive(filters)) return '<div class="project-empty" role="status"><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div>';
-  const statuses = filters.status ? [filters.status] : [...new Set(matches.map(note => note.status))];
-  const titles = {current:'Present projects',past:'Past projects',future:'Future projects'};
-  return statuses.map(status => {
-    const statusKey = String(status).toLowerCase();
-    const group = matches.filter(note => String(note.status).toLowerCase() === statusKey).sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
-    return heading(statusKey,'›',titles[statusKey] || status + ' projects') + (group.length ? '<div class="projects-grid">' + group.map(project).join('') + '</div>' : '<div class="empty">No ' + esc(status) + ' projects yet.</div>');
+  const empty = !matches.length && projects.isActive(filters) ? '<div class="project-empty" role="status"><p>No projects match these filters.</p><button type="button" data-filter-reset>Reset filters</button></div>' : '';
+  const groups = [
+    {status:'current',title:'Current',page:'present'},
+    {status:'past',title:'Past',page:'past'},
+    {status:'future',title:'Future',page:'future'},
+  ];
+  return empty + groups.map(({status,title,page}) => {
+    const group = matches.filter(note => String(note.status).toLowerCase() === status).sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
+    const heading = `<div class="section-heading project-group-heading" id="${status}"><h2 id="project-group-${status}">${title}</h2><a class="project-group-page" href="#/projects/${page}" aria-label="View ${title.toLowerCase()} projects" title="View ${title.toLowerCase()} projects">${icon('arrow')}</a></div>`;
+    const body = group.length ? '<div class="projects-grid">' + group.map(project).join('') + '</div>' : `<p class="project-group-empty">${projects.isActive(filters) ? 'No matching ' + title.toLowerCase() + ' projects.' : 'No ' + title.toLowerCase() + ' projects yet.'}</p>`;
+    return `<section class="project-group" data-project-group="${status}" aria-labelledby="project-group-${status}">${heading}${body}</section>`;
   }).join('');
 }
 function projectHub() {
   const filters = window.JamboreeProjects.getFilters();
-  const archives = window.JamboreeContent.navigationLinks({slug:'projects/index'},notes).map(slug => notes.find(note => note.slug === slug)).filter(note => note.type !== 'project');
-  const archiveLinks = '<nav class="intro-links" aria-label="Project groups">' + archives.map(note => `<a href="${link(note)}">${esc(note.title)} ${icon('arrow')}</a>`).join('') + '</nav>';
-  return '<div class="project-hub">' + archiveLinks + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
+  return '<div class="project-hub">' + window.JamboreeProjects.controls(notes,filters) + '<p class="project-results-summary" aria-live="polite"></p><div class="project-groups">' + projectGroups(filters) + '</div></div>';
 }
 function mountProjectHub() {
   const hub = $('.project-hub');

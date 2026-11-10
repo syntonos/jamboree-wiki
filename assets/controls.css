@@ -31,9 +31,11 @@ body:not(.dark) { --ink: #000000; --muted: #000000; }
 .project-status::before { content: ''; width: 5px; height: 5px; flex: none; background: currentColor; border-radius: 50%; }
 .intro-links a, .section-heading > a { display: inline-flex; align-items: center; gap: 8px; }
 .intro-links .ui-icon, .section-heading .ui-icon { width: 16px; height: 16px; }
-.project-hub > .intro-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 20px; }
-.project-hub > .intro-links a { padding: 7px 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
-.project-hub > .intro-links a:hover { color: var(--blue); border-color: var(--blue); }
+.project-group-heading { justify-content: flex-start; gap: 10px; margin: 28px 0 16px; }
+.project-group-heading .project-group-page { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; color: var(--blue); }
+.project-group-page .ui-icon { width: 16px; height: 16px; }
+.project-group-page:hover { color: var(--ink); }
+.project-group-empty { margin: 0; font-size: 12px; color: var(--muted); }
 
 /* Short notes use the available page height; the footer keeps its own dimensions. */
 body { display: flex; flex-direction: column; min-height: 100dvh; }
@@ -161,6 +163,7 @@ header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 
   .sidebar-heading { margin-bottom: 0; }
   .menu-is-open .sidebar-heading { margin-bottom: 20px; }
   .hero { min-height: 240px; }
+  .project-group-heading .project-group-page { width: 40px; height: 40px; }
   #main [id], #main [data-heading-id] { scroll-margin-top: 64px; }
 }
 @media (max-width: 360px) {
