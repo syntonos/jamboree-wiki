@@ -129,7 +129,8 @@
   }
   function backlinks(note, notes) {
     const sources = (note.backlinks || []).map(slug => notes.find(source => source.slug === slug)).filter(Boolean);
-    return `<section class="article-backlinks" id="linked-from"><h2>Linked from <span>${sources.length}</span></h2>${sources.length ? `<div class="backlink-list">${sources.map(source => `<a href="${noteHref(source.slug)}"><span>${escape(source.title)}</span><small>${escape(source.type === 'project' ? 'Project' : source.slug.startsWith('guides/') ? 'Guide' : 'Note')}</small></a>`).join('')}</div>` : '<p>No incoming note links.</p>'}</section>`;
+    if (!sources.length) return '';
+    return `<section class="article-backlinks" id="linked-from"><h2>Linked from <span>${sources.length}</span></h2><div class="backlink-list">${sources.map(source => `<a href="${noteHref(source.slug)}"><span>${escape(source.title)}</span><small>${escape(source.type === 'project' ? 'Project' : source.slug.startsWith('guides/') ? 'Guide' : 'Note')}</small></a>`).join('')}</div></section>`;
   }
   return {markdown, inline, tags, facts, backlinks};
 });

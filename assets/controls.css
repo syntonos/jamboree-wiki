@@ -8,8 +8,42 @@ body.dark { --scroll-thumb: #344557; color-scheme: dark; }
 ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border: 1px solid transparent; border-radius: 4px; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background-color: var(--muted); }
 
-.guide-card { align-items: center; grid-template-columns: 36px minmax(0, 1fr) 12px; }
-.guide-icon { display: flex; align-items: center; justify-content: center; width: 36px; min-height: 36px; line-height: 1; text-align: center; }
+.ui-icon { display: block; width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.guide-card { align-items: center; grid-template-columns: 32px minmax(0, 1fr) 20px; gap: 12px; padding: 18px 16px; }
+.guide-card > div { min-width: 0; }
+.guide-card h3 { overflow-wrap: anywhere; }
+.guide-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; line-height: 1; }
+.guide-icon .ui-icon { width: 24px; height: 24px; }
+.guide-card > .ui-icon, .project-bottom > .ui-icon { color: var(--blue); width: 18px; height: 18px; }
+.sidebar nav a { align-items: center; gap: 10px; line-height: 1.5; }
+.sidebar nav .ui-icon { width: 18px; height: 18px; }
+.sidebar .disciplines .ui-icon { width: 14px; height: 14px; }
+.sidebar-search .search-icon { width: 17px; height: 17px; }
+.sidebar-heading { margin-bottom: 24px; }
+.project-bottom { align-items: center; }
+.project-status { display: inline-flex; align-items: center; gap: 7px; }
+.project-status::before { content: ''; width: 5px; height: 5px; flex: none; background: currentColor; border-radius: 50%; }
+.intro-links a, .section-heading > a { display: inline-flex; align-items: center; gap: 8px; }
+.intro-links .ui-icon, .section-heading .ui-icon { width: 16px; height: 16px; }
+
+/* Short notes use the available page height; the footer keeps its own dimensions. */
+body { display: flex; flex-direction: column; min-height: 100dvh; }
+.shell { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+header, footer { flex-shrink: 0; }
+.page-layout { flex: 1; width: 100%; margin: 0 auto; align-items: start; }
+.article h1 { margin: 0 0 16px; max-width: 100%; }
+.article > .description { margin: 0 0 24px; line-height: 1.7; }
+.article > .description:last-child { margin-bottom: 0; }
+.article > .guide-grid { margin: 24px 0; }
+.article > .guide-grid:last-child { margin-bottom: 0; }
+.article-body:empty { display: none; }
+.article-body > :first-child { margin-top: 24px; }
+.article-backlinks { margin-top: 28px; padding-top: 20px; }
+.rail-heading .rail-title[hidden] { display: none; }
+.rail-heading:has(.rail-title[hidden]) { justify-content: flex-end; margin-bottom: 0; }
+.rightbar:has(#toc:empty) .graph-head { border-top: 0; margin-top: 0; padding-top: 4px; }
+.graph-head { align-items: center; gap: 10px; text-transform: uppercase; }
+.graph-head .icon-button { width: 30px; height: 30px; padding: 5px; }
 
 /* Each rail can close independently. The header always offers a way back. */
 .header-start { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -34,23 +68,35 @@ header .header-graph-link, header .main-site-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 7px 11px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: var(--panel);
+  gap: 9px;
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 15px;
+  white-space: nowrap;
   text-decoration: none;
 }
 header .header-graph-link:hover, header .main-site-link:hover,
-header .header-graph-link.active { border-color: var(--blue); color: var(--blue); background: var(--soft); }
+header .header-graph-link.active { color: var(--blue); background: transparent; }
+header { height: 64px; padding-left: 24px; }
+.breadcrumb { font-size: 14px; }
+.top-actions { gap: 18px; }
+.desktop-socials { gap: 4px; padding-right: 14px; }
+header .icon-button { width: 40px; height: 40px; padding: 8px; border: 0; }
+header .icon-button:hover { border: 0; background: transparent; color: var(--blue); }
+header .icon-button svg, header .header-graph-link > svg { width: 22px; height: 22px; }
+#left-sidebar-toggle { width: 44px; height: 44px; padding: 8px; }
+.sidebar .menu-toggle { padding: 6px; }
+#left-sidebar-toggle svg, .menu-toggle svg { width: 28px; height: 28px; stroke-width: 1.7; }
 @media (min-width: 761px) and (max-width: 1100px) {
-  header { padding-left: 20px; padding-right: 20px; }
+  header { padding-left: 12px; padding-right: 20px; }
   .header-start .breadcrumb { display: none; }
-  .top-actions { gap: 6px; }
-  .desktop-socials { padding-right: 6px; gap: 1px; }
-  header .icon-button { width: 32px; height: 36px; padding: 7px; }
-  header .header-graph-link, header .main-site-link { font-size: 11px; padding-left: 8px; padding-right: 8px; }
+  .top-actions { gap: 10px; }
+  .desktop-socials { padding-right: 10px; gap: 2px; }
+  header .icon-button { width: 36px; height: 40px; padding: 7px; }
+  header .header-graph-link, header .main-site-link { font-size: 13px; }
 }
 
 @media (max-width: 1250px) {
@@ -78,7 +124,15 @@ header .header-graph-link.active { border-color: var(--blue); color: var(--blue)
   .top-actions { gap: 4px; }
   .breadcrumb { display: none; }
   .header-start { display: none; }
-  header { justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
+  header { height: 60px; justify-content: flex-end; padding-left: 14px; padding-right: 14px; }
   .top-actions { width: 100%; justify-content: space-between; }
-  header .header-graph-link, header .main-site-link { min-height: 44px; padding: 7px 8px; gap: 6px; }
+  header .header-graph-link, header .main-site-link { min-height: 44px; font-size: 13px; padding: 7px 0; gap: 6px; }
+  .sidebar-heading { margin-bottom: 0; }
+  .menu-is-open .sidebar-heading { margin-bottom: 20px; }
+  .hero { min-height: 240px; }
+}
+@media (max-width: 360px) {
+  header .header-graph-link, header .main-site-link { font-size: 12px; }
+  header .icon-button { width: 36px; }
+  header .header-graph-link > svg { width: 18px; height: 18px; }
 }

@@ -75,6 +75,7 @@ test('project facts and backlinks expose metadata without inventing a lead', () 
   const backlinks=renderer.backlinks(firmware,notes);
   assert.match(backlinks,/href="#\/projects\/laser"/);
   assert.match(backlinks,/Laser tag/);
+  assert.equal(renderer.backlinks({...firmware,backlinks:[]},notes),'');
 });
 
 test('Markdown links retain balanced URLs, title metadata, and wiki aliases inside tables', () => {
