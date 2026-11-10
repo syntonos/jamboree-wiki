@@ -13,7 +13,7 @@ lead:
 contact:
 updated: 2026-10-29
 next_milestone: Choose a first oscillator circuit and define the session format.
-help_needed: Analog audio circuits, prototyping, and workshop planning.
+stage: in design
 ---
 
 ## Scope

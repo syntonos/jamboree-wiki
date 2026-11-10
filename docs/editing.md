@@ -11,7 +11,7 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `title` | Page and card title. |
 | `description` | Short factual summary. |
 | `type` | Set to `project` for project cards and project filters. |
-| `status` | `current`, `past`, or `future`. |
+| `status` | Hub/archive group: `current`, `past`, or `future`. |
 | `featured` | `true` shows a current project on the homepage; `false` hides it there. |
 | `order` | Numeric display order for featured projects. |
 | `discipline` | Comma-separated disciplines, such as `Mechanical, Electrical, Computer science`. |
@@ -20,12 +20,14 @@ Use plain `key: value` lines between the opening `---` lines. Keep values on one
 | `contact` | Public contact email or HTTPS URL. Leave blank if unavailable. |
 | `updated` | Date of the last meaningful note update, in `YYYY-MM-DD` form. |
 | `next_milestone` | The next concrete project outcome. |
-| `help_needed` | Skills or tasks for which the project wants help. |
+| `stage` | Displayed as **Status** on the project page: `completed`, `in design`, or `in testing`. |
 | `image` | Path to a real feature photo, for example `/assets/uploads/laser-tag.jpg`. Leave blank to retain the blueprint placeholder. |
 | `art` | Existing blueprint drawing key: `laser`, `synth`, `cart`, or `trebuchet`. |
 | `hub` | Existing hub page kind, `projects` or `guides`; omit on ordinary notes. |
 
 Copy `docs/project-template.md` into a new file under `content/projects/`, then replace its title, description, metadata, and starter sections. `updated` is a documentation date, not a claim that the project itself has finished a milestone.
+
+Set `stage` to the project's actual progress. Keep `status` for its current/past/future group; when archiving a completed project, use `status: past` and `stage: completed`.
 
 Choose a few concrete skill tags that fit the planned work, and replace the template's examples. These tags appear on project cards and notes and can filter both Projects and Complete graph. They describe learning opportunities, not prerequisites or completed milestones.
 

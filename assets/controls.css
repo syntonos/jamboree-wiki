@@ -56,14 +56,14 @@ body:not(.dark) .backlink-list a { background: #ffffff; }
 .rightbar .local-graph-controls { margin-top: 8px; }
 .full-graph-canvas, .local-graph-canvas {
   --graph-dot: rgba(38, 60, 77, .09);
-  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2290%22%20height%3D%2290%22%20viewBox%3D%220%200%2090%2090%22%3E%3Cpath%20d%3D%22M41%2045h8M45%2041v8%22%20fill%3D%22none%22%20stroke%3D%22%23263c4d%22%20stroke-opacity%3D%22.12%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Cpath%20d%3D%22M56%2060h8M60%2056v8%22%20fill%3D%22none%22%20stroke%3D%22%23263c4d%22%20stroke-opacity%3D%22.06%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
   background-image: var(--graph-cross), radial-gradient(circle, var(--graph-dot) var(--graph-dot-radius, .65px), transparent var(--graph-dot-edge, .8px));
-  background-size: var(--graph-cross-size, 90px) var(--graph-cross-size, 90px), var(--graph-dot-size, 18px) var(--graph-dot-size, 18px);
+  background-size: var(--graph-cross-size, 120px) var(--graph-cross-size, 120px), var(--graph-dot-size, 24px) var(--graph-dot-size, 24px);
   background-position: var(--graph-offset-x, 0px) var(--graph-offset-y, 0px);
 }
 .dark .full-graph-canvas, .dark .local-graph-canvas {
   --graph-dot: rgba(220, 232, 239, .06);
-  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2290%22%20height%3D%2290%22%20viewBox%3D%220%200%2090%2090%22%3E%3Cpath%20d%3D%22M41%2045h8M45%2041v8%22%20fill%3D%22none%22%20stroke%3D%22%23dce8ef%22%20stroke-opacity%3D%22.08%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+  --graph-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Cpath%20d%3D%22M56%2060h8M60%2056v8%22%20fill%3D%22none%22%20stroke%3D%22%23dce8ef%22%20stroke-opacity%3D%22.04%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
 }
 .rail-heading .rail-title[hidden] { display: none; }
 .rail-heading:has(.rail-title[hidden]) { justify-content: flex-end; margin-bottom: 0; }

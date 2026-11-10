@@ -123,9 +123,11 @@
   }
   function facts(note) {
     const lead = note.lead || 'Unassigned', contact = note.contact || '';
+    const stages = {'completed':'Completed','in design':'In design','in testing':'In testing'};
+    const stage = stages[String(note.stage || '').trim().toLowerCase()] || (note.status === 'past' ? 'Completed' : 'In design');
     const contactTarget = contact.includes('@') && !/^[a-z]+:/i.test(contact) ? 'mailto:' + contact : contact;
     const contactLink = contact ? renderLink(contact,contactTarget,note.slug,[]) : 'Not set';
-    return `<section class="project-facts" aria-label="Project details"><dl><div><dt>Lead</dt><dd>${escape(lead)}</dd></div><div><dt>Contact</dt><dd>${contactLink}</dd></div><div><dt>Updated</dt><dd>${note.updated ? `<time datetime="${escape(note.updated)}">${escape(note.updated)}</time>` : 'Not set'}</dd></div><div><dt>Discipline</dt><dd>${escape(note.discipline || 'Not set')}</dd></div></dl><div class="project-progress"><div><h2>Next milestone</h2><p>${escape(note.next_milestone || 'Not set')}</p></div><div><h2>Help needed</h2><p>${escape(note.help_needed || 'Not specified')}</p></div></div>${tags(note,true)}</section>`;
+    return `<section class="project-facts" aria-label="Project details"><dl><div><dt>Lead</dt><dd>${escape(lead)}</dd></div><div><dt>Contact</dt><dd>${contactLink}</dd></div><div><dt>Updated</dt><dd>${note.updated ? `<time datetime="${escape(note.updated)}">${escape(note.updated)}</time>` : 'Not set'}</dd></div><div><dt>Discipline</dt><dd>${escape(note.discipline || 'Not set')}</dd></div></dl><div class="project-progress"><div><h2>Next milestone</h2><p>${escape(note.next_milestone || 'Not set')}</p></div><div><h2>Status</h2><p>${stage}</p></div></div>${tags(note,true)}</section>`;
   }
   function backlinks(note, notes) {
     const sources = (note.backlinks || []).map(slug => notes.find(source => source.slug === slug)).filter(Boolean);

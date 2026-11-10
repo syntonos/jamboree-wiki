@@ -13,7 +13,7 @@ lead:
 contact:
 updated: 2026-11-10
 next_milestone: Compare IR receiver options and test one transmitter/receiver pair.
-help_needed: IR sensing, firmware, and enclosure design.
+stage: in design
 ---
 
 ## Standard issue

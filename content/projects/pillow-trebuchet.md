@@ -13,7 +13,7 @@ lead:
 contact:
 updated: 2026-10-29
 next_milestone: Sketch the arm, pivot, and release geometry for a small prototype.
-help_needed: Mechanism layout, release design, and test documentation.
+stage: in design
 ---
 
 ## Scope

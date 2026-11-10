@@ -58,8 +58,8 @@
       names, out, current: data.currentSlug, local: Boolean(data.currentSlug),
       disconnectedRepulsion: 1.35,
       onCameraChange: ({k,x,y}) => {
-        grid.style.setProperty('--graph-dot-size',18*k+'px');
-        grid.style.setProperty('--graph-cross-size',90*k+'px');
+        grid.style.setProperty('--graph-dot-size',24*k+'px');
+        grid.style.setProperty('--graph-cross-size',120*k+'px');
         grid.style.setProperty('--graph-dot-radius',.65*k+'px');
         grid.style.setProperty('--graph-dot-edge',.8*k+'px');
         grid.style.setProperty('--graph-offset-x',x+'px');

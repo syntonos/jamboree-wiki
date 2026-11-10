@@ -13,7 +13,7 @@ lead:
 contact:
 updated: 2026-10-29
 next_milestone: Set the shared requirements and sketch the two cart layouts.
-help_needed: Chassis layout, steering, brakes, and CAD.
+stage: in design
 ---
 
 ## Scope

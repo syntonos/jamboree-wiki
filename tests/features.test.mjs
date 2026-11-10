@@ -66,11 +66,17 @@ test('Markdown escapes raw HTML, keeps code literal, and blocks unsafe links', (
 });
 
 test('project facts and backlinks expose metadata without inventing a lead', () => {
-  const laser={...notes.find(note=>note.slug==='projects/laser'),lead:'',contact:'',updated:'2026-10-29',next_milestone:'Bench test',help_needed:'Firmware'};
+  const laser={...notes.find(note=>note.slug==='projects/laser'),lead:'',contact:'',updated:'2026-10-29',next_milestone:'Bench test',stage:'in testing',help_needed:'Old help request'};
   const facts=renderer.facts(laser);
   assert.match(facts,/Unassigned/);
   assert.match(facts,/<time datetime="2026-10-29">/);
   assert.match(facts,/Bench test/);
+  assert.match(facts,/<h2>Status<\/h2><p>In testing<\/p>/);
+  assert.doesNotMatch(facts,/Help needed|Old help request/);
+  for (const [stage,label] of [['completed','Completed'],['in design','In design'],['in testing','In testing']]) {
+    assert(renderer.facts({...laser,stage}).includes(`<h2>Status</h2><p>${label}</p>`));
+  }
+  assert(renderer.facts({...laser,stage:undefined,status:'past'}).includes('<h2>Status</h2><p>Completed</p>'));
   const firmware={...notes.find(note=>note.slug==='guides/electrical/firmware'),backlinks:['projects/laser']};
   const backlinks=renderer.backlinks(firmware,notes);
   assert.match(backlinks,/href="#\/projects\/laser"/);
