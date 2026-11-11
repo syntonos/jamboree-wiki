@@ -13,11 +13,11 @@ const port=await readFile(portPath,'utf8');
 // including initialization, numerical loop and pointer code, executes unchanged.
 const adapted=original.replace(/^import[^\n]*\n/gm,'').replace('export default function Graph','function Graph').replace(/\n  return \(\n[\s\S]*$/,'\n  return {api};\n}\nglobalThis.ReferenceGraph=Graph;\n');
 assert(adapted.includes('for (const a of N)'));
-function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion=1,onCameraChange}){
+function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion=1,onCameraChange,adaptiveLabels=false}){
  let nextId=0,timestamp=0,seed=0x12345678,callbacks=new Map(),effect,refIndex=0,api;
  const resizers=[],listeners=new Map(),opened=[];
  const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
- const cx={commands:[],lastTransform:null,setTransform(...a){this.lastTransform=a;this.commands.push(['setTransform',...a]);},clearRect(...a){this.commands=[['setTransform',...this.lastTransform],['clearRect',...a]];},beginPath(){this.commands.push(['beginPath']);},moveTo(...a){this.commands.push(['moveTo',...a]);},lineTo(...a){this.commands.push(['lineTo',...a]);},stroke(){this.commands.push(['stroke',this.lineWidth]);},arc(...a){this.commands.push(['arc',...a]);},fill(){this.commands.push(['fill']);},fillText(text,x,y){this.commands.push(['fillText',text,x,y,this.font,this.textAlign]);}};
+ const cx={commands:[],lastTransform:null,setTransform(...a){this.lastTransform=a;this.commands.push(['setTransform',...a]);},clearRect(...a){this.commands=[['setTransform',...this.lastTransform],['clearRect',...a]];},beginPath(){this.commands.push(['beginPath']);},moveTo(...a){this.commands.push(['moveTo',...a]);},lineTo(...a){this.commands.push(['lineTo',...a]);},stroke(){this.commands.push(['stroke',this.lineWidth]);},arc(...a){this.commands.push(['arc',...a]);},fill(){this.commands.push(['fill']);},fillText(text,x,y){this.commands.push(['fillText',text,x,y,this.font,this.textAlign]);},measureText(text){const size=parseFloat(this.font)||11;return{width:text.length*size*.6,actualBoundingBoxAscent:size*.8,actualBoundingBoxDescent:size*.2};}};
  const cv={clientWidth:900,clientHeight:660,width:0,height:0,style:{},getContext:()=>cx,getBoundingClientRect(){return{left:0,top:0,width:this.clientWidth,height:this.clientHeight,right:this.clientWidth,bottom:this.clientHeight};},setPointerCapture(){},addEventListener(type,fn){if(!listeners.has(type))listeners.set(type,new Set());listeners.get(type).add(fn);},removeEventListener(type,fn){listeners.get(type)?.delete(fn);}};
  const title=p=>p.split('/').at(-1).replaceAll('-',' ');
  const env={Math:math,devicePixelRatio:dpr,names,out,title,tagsOf:Object.fromEntries(names.map(n=>[n,new Set(['all'])])),backlinks:p=>names.filter(n=>out[n].has(p)),useRef(value){return{current:refIndex++===0?cv:value};},useEffect(fn){effect=fn;},requestAnimationFrame(fn){callbacks.set(++nextId,fn);return nextId;},cancelAnimationFrame(id){callbacks.delete(id);},ResizeObserver:class{constructor(fn){this.fn=fn;resizers.push(this);}observe(){}disconnect(){this.disconnected=true;}},getComputedStyle:()=>({color:'#fff',getPropertyValue:key=>key==='--line'?'rgba(130,120,255,.4)':''})};
@@ -30,7 +30,7 @@ function harness(kind,{names,out,current,local=false,dpr=1,disconnectedRepulsion
   destroy=effect();api={zoom:f=>refs.api.current.zoom(f),reset:()=>refs.api.current.reset()};
  }else{
   vm.runInContext(port,context,{filename:portPath});
-  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local,disconnectedRepulsion,onCameraChange});destroy=api.destroy;
+  api=context.JamboreeVaultGraph.create(cv,{names,out,title,current,onOpen:p=>opened.push(p),color:()=> '#fff',local,disconnectedRepulsion,onCameraChange,adaptiveLabels});destroy=api.destroy;
  }
  return{cv,cx,opened,api,advance(){const entry=callbacks.entries().next().value;assert(entry,`${kind}: no scheduled RAF`);callbacks.delete(entry[0]);entry[1](timestamp+=1000/60);},event(type,values){const e={type,pointerId:1,clientX:0,clientY:0,deltaY:0,preventDefault(){},...values};cv['on'+type]?.(e);for(const fn of listeners.get(type)||[])fn(e);},resize(w,h){cv.clientWidth=w;cv.clientHeight=h;for(const r of resizers)if(!r.disconnected)r.fn();},destroy(){destroy();assert.equal(callbacks.size,0,`${kind}: RAF not cancelled`);},commands(){return structuredClone(cx.commands);},arcs(){return cx.commands.filter(c=>c[0]==='arc').map(c=>({x:c[1],y:c[2],r:c[3]}));},world(){const c=cx.commands.filter(c=>c[0]==='setTransform').at(-1);return{k:c[1]/dpr,x:c[5]/dpr,y:c[6]/dpr};}};
 }
@@ -157,4 +157,113 @@ test('camera callbacks receive copies rather than mutable graph state',()=>{
   for(let i=0;i<12;i++){baseline.advance();observed.advance();assert.deepEqual(observed.commands(),baseline.commands());}
   assert.equal(calls,2,'mutating callback copies does not manufacture additional camera changes');
  }finally{baseline.destroy();observed.destroy();}
+});
+
+const crowdedNames=Array.from({length:24},(_,i)=>`notes/research-topic-${String(i+1).padStart(2,'0')}-assembly-and-testing`);
+const crowdedFixture={names:crowdedNames,out:Object.fromEntries(crowdedNames.map(name=>[name,new Set()])),current:''};
+const stateWithoutLabels=graph=>{
+ const {nodes,edges,camera,alpha}=graph.api.snapshot();
+ return structuredClone({nodes,edges,camera,alpha});
+};
+function assertClearLabels(graph,description){
+ const {labels}=graph.api.snapshot();
+ assert(labels.length>0,description+': all labels were hidden');
+ for(const label of labels){
+  assert(label.fontSize>=8.5&&label.fontSize<=15,description+': unreadable font size');
+  assert(label.width>0&&label.height>0,description+': empty text bounds');
+  assert(label.x>=0&&label.y>=0,description+': label outside the top/left of the viewport');
+  assert(label.x+label.width<=graph.cv.clientWidth+.001,description+': label outside the right of the viewport');
+  assert(label.y+label.height<=graph.cv.clientHeight+.001,description+': label outside the bottom of the viewport');
+ }
+ for(let i=0;i<labels.length;i++)for(let j=i+1;j<labels.length;j++){
+  const a=labels[i],b=labels[j],gap=2-.001;
+  assert(a.x+a.width+gap<=b.x||b.x+b.width+gap<=a.x||a.y+a.height+gap<=b.y||b.y+b.height+gap<=a.y,`${description}: ${a.slug} overlaps ${b.slug}`);
+ }
+ return structuredClone(labels);
+}
+
+test('adaptive labels shrink with zoom and retain readable collision-free screen bounds',()=>{
+ const graph=harness('port',{...crowdedFixture,adaptiveLabels:true});
+ try{
+  for(let i=0;i<650;i++)graph.advance();
+  const sizes=[];
+  for(const zoom of [1,.5,.25]){
+   graph.api.reset();graph.api.zoom(zoom);graph.advance();
+   const labels=assertClearLabels(graph,`zoom ${zoom}`);
+   sizes.push(labels[0].fontSize);
+   assert.equal(graph.api.snapshot().camera.k,zoom);
+   const text=graph.commands().filter(command=>command[0]==='fillText');
+   assert(text.length>0,'labels must actually be painted');
+   assert(text.every(command=>Math.abs(parseFloat(command[4])-labels[0].fontSize)<.001),'painted font differs from reported CSS font size');
+  }
+  assert.equal(sizes[0],11,'normal zoom retains the original 11px labels');
+  assert(sizes[0]>sizes[1]&&sizes[1]>sizes[2],`zoomed-out labels did not shrink progressively: ${sizes}`);
+ }finally{graph.destroy();}
+});
+
+test('adaptive labels leave vault simulation, camera and drag momentum unchanged',()=>{
+ const fixture={names:ids,out,current:'notes/hub',disconnectedRepulsion:1.35};
+ const baseline=harness('port',fixture),adaptive=harness('port',{...fixture,adaptiveLabels:true});
+ const equal=description=>assert.deepEqual(stateWithoutLabels(adaptive),stateWithoutLabels(baseline),description);
+ const frames=(count,description)=>{for(let i=0;i<count;i++){baseline.advance();adaptive.advance();equal(`${description} frame ${i}`);}};
+ const event=(type,values)=>{baseline.event(type,values);adaptive.event(type,values);};
+ try{
+  equal('initial positions and forces');frames(650,'cooling');
+  const node=baseline.api.snapshot().nodes[0];
+  event('pointerdown',{clientX:node.x,clientY:node.y});
+  event('pointermove',{clientX:node.x+70,clientY:node.y+35});frames(20,'held drag');
+  event('pointerup',{clientX:node.x+70,clientY:node.y+35});frames(650,'release momentum');
+  baseline.api.zoom(.5);adaptive.api.zoom(.5);frames(2,'zoom');
+  event('pointerdown',{pointerId:9,clientX:-400,clientY:-400});
+  event('pointermove',{pointerId:9,clientX:-350,clientY:-420});
+  event('pointerup',{pointerId:9,clientX:-350,clientY:-420});frames(2,'pan');
+  baseline.resize(640,420);adaptive.resize(640,420);frames(20,'resize reheat');
+ }finally{baseline.destroy();adaptive.destroy();}
+});
+
+test('hover reveals the full title of a label hidden by crowding',()=>{
+ const graph=harness('port',{...crowdedFixture,adaptiveLabels:true});
+ try{
+  for(let i=0;i<650;i++)graph.advance();
+  graph.api.zoom(.5);graph.advance();
+  const {nodes,labels,camera}=graph.api.snapshot(),visible=new Set(labels.map(label=>label.slug));
+  assert(labels.length<nodes.length,'fixture must contain suppressed labels');
+  const hidden=nodes.find(node=>!visible.has(node.slug)&&nodes.find(candidate=>Math.hypot(candidate.x-node.x,candidate.y-node.y)<14/camera.k+4)?.slug===node.slug);
+  assert(hidden,'fixture needs a hidden node that can be hovered directly');
+  graph.event('pointermove',{clientX:hidden.x*camera.k+camera.x,clientY:hidden.y*camera.k+camera.y});graph.advance();
+  const revealed=assertClearLabels(graph,'hover').find(label=>label.slug===hidden.slug);
+  assert(revealed,'hovered label remains hidden');
+  assert.equal(revealed.lines.join(' '),hidden.slug.split('/').at(-1).replaceAll('-',' ').toUpperCase(),'hovered title was truncated');
+ }finally{graph.destroy();}
+});
+
+test('local graph keeps the current note label visible as it zooms out',()=>{
+ const current=crowdedNames.at(-1);
+ const localOut=Object.fromEntries(crowdedNames.map(name=>[name,name===current?new Set(crowdedNames.slice(0,-1)):new Set()]));
+ const graph=harness('port',{names:crowdedNames,out:localOut,current,local:true,adaptiveLabels:true});
+ try{
+  for(let i=0;i<650;i++)graph.advance();
+  for(const zoom of [1,.5,.25]){
+   graph.api.reset();graph.api.zoom(zoom);graph.advance();
+   const labels=assertClearLabels(graph,`local zoom ${zoom}`);
+   assert(labels.some(label=>label.slug===current),'current note lost its label');
+  }
+ }finally{graph.destroy();}
+});
+
+test('adaptive label layout uses CSS pixels independently of device pixel ratio',()=>{
+ const a=harness('port',{...crowdedFixture,adaptiveLabels:true,dpr:1});
+ const b=harness('port',{...crowdedFixture,adaptiveLabels:true,dpr:2});
+ const equal=description=>{
+  assert.deepEqual(stateWithoutLabels(a),stateWithoutLabels(b),description+': DPR changed graph state');
+  assert.deepEqual(structuredClone(a.api.snapshot().labels),structuredClone(b.api.snapshot().labels),description+': DPR changed label placement');
+ };
+ try{
+  equal('initial');
+  for(let i=0;i<650;i++){a.advance();b.advance();}
+  equal('cooled');a.api.zoom(.5);b.api.zoom(.5);a.advance();b.advance();equal('zoomed');
+  a.resize(640,420);b.resize(640,420);a.advance();b.advance();equal('resized');
+  assert.equal(b.cv.width,a.cv.width*2);
+  assert.equal(b.cv.height,a.cv.height*2);
+ }finally{a.destroy();b.destroy();}
 });

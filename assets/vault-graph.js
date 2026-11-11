@@ -10,13 +10,15 @@
   else root.JamboreeVaultGraph = api;
 })(typeof window === 'undefined' ? globalThis : window, function () {
   function create(canvas, options) {
-    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}, disconnectedRepulsion = 1, onCameraChange} = options;
+    const {names, out, title, current, onOpen, color, local = false, tag = null, tagsOf = {}, disconnectedRepulsion = 1, onCameraChange, adaptiveLabels = false} = options;
     const backlinks = p => names.filter(n => out[n].has(p));
     const ref = {current:canvas}, api = {current:{}}, cur = {current}, open = {current:onOpen};
     const cv = ref.current, cx = cv.getContext('2d')
     let W = 0, H = 0, raf, drag = null, hover = null, moved = false, alpha = 1, pan = null, pinch = null
     const T = { k: 1, x: 0, y: 0 }, P = new Map()
     let paintedCamera = ''
+    let labels = []
+    const labelPositions = new Map()
     const size = () => { const d = devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; alpha = 1 }
     size()
     const ro = new ResizeObserver(size); ro.observe(cv)
@@ -46,6 +48,59 @@
     const zoomAt = (x, y, f) => { const k = Math.min(4, Math.max(0.25, T.k * f)); const [wx, wy] = toW(x, y); T.k = k; T.x = x - wx * k; T.y = y - wy * k }
     api.current = { zoom: (f) => zoomAt(W / 2, H / 2, f), reset: () => { T.k = 1; T.x = 0; T.y = 0 } }
 
+    // Labels are laid out in CSS pixels, independently of the vault simulation.
+    // Keep a readable minimum and show fewer labels when the nodes are crowded.
+    const drawLabels = (d, style) => {
+      const fontSize = T.k < 1 ? 8.5 + 2.5 * (T.k - 0.25) / 0.75 : Math.min(15, 11 * Math.sqrt(T.k))
+      const dots = N.map(n => ({n, x:n.x*T.k+T.x, y:n.y*T.k+T.y, r:(4+Math.min(n.deg,8)*1.2)*T.k}))
+        .filter(dot => dot.x+dot.r >= 0 && dot.x-dot.r <= W && dot.y+dot.r >= 0 && dot.y-dot.r <= H)
+      const priority = n => n === hover ? 2 : n.p === cur.current ? 1 : 0
+      const ordered = [...dots].sort((a,b) => priority(b.n)-priority(a.n) || b.n.deg-a.n.deg || a.n.p.localeCompare(b.n.p))
+      const overlaps = (a,b) => a.x < b.x+b.width+3 && a.x+a.width+3 > b.x && a.y < b.y+b.height+3 && a.y+a.height+3 > b.y
+      const coversDot = (box,dot) => Math.hypot(dot.x-Math.max(box.x,Math.min(dot.x,box.x+box.width)),dot.y-Math.max(box.y,Math.min(dot.y,box.y+box.height))) < dot.r+2
+      const maxWidth = Math.max(1,Math.min(180,W-12))
+      const placed = []
+      cx.setTransform(d,0,0,d,0,0); cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillStyle = style.color
+      for (const dot of ordered) {
+        const {n,x,y,r} = dot
+        const size = n === hover ? Math.max(11,fontSize) : fontSize
+        cx.font = `${size}px "JetBrains Mono", monospace`
+        const text = title(n.p).toUpperCase(), words = text.split(/\s+/), lines = []
+        let line = ''
+        for (const word of words) {
+          if (line && cx.measureText(line+' '+word).width <= maxWidth) { line += ' '+word; continue }
+          if (line) { lines.push(line); line = '' }
+          for (const letter of word) {
+            if (cx.measureText(line+letter).width > maxWidth && line) { lines.push(line); line = '' }
+            line += letter
+          }
+        }
+        if (line) lines.push(line)
+        const width = Math.max(...lines.map(line => cx.measureText(line).width)), lineHeight = size*1.25, height = lines.length*lineHeight
+        const candidates = [
+          {side:'below',x:x-width/2,y:y+r+5},
+          {side:'above',x:x-width/2,y:y-r-5-height},
+          {side:'right',x:x+r+5,y:y-height/2},
+          {side:'left',x:x-r-5-width,y:y-height/2},
+        ].map(box => ({...box,x:Math.max(4,Math.min(W-width-4,box.x)),y:Math.max(4,Math.min(H-height-4,box.y)),width,height}))
+        const previous = labelPositions.get(n.p)
+        candidates.sort((a,b) => Number(b.side===previous)-Number(a.side===previous))
+        const clearLabels = box => !placed.some(other => overlaps(box,other))
+        const box = candidates.find(box => clearLabels(box) && !dots.some(other => coversDot(box,other)))
+          || (priority(n) && candidates.find(clearLabels))
+        if (!box) continue
+        labelPositions.set(n.p,box.side)
+        placed.push({slug:n.p,text,lines,fontSize:size,x:box.x,y:box.y,width,height})
+      }
+      labels = placed
+      // Hover takes priority in layout and is painted last for clear inspection.
+      for (const label of [...placed].reverse()) {
+        cx.font = `${label.fontSize}px "JetBrains Mono", monospace`
+        label.lines.forEach((line,i) => cx.fillText(line,label.x+label.width/2,label.y+label.fontSize*1.25*(i+0.5)))
+      }
+      cx.textBaseline = 'alphabetic'
+    }
+
     const loop = () => {
       if (alpha > 0.03) {
         for (const a of N) {
@@ -73,8 +128,9 @@
         const col = color(n.p, n === hover, n.p === cur.current)
         cx.beginPath(); cx.arc(n.x, n.y, r, 0, 7)
         cx.shadowBlur = 12; cx.shadowColor = col; cx.fillStyle = col; cx.fill(); cx.shadowBlur = 0
-        cx.fillStyle = style.color; cx.fillText(title(n.p).toUpperCase(), n.x, n.y + r + 13 / T.k)
+        if (!adaptiveLabels) { cx.fillStyle = style.color; cx.fillText(title(n.p).toUpperCase(), n.x, n.y + r + 13 / T.k) }
       }
+      if (adaptiveLabels) drawLabels(d,style)
       raf = requestAnimationFrame(loop)
     }
     loop()
@@ -114,6 +170,7 @@
       snapshot: () => ({
         nodes: N.map(n => ({slug:n.p,x:n.x,y:n.y,vx:n.vx,vy:n.vy,degree:n.deg})),
         edges: E.map(([a,b]) => [a.p,b.p]), camera:{...T}, alpha,
+        labels: labels.map(label => ({...label,lines:[...label.lines]})),
       }),
     }
   }

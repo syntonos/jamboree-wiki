@@ -57,6 +57,7 @@
     const engine = window.JamboreeVaultGraph.create(canvas, {
       names, out, current: data.currentSlug, local: Boolean(data.currentSlug),
       disconnectedRepulsion: 1.35,
+      adaptiveLabels: true,
       onCameraChange: ({k,x,y}) => {
         grid.style.setProperty('--graph-dot-size',24*k+'px');
         grid.style.setProperty('--graph-cross-size',120*k+'px');
